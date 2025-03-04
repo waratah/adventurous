@@ -1,0 +1,5 @@
+.mat-toolbar {
+  button {
+    min-width: 60ch;
+  }
+}

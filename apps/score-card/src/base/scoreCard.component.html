@@ -1,0 +1,35 @@
+<div #result>
+  <div class="list titles">
+    <span>Can statement</span>
+    <span>Done</span>
+    <span>@if( isVerify){ Verify }</span>
+  </div>
+  @for (d of detail$ | async; track d.heading) {
+  <div class="group">
+    <h2 (click)="d.show = !d.show" [ngClass]="{ toggle: d.show }">
+      @if( d.heading) {
+      {{ d.heading }}
+      } @else { All }
+    </h2>
+    <div class="list" [ngClass]="{ hide: !d.show }">
+      @for (d of d.details; track d.question.code) {
+      <span>{{ d.question.text }}</span>
+      <input
+        type="checkbox"
+        [checked]="d.answer.done"
+        (change)="updateDone(d.question.code, !d.answer.done)"
+      />
+      @if(isVerify) {
+      <input
+        type="checkbox"
+        [checked]="d.answer.verified"
+        (change)="updateVerify(d.question.code, !d.answer.verified)"
+      />
+      } @else {
+      <div></div>
+      } }
+    </div>
+  </div>
+  }
+</div>
+<button (click)="print()">Print</button>

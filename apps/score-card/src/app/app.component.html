@@ -1,0 +1,50 @@
+<mat-toolbar>
+  <button mat-icon-button aria-label="menu" [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>Rock School</span>
+  <button mat-icon-button aria-label="Example icon-button with heart icon">
+    <mat-icon>favorite</mat-icon>
+  </button>
+  <button mat-icon-button aria-label="Export PDF" [matMenuTriggerFor]="print">
+    <mat-icon>print</mat-icon>
+  </button>
+</mat-toolbar>
+
+<mat-menu #menu="matMenu">
+  @for ( group of groups$ | async; track group ) {
+    <button mat-menu-item (click)="goGroup(group)">
+      <mat-icon>chevron_right</mat-icon>
+      <span>{{group.name}}</span>
+    </button>
+
+  }
+
+  <mat-button-toggle-group [value]="action" (change)="action = $event.value" aria-label="Action">
+    <mat-button-toggle value="view">View</mat-button-toggle>
+    <mat-button-toggle value="verify">Verify</mat-button-toggle>
+    <mat-button-toggle value="edit">Edit</mat-button-toggle>
+  </mat-button-toggle-group>
+
+</mat-menu>
+
+<mat-menu #print="matMenu">
+  <button mat-menu-item>
+    <mat-icon>done all</mat-icon>
+    <span>Dump Completed</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>voicemail</mat-icon>
+    <span>Safe Participant Workbook</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>notifications</mat-icon>
+    <span>Trained Participant Workbook</span>
+  </button>
+  <button mat-menu-item>
+    <mat-icon>open_in_full</mat-icon>
+    <span>Guide Workbook</span>
+  </button>
+</mat-menu>
+
+<router-outlet></router-outlet>

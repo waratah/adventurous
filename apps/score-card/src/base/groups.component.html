@@ -1,0 +1,37 @@
+<mat-toolbar class="secondary">
+  @for ( group of groups$ | async; track group ) {
+  <mat-toolbar-row>
+    <button
+      mat-raised-button
+      (click)="click(group)"
+      [ngClass]="{ selected: group.id === groupId }"
+    >
+      {{ group.name }}
+    </button>
+  </mat-toolbar-row>
+  }
+</mat-toolbar>
+
+<mat-button-toggle-group
+
+  name="fontStyle"
+  aria-label="Font Style"
+>
+  <mat-button-toggle color="view" value="bold">View</mat-button-toggle>
+  <mat-button-toggle value="verify">Approve</mat-button-toggle>
+  <mat-button-toggle value="edit">Edit</mat-button-toggle>
+</mat-button-toggle-group>
+
+<div>
+  <h3>Create a new Group</h3>
+  <input
+    type="text"
+    required
+    [(value)]="newGroup"
+    (blur)="changeGroupName($event)"
+    (keypress)="changeGroupName($event)"
+  />
+
+  <div>{{ newGroup }}</div>
+  <button mat-button (click)="createNew()">Add New Group</button>
+</div>

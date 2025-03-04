@@ -1,0 +1,202 @@
+@use '@angular/material' as mat;
+
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+  height: 100vh;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/*.  end reset */
+
+button {
+  background-color: inherit;
+}
+
+html {
+  color-scheme: light;
+  @include mat.theme(
+    (
+      color: mat.$red-palette,
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body.dark-mode {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  font: var(--mat-sys-body-large);
+}
+
+// Customize the entire app. Change :root to your selector if you want to scope the styles.
+:root {
+  @include mat.toolbar-overrides(
+    (
+      container-background-color: var(--mat-sys-primary),
+      container-text-color: var(--mat-sys-surface),
+    )
+  );
+}
+
+.mat-toolbar {
+  button {
+    border-color: inherit;
+  }
+  --mat-toolbar-container-background-color: var(--mat-sys-primary);
+  --mat-icon-color: var(--mat-sys-on-primary);
+  gap: 0.25rem;
+
+  &.secondary {
+    font: var(--mat-sys-display-medium);
+    --mat-toolbar-container-background-color: var(--mat-sys-secondary);
+    --mat-icon-color: var(--mat-sys-on-secondary);
+
+    mat-button-toggle {
+      border-color: var(--mat-sys-on-primary);
+    }
+  }
+  &.mat-button-toggle-group {
+    margin: 0.5em;
+  }
+}
+.secondary {
+  &.mat-button-toggle-group {
+    margin: 0.5em 0;
+  }
+  .mat-button-toggle-button {
+    background-color: var(--mat-sys-inverse-primary);
+    color: var(--mat-sys-primary);
+    --mat-icon-color: var(--mat-sys-primary);
+    --mat-standard-button-toggle-divider-color: var(--mat-sys-tertiary  );
+  }
+}
