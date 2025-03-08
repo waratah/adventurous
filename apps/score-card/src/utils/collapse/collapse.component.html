@@ -1,0 +1,19 @@
+<div class="group" >
+  <mat-toolbar class="group secondary">
+    <mat-icon class="open" [ngClass]="{ up: !show }">chevron_right</mat-icon>
+    <button mat-raised-button
+      (click)="show = !show"
+      [ngClass]="{ toggle: show }"
+    >
+      @if( heading) {
+      {{ heading }}
+      } @else { -- empty -- }
+    </button>
+  </mat-toolbar>
+  <div class="content"
+    [ngClass]="{ close: !show, open: show }"
+    cdkDropList
+  >
+  <ng-content ></ng-content>
+  </div>
+</div>

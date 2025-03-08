@@ -1,4 +1,5 @@
 @if( questions$ | async; as q ) {
+
 <div
   cdkDropListGroup
   cdkDropList
@@ -7,24 +8,24 @@
 >
   @for (d of questions$ | async; track d.heading) {
   <div class="group" cdkDrag [cdkDragData]="d">
-    <h2 (click)="d.show = !d.show" [ngClass]="{ toggle: d.show }">
-      @if( d.heading) {
-      {{ d.heading }}
-      } @else { All }
-    </h2>
-    <div class="list" [ngClass]="{ hide: !d.show }"
-    cdkDropList
-    [cdkDropListData]="d.questions"
-    (cdkDragMoved)="dragMoved($event)"
-    (cdkDropListDropped)="dropQuestion($event)" >
+
+    <app-collapse [heading]="d.heading">
+      <div
+      class="list"
+      [ngClass]="{ hide: !d.show }"
+      cdkDropList
+      [cdkDropListData]="d.questions"
+      (cdkDragMoved)="dragMoved($event)"
+      (cdkDropListDropped)="dropQuestion($event)"
+    >
       @for (q of d.questions; track q.code) {
-      <div cdkDrag [cdkDragData]="q"> {{ q.text }}</div>
+      <div cdkDrag [cdkDragData]="q">{{ q.text }}</div>
       }
     </div>
+    </app-collapse>
   </div>
   }
 </div>
 }
 
-
-<button (click)="addGroup()" ngClass="{ hide: newGroup }"  >Add</button>
+<button mat-raised-button (click)="addGroup()" ngClass="{ hide: newGroup }">Add</button>

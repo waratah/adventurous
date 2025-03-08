@@ -5,8 +5,9 @@ import {
   getDoc,
   getDocs,
   collection,
+  setDoc,
 } from '@angular/fire/firestore';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, take } from 'rxjs';
 import { User, UserId } from '../definitions';
 
 @Injectable({
@@ -73,7 +74,6 @@ export class UsersService {
         this.currentUser.next(undefined);
       }
     });
-    // this.answers$.subscribe((x) => console.log(x));
   }
 
   public loadAllUsers() {
@@ -90,5 +90,19 @@ export class UsersService {
         this.allUsers.next(list.sort((a, b) => a.name.localeCompare(b.name)));
       })
       .catch((x) => console.error(x));
+  }
+
+  public createUser(user: User) {
+    this.loadAllUsers();
+    this.allUsers.pipe(take(1)).subscribe((users) => {
+      const userId = Math.max(...users.map((x) => x.id)) + 1;
+      const docRef = doc(this.store, 'user', `${userId}`);
+      setDoc(docRef, user).catch((x) => console.error(x));
+    });
+  }
+
+  public saveUser(user: User) {
+    const docRef = doc(this.store, 'users', `${user.id}`);
+    setDoc(docRef, user).catch((x) => console.error(x));
   }
 }

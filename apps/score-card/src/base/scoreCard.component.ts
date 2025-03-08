@@ -1,12 +1,22 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute } from '@angular/router';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { answer, PageDisplay, question, questionGroup } from '../definitions';
 import { AnswersService } from '../service/answers.service';
 import { QuestionsService } from '../service/questions.service';
-import { jsPDF } from 'jspdf';
-import html2canvas from 'html2canvas';
+import { CollapseComponent } from '../utils/collapse/collapse.component';
 
 interface detail {
   answer: answer;
@@ -22,11 +32,11 @@ interface detailPage {
 @Component({
   selector: 'app-score-card',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatToolbarModule, CollapseComponent, MatButtonModule],
   templateUrl: './scoreCard.component.html',
   styleUrl: './scoreCard.component.css',
 })
-export class ScoreCardComponent {
+export class ScoreCardComponent implements OnInit, OnDestroy {
   @ViewChild('result') result?: ElementRef;
 
   public isVerify = false;
@@ -59,11 +69,11 @@ export class ScoreCardComponent {
             heading: p.heading,
             show: true,
             details: p.questions.map((q) => {
-              var d = <detail>{
+              const d = <detail>{
                 question: q,
                 answer: { code: q.code, doneDate: new Date() },
               };
-              var found = answers.find((x) => x.code === q.code);
+              const found = answers.find((x) => x.code === q.code);
               if (found) {
                 d.answer = found;
               }
@@ -96,11 +106,11 @@ export class ScoreCardComponent {
     if (this.result) {
       const DATA = this.result.nativeElement;
       html2canvas(DATA).then((canvas) => {
-        let fileWidth = 200;
-        let fileHeight = (canvas.height * fileWidth) / canvas.width;
+        const fileWidth = 200;
+        const fileHeight = (canvas.height * fileWidth) / canvas.width;
 
         const FILEURI = canvas.toDataURL('image/png');
-        let PDF = new jsPDF('p', 'mm', 'a4');
+        const PDF = new jsPDF('p', 'mm', 'a4');
         PDF.addImage(FILEURI, 'PNG', 5, 5, fileWidth, fileHeight);
         PDF.save('angular-demo.pdf');
       });

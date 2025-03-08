@@ -1,4 +1,16 @@
-# Scorecard
+# Adventurous Scorecard
+
+Adventurous score card is a tool too allow users to check off tasks in order to show they have completed the task towards adventurous activities certification.
+
+THere are two basic users of this application.    A person doing tasks and an administrator who will verify the tasks are actually completed correctly.
+
+## General process
+
+The first screen will allow the user to sign onto the system.  Once signed on the user is able to select an activity that they are signing off.   Within each sign off there are groups of questions that can be checked off.  Once you have checked them off you can dump the questions onto a PDF to share with a verifier.
+
+When the verifier looks at the selected done activities they can approve things that they have seen the person doing.  THey can leave others unverified.
+
+## nx documention
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 

@@ -1,0 +1,56 @@
+
+mat-icon.open {
+  rotate: 90deg;
+}
+
+.up {
+  animation: spin-90 1s linear forwards;
+}
+
+@keyframes spin-90 {
+  from {
+      transform: rotate(0deg);
+  } to {
+      transform: rotate(-90deg);
+  }
+}
+
+
+.content {
+  max-height: auto;
+  overflow: hidden;
+  opacity: 1;
+  transition: max-height 0.5s ease, opacity 0.5s ease;
+}
+
+.content.open {
+  max-height: auto;
+  opacity: 1;
+}
+
+.content.close {
+  max-height: 0;
+  opacity: 0;
+}
+
+@keyframes open {
+  0% {
+      max-height: 0;
+      opacity: 0;
+  }
+  100% {
+      max-height: auto;
+      opacity: 1;
+  }
+}
+
+@keyframes close {
+  0% {
+      max-height: auto;
+      opacity: 1;
+  }
+  100% {
+      max-height: 0;
+      opacity: 0;
+  }
+}

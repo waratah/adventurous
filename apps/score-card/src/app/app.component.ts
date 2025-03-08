@@ -39,6 +39,7 @@ export class AppComponent {
 
   public goGroup(group: questionGroup) {
     this.questionsService.group = group.id;
+
     this.router.navigate([this.action, group.id]);
   }
 }

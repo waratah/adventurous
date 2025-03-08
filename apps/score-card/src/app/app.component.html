@@ -2,7 +2,7 @@
   <button mat-icon-button aria-label="menu" [matMenuTriggerFor]="menu">
     <mat-icon>menu</mat-icon>
   </button>
-  <span>Rock School</span>
+  <span>Rock School  @if( selectedGroup$| async; as group ) { - {{group.name }}}</span>
   <button mat-icon-button aria-label="Example icon-button with heart icon">
     <mat-icon>favorite</mat-icon>
   </button>

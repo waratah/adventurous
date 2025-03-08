@@ -1,17 +1,14 @@
 <div #result>
-  <div class="list titles">
+  <mat-toolbar class="list titles secondary">
     <span>Can statement</span>
     <span>Done</span>
     <span>@if( isVerify){ Verify }</span>
-  </div>
+  </mat-toolbar>
+
   @for (d of detail$ | async; track d.heading) {
-  <div class="group">
-    <h2 (click)="d.show = !d.show" [ngClass]="{ toggle: d.show }">
-      @if( d.heading) {
-      {{ d.heading }}
-      } @else { All }
-    </h2>
-    <div class="list" [ngClass]="{ hide: !d.show }">
+
+  <app-collapse [heading]="d.heading">
+    <div class="list">
       @for (d of d.details; track d.question.code) {
       <span>{{ d.question.text }}</span>
       <input
@@ -29,7 +26,7 @@
       <div></div>
       } }
     </div>
-  </div>
+  </app-collapse>
   }
 </div>
-<button (click)="print()">Print</button>
+<button class="mat-margin-20" mat-raised-button (click)="print()">Print</button>

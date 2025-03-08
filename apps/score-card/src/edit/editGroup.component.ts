@@ -1,24 +1,31 @@
 import {
-  DragDropModule,
   CdkDragDrop,
+  DragDropModule,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable } from 'rxjs';
 import { PageDisplay, question, questionGroup } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
+import { CollapseComponent } from '../utils/collapse/collapse.component';
 
 @Component({
   selector: 'app-edit-group',
   standalone: true,
-  imports: [CommonModule, DragDropModule],
+  imports: [CommonModule, DragDropModule,
+     MatToolbarModule, MatButtonModule, MatIconModule,
+    CollapseComponent],
   templateUrl: './editGroup.component.html',
   styleUrl: './editGroup.component.css',
 })
 export class EditGroupComponent {
-  private groupId: number = 0;
+  private groupId = 0;
+  public groupName = '';
 
   @Input()
   public set id(value: string) {
@@ -73,5 +80,7 @@ export class EditGroupComponent {
     }
   }
 
-  public addGroup() {}
+  public addGroup() {
+    this.questionsService.createGroup(this.groupName );
+  }
 }

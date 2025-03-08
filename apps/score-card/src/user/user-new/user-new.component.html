@@ -1,14 +1,95 @@
-<form class="example-form">
-  <mat-form-field class="example-full-width">
-    <mat-label>Email</mat-label>
-    <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher"
-           placeholder="Ex. pat@example.com">
-    <mat-hint>Errors appear instantly!</mat-hint>
-    @if (emailFormControl.hasError('email') && !emailFormControl.hasError('required')) {
-      <mat-error>Please enter a valid email address</mat-error>
-    }
-    @if (emailFormControl.hasError('required')) {
-      <mat-error>Email is <strong>required</strong></mat-error>
+<form #userForm=ngForm (ngSubmit)="createUser()">
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="nameFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. Bert Trainee"
+    />
+    <mat-hint>Your first name and last name!</mat-hint>
+    @if (nameFormControl.hasError('required')) {
+    <mat-error>Name is <strong>required</strong></mat-error>
     }
   </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Email</mat-label>
+    <input
+      type="email"
+      matInput
+      [formControl]="emailFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. pat@example.com"
+    />
+    <mat-hint>Errors appear instantly!</mat-hint>
+    @if (emailFormControl.hasError('required')) {
+    <mat-error>Email is <strong>required</strong></mat-error>
+    } @else { @if (emailFormControl.hasError('email')) {
+    <mat-error>Please enter a valid email address</mat-error>
+    }}
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Scout member number</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="memberFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. 1234"
+    />
+    <mat-hint>You can find this in operoo</mat-hint>
+    @if (memberFormControl.hasError('required')) {
+    <mat-error>Member number is <strong>required</strong></mat-error>
+    } @else { @if (memberFormControl.hasError('pattern')) {
+    <mat-error>Please enter a valid member number</mat-error>
+    }}
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Group</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="groupFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. Heathcote"
+    />
+    @if (groupFormControl.hasError('required')) {
+    <mat-error>Group is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Section</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="sectionFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. Venturers"
+    />
+    @if (sectionFormControl.hasError('required')) {
+    <mat-error>Section is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>State</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="stateFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. NSW"
+    />
+    @if (stateFormControl.hasError('required')) {
+    <mat-error>State is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+
+  <mat-card-actions>
+    <button mat-raised-button type="submit">Create</button>
+</mat-card-actions>
 </form>
