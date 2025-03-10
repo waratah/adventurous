@@ -24,7 +24,7 @@ interface detail {
 }
 
 interface detailPage {
-  heading: string;
+  heading?: string;
   details: detail[];
   show: boolean;
 }

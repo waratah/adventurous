@@ -493,6 +493,8 @@ export class QuestionsService {
     })
   );
 
+  private groupId: GroupId = 0;
+
   constructor(private store: Firestore) {
     this.currentGroupId.next(0);
     this.allQuestions.next(this.baseline);
@@ -502,6 +504,7 @@ export class QuestionsService {
   }
 
   set group(id: GroupId) {
+    this.groupId = id;
     this.currentGroupId.next(id);
     this.allQuestionGroups$.pipe(take(1)).subscribe((list) => {
       if (list) {
@@ -511,6 +514,9 @@ export class QuestionsService {
         }
       }
     });
+  }
+  get group(): GroupId {
+   return this.groupId;
   }
 
   private loadQuestions() {

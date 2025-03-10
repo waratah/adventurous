@@ -37,9 +37,15 @@ export class AppComponent {
     this.selectedGroup$ = questionsService.selectedGroup$;
   }
 
-  public goGroup(group: questionGroup) {
+  public gotoGroup(group: questionGroup) {
     this.questionsService.group = group.id;
-
     this.router.navigate([this.action, group.id]);
+  }
+
+  public changeAction(action: string) {
+    this.action = action;
+    if (this.questionsService.group) {
+      this.router.navigate([action, this.questionsService.group]);
+    }
   }
 }

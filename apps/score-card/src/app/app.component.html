@@ -13,14 +13,14 @@
 
 <mat-menu #menu="matMenu">
   @for ( group of groups$ | async; track group ) {
-    <button mat-menu-item (click)="goGroup(group)">
+    <button mat-menu-item (click)="gotoGroup(group)">
       <mat-icon>chevron_right</mat-icon>
       <span>{{group.name}}</span>
     </button>
 
   }
 
-  <mat-button-toggle-group [value]="action" (change)="action = $event.value" aria-label="Action">
+  <mat-button-toggle-group [value]="action" (change)="changeAction($event.value)" aria-label="Action">
     <mat-button-toggle value="view">View</mat-button-toggle>
     <mat-button-toggle value="verify">Verify</mat-button-toggle>
     <mat-button-toggle value="edit">Edit</mat-button-toggle>

@@ -2,12 +2,14 @@
   <mat-toolbar class="list titles secondary">
     <span>Can statement</span>
     <span>Done</span>
-    <span>@if( isVerify){ Verify }</span>
+    @if(isVerify) {
+    <span>Verify</span>
+    }
   </mat-toolbar>
 
   @for (d of detail$ | async; track d.heading) {
 
-  <app-collapse [heading]="d.heading">
+  <app-collapse [heading]="d.heading ?? 'All'">
     <div class="list">
       @for (d of d.details; track d.question.code) {
       <span>{{ d.question.text }}</span>

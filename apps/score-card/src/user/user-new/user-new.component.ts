@@ -47,9 +47,10 @@ export class UserNewComponent {
   stateFormControl = new FormControl('', [Validators.required]);
   groupFormControl = new FormControl('', [Validators.required]);
   sectionFormControl = new FormControl('', [Validators.required]);
+  phoneFormControl = new FormControl('', [Validators.required, Validators.pattern(/^(?:\+?(61))? ?(?:\((?=.*\)))?(0?[2-57-8])\)? ?(\d\d(?:[- ](?=\d{3})|(?!\d\d[- ]?\d[- ]))\d\d[- ]?\d[- ]?\d{3})$/)]);
   memberFormControl = new FormControl('', [
     Validators.required,
-    Validators.pattern('[1-9]+'),
+    Validators.pattern(/[1-9]+/),
   ]);
   emailFormControl = new FormControl('', [
     Validators.required,

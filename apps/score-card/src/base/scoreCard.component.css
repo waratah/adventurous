@@ -1,13 +1,7 @@
 .list {
-  border: 1px solid rgba(0, 105, 255, 0.45);
-  border-top: 0;
-  border-radius: 7px;
-  padding: 0.5rem 1rem;
-}
-
-.list {
+  margin: 0.2rem 0;
   display: grid;
-  grid-template-columns: 1fr 3em 4em;
+  grid-template-columns: 1fr 3rem 4rem;
   column-gap: 1em;
   row-gap: 1em;
   justify-content: center;
@@ -20,7 +14,6 @@
 .list.titles {
   span {
     color: var(--accent);
-    padding: 0.5rem 0;
     font-size: 1.5rem;
   }
 }

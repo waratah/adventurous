@@ -1,4 +1,4 @@
-<form #userForm=ngForm (ngSubmit)="createUser()">
+<form #userForm="ngForm" (ngSubmit)="createUser()">
   <mat-form-field>
     <mat-label>Name</mat-label>
     <input
@@ -89,7 +89,23 @@
     }
   </mat-form-field>
 
+  <mat-form-field>
+    <mat-label>Mobile</mat-label>
+    <input
+      type="tel"
+      matInput
+      [formControl]="phoneFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. 0412345678"
+    />
+    @if (phoneFormControl.hasError('required')) {
+    <mat-error>Phone is <strong>required</strong></mat-error>
+    }@else { @if (phoneFormControl.hasError('pattern')) {
+    <mat-error>Please enter a valid Australian phone number</mat-error>
+    }}
+  </mat-form-field>
+
   <mat-card-actions>
     <button mat-raised-button type="submit">Create</button>
-</mat-card-actions>
+  </mat-card-actions>
 </form>
