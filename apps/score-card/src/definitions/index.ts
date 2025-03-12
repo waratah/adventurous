@@ -1,5 +1,3 @@
-export { QuestionCode } from './QuestionCode';
-export { GroupId } from './GroupId';
 export { UserId } from './UserId';
 
 export { answer } from './answer';

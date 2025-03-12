@@ -6,7 +6,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { GroupId, questionGroup } from '../definitions';
+import { questionGroup } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
 
 @Component({
@@ -26,7 +26,7 @@ export class GroupsComponent {
   public groups$: Observable<questionGroup[]>;
   public selectedGroup$: Observable<questionGroup>;
 
-  public groupId: GroupId = 0;
+  public groupId?: string;
 
   public isEdit = false;
   public isVerify = false;

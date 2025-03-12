@@ -1,0 +1,31 @@
+<form #userForm="ngForm" (ngSubmit)="save()">
+  <mat-form-field>
+    <mat-label>Group Heading</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="headingFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Name Parts of canoe paddle"
+    />
+    <mat-hint>This is the main grouping heading for the users</mat-hint>
+    @if (headingFormControl.hasError('required')) {
+    <mat-error>Heading is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Level for this test</mat-label>
+    <input
+      type="url"
+      matInput
+      [formControl]="levelFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Trained or Safe - key for the PDF generation"
+    />
+  </mat-form-field>
+
+  <mat-card-actions>
+    <button mat-raised-button type="submit">Save</button>
+  </mat-card-actions>
+</form>

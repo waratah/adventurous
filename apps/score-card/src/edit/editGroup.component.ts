@@ -4,7 +4,6 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -13,27 +12,35 @@ import { Observable } from 'rxjs';
 import { PageDisplay, question, questionGroup } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
 import { CollapseComponent } from '../utils/collapse/collapse.component';
+import { QuestionDetailComponent } from './question-detail.component';
+import { GroupDetailComponent } from "./group-detail.component";
+import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-edit-group',
   standalone: true,
-  imports: [CommonModule, DragDropModule,
-     MatToolbarModule, MatButtonModule, MatIconModule,
-    CollapseComponent],
+  imports: [
+    DragDropModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule,
+    QuestionDetailComponent,
+    CollapseComponent,
+    GroupDetailComponent,
+    AsyncPipe,
+    NgClass,
+],
   templateUrl: './editGroup.component.html',
   styleUrl: './editGroup.component.css',
 })
 export class EditGroupComponent {
-  private groupId = 0;
   public groupName = '';
+
+  public current?: PageDisplay;
 
   @Input()
   public set id(value: string) {
-    this.groupId = Number(value);
-    this.questionsService.group = Number(value);
-  }
-  public get id(): string {
-    return this.groupId.toString();
+    this.questionsService.group = value;
   }
 
   public questions$: Observable<PageDisplay[]>;
@@ -51,7 +58,11 @@ export class EditGroupComponent {
       event.currentIndex
     );
 
-    this.questionsService.saveGroup(this.groupId, event.previousContainer.data);
+    this.questionsService.saveGroup(
+      this.questionsService.group,
+      this.groupName,
+      event.previousContainer.data
+    );
   }
 
   public dragMoved(event: any) {
@@ -81,6 +92,17 @@ export class EditGroupComponent {
   }
 
   public addGroup() {
-    this.questionsService.createGroup(this.groupName );
+    this.questionsService.createGroup(this.groupName);
+  }
+
+  editGroup( page: PageDisplay, index: number ) {
+    console.log('editing')
+    console.log({ page, index})
+    this.current = page;
+    page.edit = true;
+  }
+
+  public save() {
+    console.log('Saveing')
   }
 }

@@ -6,26 +6,38 @@
   [cdkDropListData]="q"
   (cdkDropListDropped)="dropHeading($event)"
 >
-  @for (d of questions$ | async; track d.heading) {
+  @for (d of questions$ | async; track d.heading; let idx = $index) {
   <div class="group" cdkDrag [cdkDragData]="d">
+    <button
+      mat-icon-button
+      aria-label="Export PDF"
+      (click)="editGroup( d, idx )"
+      [ngClass]="{ hide: d.edit }"
+    >
+      <mat-icon>edit</mat-icon>
+    </button>
+
+    <app-group-detail [(group)]="current" [ngClass]="{ hide: !d.edit }"></app-group-detail>
 
     <app-collapse [heading]="d.heading">
       <div
-      class="list"
-      [ngClass]="{ hide: !d.show }"
-      cdkDropList
-      [cdkDropListData]="d.questions"
-      (cdkDragMoved)="dragMoved($event)"
-      (cdkDropListDropped)="dropQuestion($event)"
-    >
-      @for (q of d.questions; track q.code) {
-      <div cdkDrag [cdkDragData]="q">{{ q.text }}</div>
-      }
-    </div>
+        class="list"
+        [ngClass]="{ hide: !d.show }"
+        cdkDropList
+        [cdkDropListData]="d.questions"
+        (cdkDragMoved)="dragMoved($event)"
+        (cdkDropListDropped)="dropQuestion($event)"
+      >
+        @for (q of d.questions; track q.code) {
+        <div cdkDrag [cdkDragData]="q">{{ q.text }}</div>
+        }
+      </div>
     </app-collapse>
   </div>
   }
 </div>
 }
 
-<button mat-raised-button (click)="addGroup()" ngClass="{ hide: newGroup }">Add</button>
+<app-question-detail></app-question-detail>
+
+<button mat-raised-button (click)="addGroup()">Add</button>

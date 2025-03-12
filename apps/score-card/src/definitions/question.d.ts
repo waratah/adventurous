@@ -1,7 +1,7 @@
-import { questionCode } from "./QuestionCode";
-
 export interface question {
-  code: questionCode;
+  code: string;
   text: string;
+  url?: string;
   attachmentRequired?: boolean;
+  type?: 'checkbox' | 'image' | 'textbox';
 }

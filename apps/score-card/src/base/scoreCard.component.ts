@@ -87,18 +87,18 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.sub = this.route.paramMap.subscribe(
-      (params) => (this.questionsService.group = Number(params.get('id')))
+      (params) => (this.questionsService.group = params.get('id'))
     );
   }
 
   ngOnDestroy() {
     this.sub?.unsubscribe();
   }
-  public updateDone(id: number, value: boolean) {
+  public updateDone(id: string, value: boolean) {
     this.answerService.updateAnswer(id, value);
   }
 
-  public updateVerify(id: number, value: boolean) {
+  public updateVerify(id: string, value: boolean) {
     this.answerService.updateVerify(id, value);
   }
 

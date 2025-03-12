@@ -1,0 +1,17 @@
+@if( user$| async ; as user) {
+
+<div class="table">
+  <div>Branch or State</div>
+  <div>{{ user.state }}</div>
+  <div>Members Name</div>
+  <div>{{ user.name }}</div>
+  <div>Membership Number</div>
+  <div>{{ user.scoutNumber }}</div>
+  <div>Unit e.g. Venturer, Rover, etc</div>
+  <div>{{ user.section }}</div>
+  <div>Phone / Mobile</div>
+  <div>{{ user.phone }}</div>
+  <div>Email address</div>
+  <div>{{ user.email }}</div>
+</div>
+}

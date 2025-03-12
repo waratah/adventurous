@@ -1,0 +1,55 @@
+
+.table {
+  display: grid;
+  grid-template-columns: 30ch 1fr;
+  justify-content: center;
+
+  .box {
+    border: 1px black solid;
+    border-bottom: none;
+  }
+  .box & :last-child {
+      border-bottom: 1px black solid;
+  }
+  .titles {
+    font-size: 1.5rem;
+    font-weight: bold;
+    justify-items: center;
+  }
+  .accent {
+    color: red;
+  }
+}
+
+
+.sign {
+  display: grid;
+  grid-template-columns: 30ch 1fr 1fr;
+  justify-content: center;
+
+  .title {
+    border: none;
+    font-weight: bold;
+    padding: 0.2rem;
+  }
+
+  >* {
+    border: 1px black solid;
+    padding: 1em;
+  }
+}
+.page {
+  width: min(100%, 21cm);
+  height: 29.7cm;
+  margin: 1cm;
+
+  ul {
+    list-style: disc;
+    margin-left: 2em;
+    max-width: 13cm;
+  }
+
+  .title {
+    font-weight: bold;
+  }
+}

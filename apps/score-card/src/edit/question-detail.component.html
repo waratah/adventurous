@@ -1,0 +1,53 @@
+<form #userForm="ngForm" (ngSubmit)="save()">
+  <mat-form-field>
+    <mat-label>Question Text</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="textFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="I can...,OR paddle image"
+    />
+    <mat-hint>Your first name and last name!</mat-hint>
+    @if (textFormControl.hasError('required')) {
+    <mat-error>Question text is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Url (if required)</mat-label>
+    <input
+      type="url"
+      matInput
+      [formControl]="urlFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. /public/canoue.png"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Attachment REquired</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="attachmentFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. true or false"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Group</mat-label>
+    <input
+      type="text"
+      matInput
+      [formControl]="typeFormControl"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. URL,  Textbox"
+    />
+  </mat-form-field>
+
+  <mat-card-actions>
+    <button mat-raised-button type="submit">Save</button>
+  </mat-card-actions>
+</form>

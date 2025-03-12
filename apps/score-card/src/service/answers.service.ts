@@ -22,7 +22,7 @@ export class AnswersService {
 
   private loadAnswers(id: string) {
     getDoc(doc(this.store, 'answers', id)).then((d) => {
-      const result  = d.data() as User | undefined;
+      const result = d.data() as User | undefined;
       if (result?.answers) {
         this.allAnswers.next(result.answers);
       } else {
@@ -42,7 +42,7 @@ export class AnswersService {
     return Number(this.myId);
   }
 
-  public updateAnswer(questionId: number, value: boolean) {
+  public updateAnswer(questionId: string, value: boolean) {
     this.answers$.pipe(take(1)).subscribe((list) => {
       const docRef = doc(this.store, 'answers', this.myId);
       let answer = list.find((x) => x.code === questionId);
@@ -60,11 +60,11 @@ export class AnswersService {
     });
   }
 
-  public updateVerify(questionId: number, value: boolean) {
+  public updateVerify(questionId: string, value: boolean) {
     this.answers$.pipe(take(1)).subscribe((list) => {
       const docRef = doc(this.store, 'answers', this.myId);
 
-      let answer = list.find((x) => x.code === questionId);
+      let answer = list.find((x) => x.code.localeCompare(questionId));
       if (!answer) {
         if (value) {
           answer = {

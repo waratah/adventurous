@@ -3,8 +3,8 @@
     <mat-icon>menu</mat-icon>
   </button>
   <span>Rock School  @if( selectedGroup$| async; as group ) { - {{group.name }}}</span>
-  <button mat-icon-button aria-label="Example icon-button with heart icon">
-    <mat-icon>favorite</mat-icon>
+  <button mat-icon-button aria-label="User settings screen" [routerLink]="['/user']" routerLinkActive="active-link">
+    <mat-icon>settings</mat-icon>
   </button>
   <button mat-icon-button aria-label="Export PDF" [matMenuTriggerFor]="print">
     <mat-icon>print</mat-icon>

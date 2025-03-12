@@ -73,6 +73,7 @@ export class UserNewComponent {
       id: 0,
       scoutNumber: this.memberFormControl.getRawValue() || '',
       section: this.sectionFormControl.getRawValue() || '',
+      phone: this.phoneFormControl.getRawValue() || '',
       verifyGroups: [],
     };
 

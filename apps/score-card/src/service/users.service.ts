@@ -35,6 +35,7 @@ export class UsersService {
       scoutNumber: '174424',
       section: 'Region',
       state: 'NSW',
+      phone: '0413059066',
       verifyGroups: [],
     },
     {
@@ -45,6 +46,7 @@ export class UsersService {
       scoutNumber: '1234',
       section: 'Venturer',
       state: 'NSW',
+      phone: '04123456789',
       verifyGroups: [],
     },
   ];
@@ -69,6 +71,7 @@ export class UsersService {
         if (!result.state) {
           result.state = 'NSW';
         }
+        result.scoutNumber = d.id;
         this.currentUser.next(result);
       } else {
         this.currentUser.next(undefined);
@@ -83,7 +86,7 @@ export class UsersService {
         d.forEach((q) => {
           const user = q.data() as User | undefined;
           if (user) {
-            user.id = Number(q.id);
+            user.scoutNumber = q.id;
             list.push(user as User);
           }
         });
@@ -93,16 +96,19 @@ export class UsersService {
   }
 
   public createUser(user: User) {
-    this.loadAllUsers();
-    this.allUsers.pipe(take(1)).subscribe((users) => {
-      const userId = Math.max(...users.map((x) => x.id)) + 1;
-      const docRef = doc(this.store, 'user', `${userId}`);
+    if (user.scoutNumber) {
+
+      const docRef = doc(this.store, 'user', user.scoutNumber);
       setDoc(docRef, user).catch((x) => console.error(x));
-    });
+      return true;
+    } else {
+      console.error('Scout NUmber was not defined in create user, aborting');
+      return false;
+    }
   }
 
   public saveUser(user: User) {
-    const docRef = doc(this.store, 'users', `${user.id}`);
+    const docRef = doc(this.store, 'users', `${user.scoutNumber}`);
     setDoc(docRef, user).catch((x) => console.error(x));
   }
 }

@@ -1,5 +1,5 @@
-import { GroupId } from "./GroupId";
-import { UserId } from "./UserId";
+import { GroupId } from './GroupId';
+import { UserId } from './UserId';
 import { answer } from './answer';
 
 interface User {
@@ -12,4 +12,5 @@ interface User {
   group: string;
   email: string;
   answers?: answer[];
+  phone: string;
 }

@@ -12,7 +12,7 @@ export const appRoutes: Route[] = [
       import('../user/user-new/user-new.component').then((m) => m.UserNewComponent),
   },
   {
-    path: 'user/settings',
+    path: 'user',
     loadComponent: () =>
       import('../user/user-settings/user-settings.component').then((m) => m.UserSettingsComponent),
   },
@@ -20,6 +20,21 @@ export const appRoutes: Route[] = [
     path: 'user/:id',
     loadComponent: () =>
       import('../user/user-detail/user-detail.component').then((m) => m.UserDetailComponent),
+  },
+  {
+    path: 'pdf/user',
+    loadComponent: () =>
+      import('../PDF/pdf-user.component').then((m) => m.PdfUserComponent),
+  },
+  {
+    path: 'pdf/water-safe',
+    loadComponent: () =>
+      import('../PDF/pdf-water-safe.component').then((m) => m.PdfWaterSafeComponent),
+  },
+  {
+    path: 'pdf/vertical-safe',
+    loadComponent: () =>
+      import('../PDF/pdf-abseil-safe.component').then((m) => m.PdfAbseilSafeComponent),
   },
   {
     path: ':action/:id',
