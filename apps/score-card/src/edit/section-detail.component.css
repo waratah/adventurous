@@ -11,5 +11,6 @@ form {
     color: var(--mat-sys-on-primary);
     border-color: var(--mat-sys-inverse-primary);
     padding: 0.5em 2em;
+    margin: 0.5rem;
   }
 }

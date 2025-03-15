@@ -14,6 +14,7 @@
     }
   </mat-form-field>
 
+  @if( controlType() === 'url'){
   <mat-form-field>
     <mat-label>Url (if required)</mat-label>
     <input
@@ -21,31 +22,47 @@
       matInput
       [formControl]="urlFormControl"
       [errorStateMatcher]="matcher"
-      placeholder="Ex. /public/canoue.png"
+      placeholder="Ex. /public/canoe.png"
     />
   </mat-form-field>
-
+  } @if( controlType() === 'img'){
   <mat-form-field>
-    <mat-label>Attachment REquired</mat-label>
+    <mat-label>image</mat-label>
     <input
-      type="text"
+      type="img"
       matInput
-      [formControl]="attachmentFormControl"
+      [formControl]="imgFormControl"
       [errorStateMatcher]="matcher"
-      placeholder="Ex. true or false"
+      placeholder="Ex. /public/canoe.png"
     />
   </mat-form-field>
+  }
 
-  <mat-form-field>
-    <mat-label>Group</mat-label>
-    <input
-      type="text"
-      matInput
-      [formControl]="typeFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. URL,  Textbox"
-    />
-  </mat-form-field>
+  <div class=card>
+    <mat-checkbox
+      [checked]="attachmentRequired"
+      (change)="attachmentRequired = $event.checked"
+      >Attachment Required</mat-checkbox
+    >
+  </div>
+  <div class="hint">
+      Are you required to provide physical proof? For example certificate or a
+      photo
+    </div>
+
+  <p >
+    Type?
+    <mat-button-toggle-group
+      [value]="controlType()"
+      (change)="controlType.set($event.value)"
+      aria-label="Action"
+    >
+      <mat-button-toggle value="">Checkbox</mat-button-toggle>
+      <mat-button-toggle value="url">Url</mat-button-toggle>
+      <mat-button-toggle value="img">Image</mat-button-toggle>
+      <mat-button-toggle value="textbox">TextBox</mat-button-toggle>
+    </mat-button-toggle-group>
+  </p>
 
   <mat-card-actions>
     <button mat-raised-button type="submit">Save</button>

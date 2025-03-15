@@ -11,13 +11,16 @@
     <button
       mat-icon-button
       aria-label="Export PDF"
-      (click)="editGroup( d, idx )"
+      (click)="editSection(d, idx)"
       [ngClass]="{ hide: d.edit }"
     >
       <mat-icon>edit</mat-icon>
     </button>
 
-    <app-group-detail [(group)]="current" [ngClass]="{ hide: !d.edit }"></app-group-detail>
+    <app-section-detail
+      [(section)]="selectedSection"
+      [ngClass]="{ hide: !d.edit }"
+    ></app-section-detail>
 
     <app-collapse [heading]="d.heading">
       <div
@@ -36,8 +39,31 @@
   </div>
   }
 </div>
+} @if( !isAddSection()) {
+
+  <mat-toolbar>
+    <h2>Create a new question</h2>
+  </mat-toolbar>
+
+  <form>
+  <mat-form-field>
+    <mat-label>Section to add question</mat-label>
+    <mat-select [(value)]="selectedSection">
+      @for (q of questions$ | async; track q.heading; let idx = $index) {
+      <mat-option [value]="q">{{ q.heading }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <app-question-detail [(question)]="newQuestion"></app-question-detail>
+</form>
+} @if( !isAddSection()) {
+<button mat-raised-button (click)="showAdd()">Add a new section</button>
+} @if( isAddSection()) {
+<form>
+  <mat-toolbar>
+    <h2>Add a new section</h2>
+  </mat-toolbar>
+  <app-section-detail [(section)]="selectedSection" > </app-section-detail>
+</form>
 }
-
-<app-question-detail></app-question-detail>
-
-<button mat-raised-button (click)="addGroup()">Add</button>

@@ -1,20 +1,25 @@
-import { Component, model, effect } from '@angular/core';
+import { Component, effect, model } from '@angular/core';
 import {
   FormControl,
-  Validators,
   FormsModule,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { question } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
 import { MyErrorStateMatcher } from '../user/user-new/user-new.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+
 @Component({
   selector: 'app-question-detail',
   imports: [
     FormsModule,
+    MatButtonToggleModule,
+    MatCheckboxModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -25,15 +30,17 @@ import { MyErrorStateMatcher } from '../user/user-new/user-new.component';
 })
 export class QuestionDetailComponent {
   question = model<question>();
+  controlType = model('');
+  attachmentRequired = false;
 
   textFormControl = new FormControl('', [Validators.required]);
+  imgFormControl = new FormControl('', [Validators.required]);
   urlFormControl = new FormControl('', [
+    Validators.required,
     Validators.pattern(
       /\b((?:[a-z][\w-]+:(?:\/{1,3}|[a-z0-9%])|www\d{0,3}[.]|[a-z0-9.-]+[.][a-z]{2,4}\/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()[\]{};:'".,<>?«»“”‘’]))/i
     ),
   ]);
-  typeFormControl = new FormControl('', []);
-  attachmentFormControl = new FormControl('', []);
 
   matcher = new MyErrorStateMatcher();
 
@@ -43,12 +50,14 @@ export class QuestionDetailComponent {
       if (q) {
         this.textFormControl.setValue(q.text);
         this.urlFormControl.setValue(q.url || ' ');
-        this.typeFormControl.setValue(q.type || '');
-        this.attachmentFormControl.setValue(
-          (!!q.attachmentRequired).toString()
-        );
+        this.controlType.set(q.type || '');
+        this.attachmentRequired = q.attachmentRequired || false;
       }
     });
+  }
+
+  setControlType(value: string) {
+    this.controlType.set(value);
   }
 
   save() {
@@ -58,8 +67,9 @@ export class QuestionDetailComponent {
       code: u?.code || '',
       text: this.textFormControl.getRawValue() || '',
       url: this.urlFormControl.getRawValue() || undefined,
-      attachmentRequired: (this.attachmentFormControl.getRawValue() || undefined )=== 'true',
-      type: this.typeFormControl.getRawValue() || undefined,
+      img: this.imgFormControl.getRawValue() || undefined,
+      attachmentRequired: this.attachmentRequired,
+      type: this.controlType(),
     };
 
     this.questionService.updateQuestion(result);

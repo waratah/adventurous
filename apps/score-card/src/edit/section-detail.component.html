@@ -1,6 +1,6 @@
 <form #userForm="ngForm" (ngSubmit)="save()">
   <mat-form-field>
-    <mat-label>Group Heading</mat-label>
+    <mat-label>Section heading</mat-label>
     <input
       type="text"
       matInput
@@ -14,16 +14,18 @@
     }
   </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Level for this test</mat-label>
-    <input
-      type="url"
-      matInput
-      [formControl]="levelFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Trained or Safe - key for the PDF generation"
-    />
-  </mat-form-field>
+  <p>
+    PDF?
+    <mat-button-toggle-group
+      [value]="level()"
+      (change)="level.set($event.value)"
+      aria-label="safe, Trained or unknown"
+    >
+      <mat-button-toggle value="safe">Safe Participant</mat-button-toggle>
+      <mat-button-toggle value="trained">Trained Participant</mat-button-toggle>
+      <mat-button-toggle value="">No PDF yet</mat-button-toggle>
+    </mat-button-toggle-group>
+  </p>
 
   <mat-card-actions>
     <button mat-raised-button type="submit">Save</button>

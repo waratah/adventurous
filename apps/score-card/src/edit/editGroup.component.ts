@@ -4,17 +4,20 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Component, Input } from '@angular/core';
+import { AsyncPipe, NgClass } from '@angular/common';
+import { Component, Input, model } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Observable } from 'rxjs';
 import { PageDisplay, question, questionGroup } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
 import { CollapseComponent } from '../utils/collapse/collapse.component';
+import { SectionDetailComponent } from './section-detail.component';
 import { QuestionDetailComponent } from './question-detail.component';
-import { GroupDetailComponent } from "./group-detail.component";
-import { AsyncPipe, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-edit-group',
@@ -22,21 +25,25 @@ import { AsyncPipe, NgClass } from '@angular/common';
   imports: [
     DragDropModule,
     MatToolbarModule,
+    MatFormFieldModule,
     MatButtonModule,
+    MatSelectModule,
     MatIconModule,
     QuestionDetailComponent,
     CollapseComponent,
-    GroupDetailComponent,
+    SectionDetailComponent,
     AsyncPipe,
     NgClass,
-],
+    FormsModule,
+  ],
   templateUrl: './editGroup.component.html',
   styleUrl: './editGroup.component.css',
 })
 export class EditGroupComponent {
-  public groupName = '';
+  public groupName = model<string>('');
+  public isAddSection = model(false);
 
-  public current?: PageDisplay;
+  public selectedSection = model<PageDisplay>();
 
   @Input()
   public set id(value: string) {
@@ -46,9 +53,21 @@ export class EditGroupComponent {
   public questions$: Observable<PageDisplay[]>;
   public groups$: Observable<questionGroup[]>;
 
+  public newQuestion = model<question>();
+
   constructor(private questionsService: QuestionsService) {
     this.questions$ = questionsService.questions$;
     this.groups$ = questionsService.allQuestionGroups$;
+
+    this.selectedSection.subscribe((value) => {
+      if (value?.edit) {
+        console.log({ value });
+        console.log('Edit');
+      } else {
+        console.log({ value });
+        console.log('Save');
+      }
+    });
   }
 
   public dropHeading(event: CdkDragDrop<PageDisplay[]>) {
@@ -60,7 +79,7 @@ export class EditGroupComponent {
 
     this.questionsService.saveGroup(
       this.questionsService.group,
-      this.groupName,
+      this.groupName(),
       event.previousContainer.data
     );
   }
@@ -92,17 +111,29 @@ export class EditGroupComponent {
   }
 
   public addGroup() {
-    this.questionsService.createGroup(this.groupName);
+    this.questionsService.createGroup(this.groupName());
   }
 
-  editGroup( page: PageDisplay, index: number ) {
-    console.log('editing')
-    console.log({ page, index})
-    this.current = page;
+  editSection(page: PageDisplay, index: number) {
+    console.log({ page, index });
     page.edit = true;
+    this.selectedSection.set(page);
   }
-
+/*
   public save() {
-    console.log('Saveing')
+    console.log('Saving');
+    this.isAddGroup.set(false);
+  }
+*/
+
+  public showAdd() {
+    this.selectedSection.set({
+      heading: '',
+      level: '',
+      questions: [],
+    });
+    this.isAddSection.set(true);
+
+    setTimeout(() => window.scrollTo(0, document.body.scrollHeight), 500);
   }
 }
