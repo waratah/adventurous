@@ -1,28 +1,27 @@
-@if( questions$ | async; as q ) {
+@if( questions$ | async; as sections ) {
 
 <div
   cdkDropListGroup
   cdkDropList
-  [cdkDropListData]="q"
+  [cdkDropListData]="sections"
   (cdkDropListDropped)="dropHeading($event)"
 >
-  @for (d of questions$ | async; track d.heading; let idx = $index) {
+  @for (d of sections; track d.heading; let idx = $index) {
   <div class="group" cdkDrag [cdkDragData]="d">
-    <button
-      mat-icon-button
-      aria-label="Export PDF"
-      (click)="editSection(d, idx)"
-      [ngClass]="{ hide: d.edit }"
-    >
-      <mat-icon>edit</mat-icon>
-    </button>
-
-    <app-section-detail
-      [(section)]="selectedSection"
-      [ngClass]="{ hide: !d.edit }"
-    ></app-section-detail>
-
     <app-collapse [heading]="d.heading">
+      <header>
+        <button
+          mat-icon-button
+          aria-label="Export PDF"
+          (click)="editSection(d, idx, sections)"
+          [ngClass]="{ hide: d.edit }"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+      </header>
+      @if( d.edit) {
+      <app-section-detail [(section)]="selectedSection"></app-section-detail>
+      }
       <div
         class="list"
         [ngClass]="{ hide: !d.show }"
@@ -39,13 +38,13 @@
   </div>
   }
 </div>
-} @if( !isAddSection()) {
+@if( !isAddSection()) {
 
-  <mat-toolbar>
-    <h2>Create a new question</h2>
-  </mat-toolbar>
+<mat-toolbar>
+  <h2>Create a new question</h2>
+</mat-toolbar>
 
-  <form>
+<form>
   <mat-form-field>
     <mat-label>Section to add question</mat-label>
     <mat-select [(value)]="selectedSection">
@@ -58,12 +57,12 @@
   <app-question-detail [(question)]="newQuestion"></app-question-detail>
 </form>
 } @if( !isAddSection()) {
-<button mat-raised-button (click)="showAdd()">Add a new section</button>
+<button mat-raised-button (click)="showAdd(sections)">Add a new section</button>
 } @if( isAddSection()) {
 <form>
   <mat-toolbar>
     <h2>Add a new section</h2>
   </mat-toolbar>
-  <app-section-detail [(section)]="selectedSection" > </app-section-detail>
+  <app-section-detail [(section)]="selectedSection"> </app-section-detail>
 </form>
-}
+} }

@@ -1,16 +1,18 @@
-import { Component, model } from '@angular/core';
+import { Component, effect, model, signal } from '@angular/core';
 import {
   FormControl,
+  FormGroup,
   FormsModule,
+  NgForm,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageDisplay } from '../definitions';
 import { MyErrorStateMatcher } from '../user/user-new/user-new.component';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-section-detail',
@@ -29,48 +31,59 @@ export class SectionDetailComponent {
   /** Section to be edited or a new section to be populated */
   section = model<PageDisplay>();
 
-  level = model('');
+  level = '';
 
-  headingFormControl = new FormControl('', [Validators.required]);
+  sectionForm: FormGroup;
+
+  private headingFormControl = new FormControl('', [Validators.required]);
 
   matcher = new MyErrorStateMatcher();
 
   constructor() {
-    this.section.subscribe((q) => {
+    effect(() => {
+      const q = this.section();
       if (!q) {
         this.headingFormControl.setValue('');
-        this.level.set('');
+        this.level = '';
         return;
       }
-      this.level.set(q.level || '');
-      if (!this.level() && q.heading) {
+      this.level = q.level || '';
+      if (!this.level && q.heading) {
         const heading = q.heading.toLocaleLowerCase();
 
         // convert headings to levels it they match
         ['safe', 'trained'].forEach((l) => {
           if (!heading.localeCompare(l)) {
-            this.level.set(l);
+            this.level = l;
           }
         });
       }
       this.headingFormControl.setValue(q?.heading || '');
     });
+
+    this.sectionForm = new FormGroup({
+      heading: this.headingFormControl,
+    });
   }
 
   save() {
+    if (this.sectionForm.invalid) {
+      return;
+    }
+
     const u = this.section();
 
     if (u) {
       const result = <PageDisplay>{
         ...u,
-        level: this.level() || '',
+        level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
       };
       delete result.edit;
       this.section.set(result);
     } else {
       const result = <PageDisplay>{
-        level: this.level() || '',
+        level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
         questions: [],
       };

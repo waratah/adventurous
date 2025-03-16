@@ -1,15 +1,15 @@
-<form #userForm="ngForm" (ngSubmit)="save()">
+<form [formGroup]="sectionForm"  (ngSubmit)="save()">
   <mat-form-field>
     <mat-label>Section heading</mat-label>
     <input
       type="text"
       matInput
-      [formControl]="headingFormControl"
+      formControlName="heading"
       [errorStateMatcher]="matcher"
       placeholder="Name Parts of canoe paddle"
     />
     <mat-hint>This is the main grouping heading for the users</mat-hint>
-    @if (headingFormControl.hasError('required')) {
+    @if (sectionForm.controls['heading'].hasError('required')) {
     <mat-error>Heading is <strong>required</strong></mat-error>
     }
   </mat-form-field>
@@ -17,8 +17,8 @@
   <p>
     PDF?
     <mat-button-toggle-group
-      [value]="level()"
-      (change)="level.set($event.value)"
+      [value]="level"
+      (change)="level = $event.value"
       aria-label="safe, Trained or unknown"
     >
       <mat-button-toggle value="safe">Safe Participant</mat-button-toggle>
