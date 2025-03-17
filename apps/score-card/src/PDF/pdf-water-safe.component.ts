@@ -35,7 +35,6 @@ export class PdfWaterSafeComponent implements OnDestroy {
       format: 'a4',
     });
 
-    //. console.log(doc.getFontList());
 
     const title = 'Paddling Flat Water - Safe Participant';
 
@@ -45,11 +44,10 @@ export class PdfWaterSafeComponent implements OnDestroy {
 
     y = this.createUserBox(doc, y);
 
-    y = this.verifiers(doc, y);
+     this.verifiers(doc, y);
 
     doc.addPage('a4', 'portrait');
 
-    console.log(y);
 
     doc.save('water-safe-workbook.pdf');
   }

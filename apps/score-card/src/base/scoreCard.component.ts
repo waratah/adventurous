@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
+  effect,
   ElementRef,
-  Input,
+  input,
   OnDestroy,
   OnInit,
   ViewChild,
@@ -17,6 +18,7 @@ import { answer, PageDisplay, question, questionGroup } from '../definitions';
 import { AnswersService } from '../service/answers.service';
 import { QuestionsService } from '../service/questions.service';
 import { CollapseComponent } from '../utils/collapse/collapse.component';
+import { UsersService } from '../service/users.service';
 
 interface detail {
   answer: answer;
@@ -41,10 +43,9 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
 
   public isVerify = false;
 
-  @Input()
-  public set action(value: string) {
-    this.isVerify = value == 'verify';
-  }
+  public action = input<string>();
+  public id = input<string>();
+
 
   public questions$: Observable<PageDisplay[]>;
   public groups$: Observable<questionGroup[]>;
@@ -54,9 +55,14 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
 
   constructor(
     public answerService: AnswersService,
+    public usersService: UsersService,
     private route: ActivatedRoute,
     private questionsService: QuestionsService
   ) {
+    effect(() => (this.isVerify = this.action() == 'verify'));
+    effect(() => (this.questionsService.group = this.id()));
+    this.answerService.userId = this.usersService.userId;
+
     this.questions$ = questionsService.questions$;
     this.groups$ = questionsService.allQuestionGroups$;
     this.detail$ = combineLatest([

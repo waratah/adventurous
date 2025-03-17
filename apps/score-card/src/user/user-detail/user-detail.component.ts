@@ -51,7 +51,6 @@ export class UserDetailComponent {
   matcher = new MyErrorStateMatcher();
 
   constructor(public userService: UsersService, private router: Router) {
-    userService.loadAllUsers();
     this.stateFormControl.setValue('NSW');
 
     effect(() => {

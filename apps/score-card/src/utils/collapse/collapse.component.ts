@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -11,8 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './collapse.component.css',
 })
 export class CollapseComponent {
-  @Input()
-  public heading?: string;
+  public heading = input<string>();
 
   public show = true;
 }

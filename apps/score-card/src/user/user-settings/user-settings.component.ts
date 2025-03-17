@@ -12,6 +12,5 @@ import { UsersService } from '../../service/users.service';
 })
 export class UserSettingsComponent {
   constructor(public userService: UsersService) {
-    // this.userService.currentUser$.subscribe(x=> console.log({x}))
   }
 }

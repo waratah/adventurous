@@ -1,54 +1,61 @@
-import { Component, effect, model } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import {
   FormControl,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageDisplay } from '../definitions';
 import { MyErrorStateMatcher } from '../user/user-new/user-new.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-section-detail',
+  selector: 'app-dialog-section',
   imports: [
-    FormsModule,
     MatButtonToggleModule,
+    MatButtonModule,
     MatCardModule,
+    MatDialogModule,
+
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './section-detail.component.html',
-  styleUrl: './section-detail.component.css',
+  templateUrl: './dialog-section.component.html',
+  styleUrl: './dialog-section.component.css',
 })
-export class SectionDetailComponent {
+export class DialogSectionComponent {
   /** Section to be edited or a new section to be populated */
-  section = model<PageDisplay>();
+  section?: PageDisplay;
 
   level = '';
-
   sectionForm: FormGroup;
 
   private headingFormControl = new FormControl('', [Validators.required]);
 
   matcher = new MyErrorStateMatcher();
 
-  constructor() {
-    effect(() => {
-      const q = this.section();
-      if (!q) {
-        this.headingFormControl.setValue('');
-        this.level = '';
-        return;
-      }
-      this.level = q.level || '';
-      if (!this.level && q.heading) {
-        const heading = q.heading.toLocaleLowerCase();
+  constructor(
+    @Inject(MAT_DIALOG_DATA) data: { section: PageDisplay },
+    private dialogRef: MatDialogRef<DialogSectionComponent>
+  ) {
+    this.section = data.section;
+    if (!this.section) {
+      this.headingFormControl.setValue('');
+      this.level = '';
+    } else {
+      this.level = this.section.level || '';
+      if (!this.level && this.section.heading) {
+        const heading = this.section.heading.toLocaleLowerCase();
 
         // convert headings to levels it they match
         ['safe', 'trained'].forEach((l) => {
@@ -57,9 +64,8 @@ export class SectionDetailComponent {
           }
         });
       }
-      this.headingFormControl.setValue(q?.heading || '');
-    });
-
+      this.headingFormControl.setValue(this.section?.heading || '');
+    }
     this.sectionForm = new FormGroup({
       heading: this.headingFormControl,
     });
@@ -70,23 +76,20 @@ export class SectionDetailComponent {
       return;
     }
 
-    const u = this.section();
-
-    if (u) {
-      const result = <PageDisplay>{
-        ...u,
+    let result: PageDisplay | undefined = undefined;
+    if (this.section) {
+      result = <PageDisplay>{
+        ...this.section,
         level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
       };
-      this.section.set(result);
     } else {
-      const result = <PageDisplay>{
+      result = <PageDisplay>{
         level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
         questions: [],
       };
-      this.section.set(result);
-      console.log(this.section());
     }
+    this.dialogRef.close(result);
   }
 }

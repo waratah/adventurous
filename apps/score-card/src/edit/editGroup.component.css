@@ -1,8 +1,8 @@
 .list {
-  align-items: centre;
-  * {
-    padding: 0.5em;
-  }
+  margin-top: 0.5em;
+  display: grid;
+  row-gap: 0.5em;
+  align-content: center;
 }
 
 .hide {
@@ -23,4 +23,10 @@ form {
     padding: 0.5em 2em;
     margin: 0.5rem;
   }
+}
+
+.question-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
 }

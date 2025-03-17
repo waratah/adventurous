@@ -9,6 +9,7 @@ import {
   CollectionReference,
   DocumentData,
   addDoc,
+  getDoc,
 } from '@angular/fire/firestore';
 import { PageDisplay, question, questionGroup } from '../definitions';
 import { combineLatest, map, Observable, ReplaySubject, take } from 'rxjs';
@@ -53,19 +54,30 @@ export class QuestionsService {
       map(([questions, groups, groupId]) => {
         const list: PageDisplay[] = [];
         if (!groupId) {
-          list.push({ heading: 'All questions', level: 'None', questions, show: true });
+          list.push({
+            heading: 'All questions',
+            level: 'None',
+            questions,
+            show: true,
+          });
           return list;
         }
         const questionLink = groups.find((x) => x.id === groupId);
         if (!questionLink) {
-          list.push({ heading: 'newGroup', level: 'None', questions, show: true });
+          list.push({
+            heading: 'newGroup',
+            level: 'None',
+            questions,
+            show: true,
+          });
           return list;
         }
         return questionLink.pages.map(
           (p) =>
             <PageDisplay>{
               show: true,
-              heading: p.level,
+              heading: p.heading,
+              level: p.level,
               questions: questions.filter((x) =>
                 p.questions.some((l) => l === x.code)
               ),
@@ -115,7 +127,6 @@ export class QuestionsService {
         }
       });
 
-      console.log({ objToUpload, modelObject });
       return objToUpload;
     },
     fromFirestore(snapshot, options) {
@@ -159,29 +170,52 @@ export class QuestionsService {
   }
 
   public createGroup(name: string) {
-    this.saveGroup('', name, []);
+    this.saveGroup('', [], name);
   }
 
-  public async saveGroup(groupId: string, name: string, pages: PageDisplay[]) {
-    const group: questionGroup = {
-      id: groupId,
-      name: name || 'New Name',
-      pages: pages.map((x) => ({
-        level: x.heading,
-        questions: x.questions.map((q) => q.code),
-      })),
-    };
+  public async saveGroup(
+    groupId: string,
+    sections: PageDisplay[],
+    name?: string
+  ) {
+    try {
+      if (groupId) {
+        const docRef = doc(this.groupCollection, groupId);
+        const group = (await getDoc(docRef)).data();
+        if (group) {
+          if (name) {
+            group.name = name;
+          }
 
-    if (group.id) {
-      const docRef = doc(this.groupCollection, groupId);
-      await setDoc(docRef, group).catch((x) => console.error(x));
-      return group;
-    } else {
-      const ref = await addDoc(this.groupCollection, group).catch((x) =>
-        console.error(x)
-      );
+          group.pages = sections.map((x) => ({
+            heading: x.heading,
+            level: x.level,
+            questions: x.questions.map((q) => q.code),
+          }));
+
+          console.log({group});
+
+          await setDoc(docRef, group);
+
+          return group;
+        }
+      }
+
+      const group: questionGroup = {
+        id: groupId,
+        name: name || 'Unknown',
+        pages: sections.map((x) => ({
+          heading: x.heading,
+          level: x.level,
+          questions: x.questions.map((q) => q.code),
+        })),
+      };
+      const ref = await addDoc(this.groupCollection, group);
       group.id = ref?.id || '';
       return group;
+    } catch (error) {
+      console.error(error);
+      return null;
     }
   }
 }

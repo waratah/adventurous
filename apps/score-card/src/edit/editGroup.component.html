@@ -14,14 +14,18 @@
           mat-icon-button
           aria-label="Export PDF"
           (click)="editSection(d, idx, sections)"
-          [ngClass]="{ hide: d.edit }"
         >
           <mat-icon>edit</mat-icon>
         </button>
+        <button
+          mat-icon-button
+          aria-label="Add a question"
+          (click)="addQuestion(d)"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
       </header>
-      @if( d.edit) {
-      <app-section-detail [(section)]="selectedSection"></app-section-detail>
-      }
+
       <div
         class="list"
         [ngClass]="{ hide: !d.show }"
@@ -31,38 +35,23 @@
         (cdkDropListDropped)="dropQuestion($event)"
       >
         @for (q of d.questions; track q.code) {
-        <div cdkDrag [cdkDragData]="q">{{ q.text }}</div>
+        <div cdkDrag [cdkDragData]="q" class="question-item">
+          <button
+            mat-icon-button
+            aria-label="Edit question"
+            (click)="editQuestion(q)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <span>{{ q.text }}</span>
+        </div>
         }
       </div>
     </app-collapse>
   </div>
   }
 </div>
-@if( !isAddSection()) {
-
-<mat-toolbar>
-  <h2>Create a new question</h2>
-</mat-toolbar>
-
-<form>
-  <mat-form-field>
-    <mat-label>Section to add question</mat-label>
-    <mat-select [(value)]="selectedSection">
-      @for (q of questions$ | async; track q.heading; let idx = $index) {
-      <mat-option [value]="q">{{ q.heading }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <app-question-detail [(question)]="newQuestion"></app-question-detail>
-</form>
-} @if( !isAddSection()) {
-<button mat-raised-button (click)="showAdd(sections)">Add a new section</button>
-} @if( isAddSection()) {
-<form>
-  <mat-toolbar>
-    <h2>Add a new section</h2>
-  </mat-toolbar>
-  <app-section-detail [(section)]="selectedSection"> </app-section-detail>
-</form>
-} }
+<button mat-raised-button (click)="addSection(sections)">
+  Add a new section
+</button>
+}

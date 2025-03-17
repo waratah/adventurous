@@ -5,6 +5,7 @@ export interface question {
   text: string;
   url?: string;
   img?: string;
+  placeholder?: string;
   attachmentRequired?: boolean;
   type?: QueryConstraintType;
 }

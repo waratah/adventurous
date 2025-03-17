@@ -6,8 +6,8 @@
       (click)="show = !show"
       [ngClass]="{ toggle: show }"
     >
-      @if( heading) {
-      {{ heading }}
+      @if( heading()) {
+      {{ heading() }}
       } @else { -- empty -- }
     </button>
     <ng-content select="header"> </ng-content>

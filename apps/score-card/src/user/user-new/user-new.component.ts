@@ -60,7 +60,6 @@ export class UserNewComponent {
   matcher = new MyErrorStateMatcher();
 
   constructor(public userService: UsersService, private router: Router) {
-    userService.loadAllUsers();
     this.stateFormControl.setValue('NSW');
   }
 
@@ -70,15 +69,13 @@ export class UserNewComponent {
       group: this.groupFormControl.getRawValue() || '',
       name: this.nameFormControl.getRawValue() || '',
       state: this.stateFormControl.getRawValue() || '',
-      id: 0,
       scoutNumber: this.memberFormControl.getRawValue() || '',
       section: this.sectionFormControl.getRawValue() || '',
       phone: this.phoneFormControl.getRawValue() || '',
       verifyGroups: [],
     };
 
-    console.log(user);
 
-    this.userService.createUser(user);
+    this.userService.saveUser(user);
   }
 }
