@@ -25,6 +25,11 @@ form {
   }
 }
 
+h4 {
+  margin-left: 2rem;
+  font-weight: bold;
+}
+
 .question-item {
   display: grid;
   grid-template-columns: auto 1fr;
@@ -33,10 +38,9 @@ form {
     display: grid;
     grid-template-columns: auto 1fr auto auto;
     align-items: center;
-      align-items: center;
-      .mat-icon {
-        color: var(--mat-sys-primary);
-
-      }
+    align-items: center;
+    .mat-icon {
+      color: var(--mat-sys-primary);
+    }
   }
 }

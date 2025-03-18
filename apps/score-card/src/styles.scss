@@ -204,7 +204,6 @@ p:has(.mat-button-toggle-group) {
   }
 }
 
-
 .mat-mdc-checkbox {
   margin: 0.5rem 0;
 }
@@ -213,4 +212,8 @@ p:has(.mat-button-toggle-group) {
   font-size: 12px;
   line-height: 16px;
   padding: 4px 16px;
+}
+
+.full-width {
+  width: 100%;
 }

@@ -47,16 +47,6 @@ export class SectionDetailComponent {
         return;
       }
       this.level = q.level || '';
-      if (!this.level && q.heading) {
-        const heading = q.heading.toLocaleLowerCase();
-
-        // convert headings to levels it they match
-        ['safe', 'trained'].forEach((l) => {
-          if (!heading.localeCompare(l)) {
-            this.level = l;
-          }
-        });
-      }
       this.headingFormControl.setValue(q?.heading || '');
     });
 

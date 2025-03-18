@@ -15,7 +15,7 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { question, questionType } from '../definitions';
+import { Question, QuestionType } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
 import { MyErrorStateMatcher } from '../user/user-new/user-new.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -36,8 +36,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
   styleUrl: './dialog-question.component.css',
 })
 export class DialogQuestionComponent {
-  question = model<question>();
-  controlType = model<questionType>();
+  question = model<Question>();
+  controlType = model<QuestionType>();
   attachmentRequired = false;
 
   // Form declarations
@@ -54,7 +54,7 @@ export class DialogQuestionComponent {
   matcher = new MyErrorStateMatcher();
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) private data: { question: question },
+    @Inject(MAT_DIALOG_DATA) private data: { question: Question },
     private dialogRef: MatDialogRef<DialogQuestionComponent>,
     private questionService: QuestionsService
   ) {
@@ -106,7 +106,7 @@ export class DialogQuestionComponent {
     });
   }
 
-  setControlType(value: questionType) {
+  setControlType(value: QuestionType) {
     this.controlType.set(value);
   }
 
@@ -116,7 +116,7 @@ export class DialogQuestionComponent {
     }
     const u = this.question();
 
-    const result = <question>{
+    const result = <Question>{
       ...u,
       text: this.textFormControl.getRawValue() || '',
       url: this.urlFormControl.getRawValue() || undefined,

@@ -1,8 +1,8 @@
-import { question } from './question';
+import { Question } from './question';
 
 export interface PageDisplay {
   show?: boolean;
   heading: string;
   level: string;
-  questions: question[];
+  questions: Question[];
 }

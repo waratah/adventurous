@@ -15,11 +15,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable } from 'rxjs';
-import { PageDisplay, question, questionGroup } from '../definitions';
+import { PageDisplay, Question, questionGroup } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
-import { CollapseComponent } from '../utils/collapse/collapse.component';
+import { CollapseComponent } from '../utils';
 import { DialogQuestionComponent } from './dialog-question.component';
 import { DialogSectionComponent } from './dialog-section.component';
+import { QuestionSelectComponent } from '../utils/question-select/question-select.component';
 @Component({
   selector: 'app-edit-group',
   standalone: true,
@@ -36,6 +37,7 @@ import { DialogSectionComponent } from './dialog-section.component';
     AsyncPipe,
     NgClass,
     FormsModule,
+    QuestionSelectComponent,
   ],
   templateUrl: './editGroup.component.html',
   styleUrl: './editGroup.component.css',
@@ -48,16 +50,14 @@ export class EditGroupComponent {
 
   public id = input<string>();
 
-  public questions$: Observable<PageDisplay[]>;
+  public sections$: Observable<PageDisplay[]>;
   public groups$: Observable<questionGroup[]>;
-
-  public newQuestion = model<question>();
 
   constructor(
     private questionsService: QuestionsService,
     private dialog: MatDialog
   ) {
-    this.questions$ = questionsService.questions$;
+    this.sections$ = questionsService.sections$;
     this.groups$ = questionsService.allQuestionGroups$;
 
     effect(() => (this.questionsService.group = this.id()));
@@ -76,11 +76,18 @@ export class EditGroupComponent {
     );
   }
 
-  public dragMoved(event: any) {
-    console.log(event);
+  removeQuestion(
+    question: Question,
+    section: PageDisplay,
+    sections: PageDisplay[]
+  ) {
+    section.questions = section.questions.filter(
+      (x) => x.code !== question.code
+    );
+    this.questionsService.saveGroup(this.id() || '', sections);
   }
 
-  editQuestion(question: question) {
+  editQuestion(question: Question) {
     this.dialog.open(DialogQuestionComponent, {
       data: {
         question,
@@ -88,39 +95,40 @@ export class EditGroupComponent {
     });
   }
 
-  addQuestion(section: PageDisplay, sections: PageDisplay[]) {
+  addQuestion(
+    question: Question,
+    section: PageDisplay,
+    sections: PageDisplay[]
+  ) {
+    if (question) {
+      const list = [...section.questions, question];
+      section.questions = list;
+      this.questionsService.saveGroup(this.id() || '', sections);
+    } else {
+      console.error('result missing from question dialog');
+    }
+  }
+
+  newQuestion(section: PageDisplay, sections: PageDisplay[]) {
     const dialogRef = this.dialog.open(DialogQuestionComponent, {
-      data: <question>{
+      data: <Question>{
         code: '',
         text: '',
       },
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(`question Dialog result: `);
-      console.log({ result });
-      if (result) {
-        const newQuestions = [...section.questions, result];
-        section.questions = newQuestions;
-        this.questionsService.saveGroup(this.id() || '', sections);
-      } else {
-        console.error('result missing from question dialog');
-      }
+      this.addQuestion(result, section, sections);
     });
   }
 
-  public dropQuestion(event: CdkDragDrop<question[]>) {
+  public dropSection(event: CdkDragDrop<Question[]>, sections: PageDisplay[]) {
     if (event.previousContainer === event.container) {
       moveItemInArray(
         event.previousContainer.data,
         event.previousIndex,
         event.currentIndex
       );
-
-      // this.questionsService.saveGroup(
-      //   this.groupId,
-      //   event.previousContainer.data
-      // );
     } else {
       transferArrayItem(
         event.previousContainer.data,
@@ -129,6 +137,7 @@ export class EditGroupComponent {
         event.currentIndex
       );
     }
+    this.questionsService.saveGroup(this.id() || '', sections);
   }
 
   public addGroup() {

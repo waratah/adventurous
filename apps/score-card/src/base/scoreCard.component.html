@@ -10,6 +10,11 @@
   @for (d of detail$ | async; track d.heading) {
 
   <app-collapse [heading]="d.heading" [show]="d.show">
+    <header>
+      @if(d.doneCount){
+      <span class="hint"ß>Completed Assessments: {{ d.doneCount }}/{{ d.totalCount }}</span>
+      }
+    </header>
     <div class="list">
       @for (d of d.details; track d.question.code) { @switch( d.question.type) {
       @default {
@@ -24,15 +29,16 @@
       <span></span>
       } @case("textbox") {
       <div class="text-input">
-        <span>{{d.question.text}}</span>
+        <span>{{ d.question.text }}</span>
         <input
           type="text"
-          [value]="d.answer.text"
+          [value]="d.answer.text || ''"
           [placeholder]="d.question.placeholder"
           matInput
           (blur)="updateText(d.question.code, $event)"
         />
       </div>
+      <span></span>
       } } @if(isVerify) {
       <input
         type="checkbox"

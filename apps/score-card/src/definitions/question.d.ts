@@ -1,6 +1,6 @@
-export type questionType = 'checkbox' | 'img' | 'textbox' | 'url';
+export type QuestionType = 'checkbox' | 'img' | 'textbox' | 'url';
 
-export interface question {
+export interface Question {
   code: string;
   text: string;
   url?: string;

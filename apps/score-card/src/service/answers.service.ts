@@ -38,13 +38,10 @@ export class AnswersService {
           delete objToUpload[key];
         }
       });
-
-      console.log({ objToUpload, modelObject });
       return objToUpload;
     },
     fromFirestore(snapshot, options) {
       const data = snapshot.data(options); // "as Omit<Instance<typeof CompanyModel>, "id">" could be added here
-      console.log({data})
       // spread data first, so an incorrectly stored id gets overridden
       return <AnswerStore>{
         ...data,

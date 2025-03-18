@@ -11,7 +11,7 @@ import {
   addDoc,
   getDoc,
 } from '@angular/fire/firestore';
-import { PageDisplay, question, questionGroup } from '../definitions';
+import { PageDisplay, Question, questionGroup } from '../definitions';
 import { combineLatest, map, Observable, ReplaySubject, take } from 'rxjs';
 
 @Injectable({
@@ -26,13 +26,13 @@ export class QuestionsService {
   /** Provide the last read gate in list (zero is all) */
   selectedGroup$ = this.currentGroup.asObservable();
 
-  allQuestions$: Observable<question[]>;
+  allQuestions$: Observable<Question[]>;
   allQuestionGroups$: Observable<questionGroup[]>;
-  questions$: Observable<PageDisplay[]>;
+  sections$: Observable<PageDisplay[]>;
 
   private groupId?: string;
 
-  private questionCollection: CollectionReference<question, DocumentData>;
+  private questionCollection: CollectionReference<Question, DocumentData>;
   private groupCollection: CollectionReference<questionGroup, DocumentData>;
 
   constructor(private store: Firestore) {
@@ -46,7 +46,7 @@ export class QuestionsService {
     this.allQuestions$ = collectionData(this.questionCollection);
     this.allQuestionGroups$ = collectionData(this.groupCollection);
 
-    this.questions$ = combineLatest([
+    this.sections$ = combineLatest([
       this.allQuestions$,
       this.allQuestionGroups$,
       this.groupId$,
@@ -62,8 +62,8 @@ export class QuestionsService {
           });
           return list;
         }
-        const questionLink = groups.find((x) => x.id === groupId);
-        if (!questionLink) {
+        const sections = groups.find((x) => x.id === groupId);
+        if (!sections) {
           list.push({
             heading: 'newGroup',
             level: 'None',
@@ -72,14 +72,15 @@ export class QuestionsService {
           });
           return list;
         }
-        return questionLink.pages.map(
+
+        return sections.pages.map(
           (p) =>
             <PageDisplay>{
               show: true,
               heading: p.heading,
               level: p.level,
-              questions: questions.filter((x) =>
-                p.questions.some((l) => l === x.code)
+              questions: p.questions.map((code) =>
+                questions.find((x) => code === x.code)
               ),
             }
         );
@@ -117,7 +118,7 @@ export class QuestionsService {
     },
   };
 
-  private createQuestionConverter: FirestoreDataConverter<question> = {
+  private createQuestionConverter: FirestoreDataConverter<Question> = {
     toFirestore(modelObject) {
       const objToUpload = { ...modelObject } as DocumentData; // DocumentData is mutable
       delete objToUpload['code']; // make sure to remove ID so it's not uploaded to the document
@@ -133,7 +134,7 @@ export class QuestionsService {
       const data = snapshot.data(options); // "as Omit<Instance<typeof CompanyModel>, "id">" could be added here
 
       // spread data first, so an incorrectly stored id gets overridden
-      return <question>{
+      return <Question>{
         ...data,
         code: snapshot.id,
       };
@@ -156,7 +157,7 @@ export class QuestionsService {
     return this.groupId || '';
   }
 
-  public async updateQuestion(q: question) {
+  public async updateQuestion(q: Question) {
     if (q.code) {
       await setDoc(doc(this.questionCollection, q.code), q).catch((x) =>
         console.error(x)
@@ -192,8 +193,6 @@ export class QuestionsService {
             level: x.level,
             questions: x.questions.map((q) => q.code),
           }));
-
-          console.log({group});
 
           await setDoc(docRef, group);
 
