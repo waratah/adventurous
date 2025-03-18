@@ -9,16 +9,31 @@
 
   @for (d of detail$ | async; track d.heading) {
 
-  <app-collapse [heading]="d.heading ?? 'All'">
+  <app-collapse [heading]="d.heading" [show]="d.show">
     <div class="list">
-      @for (d of d.details; track d.question.code) {
+      @for (d of d.details; track d.question.code) { @switch( d.question.type) {
+      @default {
       <span>{{ d.question.text }}</span>
       <input
         type="checkbox"
         [checked]="d.answer.done"
         (change)="updateDone(d.question.code, !d.answer.done)"
       />
-      @if(isVerify) {
+      } @case("img") {
+      <img [src]="d.question.img" [alt]="d.question.text" />
+      <span></span>
+      } @case("textbox") {
+      <div class="text-input">
+        <span>{{d.question.text}}</span>
+        <input
+          type="text"
+          [value]="d.answer.text"
+          [placeholder]="d.question.placeholder"
+          matInput
+          (blur)="updateText(d.question.code, $event)"
+        />
+      </div>
+      } } @if(isVerify) {
       <input
         type="checkbox"
         [checked]="d.answer.verified"

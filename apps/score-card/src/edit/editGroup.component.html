@@ -10,17 +10,22 @@
   <div class="group" cdkDrag [cdkDragData]="d">
     <app-collapse [heading]="d.heading">
       <header>
+        <span class="hint">({{ d.level }})</span>
         <button
           mat-icon-button
-          aria-label="Export PDF"
+          matTooltip="Edit section"
+          matTooltipPosition="below"
+          aria-label="Edit the section header or PDF it appears in"
           (click)="editSection(d, idx, sections)"
         >
           <mat-icon>edit</mat-icon>
         </button>
         <button
           mat-icon-button
+          matTooltip="Add a new question to this section"
+          matTooltipPosition="below"
           aria-label="Add a question"
-          (click)="addQuestion(d)"
+          (click)="addQuestion(d, sections)"
         >
           <mat-icon>add</mat-icon>
         </button>
@@ -38,12 +43,45 @@
         <div cdkDrag [cdkDragData]="q" class="question-item">
           <button
             mat-icon-button
+            matTooltip="Edit this question"
+            matTooltipPosition="below"
             aria-label="Edit question"
             (click)="editQuestion(q)"
           >
             <mat-icon>edit</mat-icon>
           </button>
-          <span>{{ q.text }}</span>
+          <div>
+            @switch(q.type) { @default {
+            <mat-icon matTooltip="Yes or no question" matTooltipPosition="above"
+              >check_box</mat-icon
+            >
+            } @case ('img') {
+            <mat-icon matTooltip="Image display only" matTooltipPosition="above"
+              >image</mat-icon
+            >
+            } @case ('textbox') {
+            <mat-icon
+              matTooltip="Text answer required"
+              matTooltipPosition="above"
+              >description</mat-icon
+            >
+            } @case ('url') {
+            <mat-icon
+              matTooltip="URL to an application image at this stage"
+              matTooltipPosition="above"
+              >link</mat-icon
+            >
+            } }
+
+            <span>{{ q.text }}</span>
+            @if(q.attachmentRequired) {
+            <mat-icon
+              matTooltip="Upload required - may not be implemented yet"
+              matTooltipPosition="above"
+              >attach_file</mat-icon
+            >
+            }
+          </div>
         </div>
         }
       </div>

@@ -74,25 +74,39 @@ export class AnswersService {
     return this.myId;
   }
 
-  public updateAnswer(questionId: string, value: boolean) {
+  updateCheck(questionId: string, value: boolean) {
+   this. updateAnswer({
+      code: questionId,
+      done: value,
+      doneDate: new Date(),
+    })
+  }
+
+  updateText(questionId: string, value: string) {
+    this.updateAnswer({
+    code: questionId,
+      done: Boolean(value),
+      text: value,
+      doneDate: new Date(),
+ }) }
+
+  private updateAnswer(answer: answer) {
     const docRef = doc(this.answerCollection, this.myId);
     getDoc(docRef).then((answerStore) => {
       const store = answerStore.data() || {
         scoutNumber: this.myId,
         answers: [],
       };
-      const previous = store.answers.find((x) => x.code === questionId);
+      const currentAnswers = store.answers
+      const previous = currentAnswers.find((x) => x.code === answer.code);
 
       if (previous) {
-        previous.done = value;
+        store.answers = [
+          ... currentAnswers.filter( x=> x.code != answer.code),
+          { ...previous, ...answer }
+        ];
       } else {
-        if (value) {
-          store.answers.push({
-            code: questionId,
-            done: value,
-            doneDate: new Date(),
-          });
-        }
+          store.answers.push(answer);
       }
       this.answers.next(store.answers);
       setDoc(docRef, store).catch((error) => console.error(error));

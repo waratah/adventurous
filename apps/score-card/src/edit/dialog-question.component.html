@@ -8,7 +8,7 @@
       [errorStateMatcher]="matcher"
       placeholder="I can...,OR paddle image"
     />
-    <mat-hint>Your first name and last name!</mat-hint>
+    <mat-hint>Question text or text as alternate.  Used for dragging in edit</mat-hint>
     @if (questionForm.controls['text'].hasError('required')) {
     <mat-error>Question text is <strong>required</strong></mat-error>
     }
@@ -50,7 +50,7 @@
       placeholder="Sample of what the text should be"
     />
     @if (questionForm.controls['placeholder'].hasError('required')) {
-    <mat-error>Question text is <strong>required</strong></mat-error>
+    <mat-error>Question placeholder is <strong>required</strong></mat-error>
     }
   </mat-form-field>
   }

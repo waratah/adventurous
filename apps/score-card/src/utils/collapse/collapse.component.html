@@ -1,10 +1,14 @@
 <div class="group">
   <mat-toolbar class="group secondary">
-    <mat-icon class="open" [ngClass]="{ up: !show }">chevron_right</mat-icon>
+    <button mat-icon-button (click)="show.set(!show())">
+      <mat-icon class="open" [ngClass]="{ up: !show() }"
+        >chevron_right</mat-icon
+      >
+    </button>
     <button
       mat-raised-button
-      (click)="show = !show"
-      [ngClass]="{ toggle: show }"
+      (click)="show.set(!show())"
+      [ngClass]="{ toggle: show() }"
     >
       @if( heading()) {
       {{ heading() }}
@@ -12,7 +16,7 @@
     </button>
     <ng-content select="header"> </ng-content>
   </mat-toolbar>
-  <div class="content" [ngClass]="{ close: !show, open: show }" cdkDropList>
+  <div class="content" [ngClass]="{ close: !show(), open: show() }" cdkDropList>
     <ng-content></ng-content>
   </div>
 </div>

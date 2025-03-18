@@ -46,7 +46,6 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   public action = input<string>();
   public id = input<string>();
 
-
   public questions$: Observable<PageDisplay[]>;
   public groups$: Observable<questionGroup[]>;
   public detail$: Observable<detailPage[]>;
@@ -71,7 +70,7 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
     ]).pipe(
       map(([questions, answers]) => {
         return questions.map<detailPage>((p) => {
-          return <detailPage>{
+          const rv = <detailPage>{
             heading: p.heading,
             show: true,
             details: p.questions.map((q) => {
@@ -86,6 +85,13 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
               return d;
             }),
           };
+
+          const theseDone = rv.details.reduce(
+            (a, item) => a + (item.answer.done ? 1 : 0),
+            0
+          );
+          rv.show = theseDone != rv.details.length;
+          return rv;
         });
       })
     );
@@ -101,7 +107,11 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
     this.sub?.unsubscribe();
   }
   public updateDone(id: string, value: boolean) {
-    this.answerService.updateAnswer(id, value);
+    this.answerService.updateCheck(id, value);
+  }
+  public updateText(id: string, event: FocusEvent) {
+    const target = event.target as HTMLInputElement;
+    this.answerService.updateText(id, target.value);
   }
 
   public updateVerify(id: string, value: boolean) {

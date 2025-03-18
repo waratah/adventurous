@@ -8,6 +8,7 @@ export interface answerStore {
 export interface answer {
   code: string;
   done?: boolean;
+  text?: string;
   doneDate: Date;
   verified?: boolean;
   mappedCode?: string;

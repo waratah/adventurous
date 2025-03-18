@@ -29,4 +29,14 @@ form {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
+  div {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+      align-items: center;
+      .mat-icon {
+        color: var(--mat-sys-primary);
+
+      }
+  }
 }

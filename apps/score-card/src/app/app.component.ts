@@ -8,6 +8,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { Observable } from 'rxjs';
 import { questionGroup } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   imports: [
@@ -15,6 +16,7 @@ import { QuestionsService } from '../service/questions.service';
     RouterModule,
     MatButtonToggleModule,
     MatToolbarModule,
+    MatTooltipModule,
     MatIconModule,
     MatMenuModule,
   ],

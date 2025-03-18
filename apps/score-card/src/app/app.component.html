@@ -1,31 +1,52 @@
 <mat-toolbar>
   <button mat-icon-button aria-label="menu" [matMenuTriggerFor]="menu">
-    <mat-icon>menu</mat-icon>
+    <mat-icon
+      matTooltip="Menu - select activity like abseil, canoe, kayak, etc"
+      matTooltipPosition="below"
+      >menu</mat-icon
+    >
   </button>
-  <span>Rock School  @if( selectedGroup$| async; as group ) { - {{group.name }}}</span>
-  <button mat-icon-button aria-label="User settings screen" [routerLink]="['/user']" routerLinkActive="active-link">
-    <mat-icon>settings</mat-icon>
+  <span
+    >Rock School @if( selectedGroup$| async; as group ) { -
+    {{ group.name }}}</span
+  >
+  <button
+    mat-icon-button
+    aria-label="User settings screen"
+    [routerLink]="['/user']"
+    routerLinkActive="active-link"
+  >
+    <mat-icon matTooltip="View Your User" matTooltipPosition="below"
+      >settings</mat-icon
+    >
   </button>
   <button mat-icon-button aria-label="Export PDF" [matMenuTriggerFor]="print">
-    <mat-icon>print</mat-icon>
+    <mat-icon
+      matTooltip="Print selected activity PDF"
+      matTooltipPosition="below"
+      >print</mat-icon
+    >
   </button>
 </mat-toolbar>
 
 <mat-menu #menu="matMenu">
   @for ( group of groups$ | async; track group ) {
-    <button mat-menu-item (click)="gotoGroup(group)">
-      <mat-icon>chevron_right</mat-icon>
-      <span>{{group.name}}</span>
-    </button>
+  <button mat-menu-item (click)="gotoGroup(group)">
+    <mat-icon>chevron_right</mat-icon>
+    <span>{{ group.name }}</span>
+  </button>
 
   }
 
-  <mat-button-toggle-group [value]="action" (change)="changeAction($event.value)" aria-label="Action">
+  <mat-button-toggle-group
+    [value]="action"
+    (change)="changeAction($event.value)"
+    aria-label="Action"
+  >
     <mat-button-toggle value="view">View</mat-button-toggle>
     <mat-button-toggle value="verify">Verify</mat-button-toggle>
     <mat-button-toggle value="edit">Edit</mat-button-toggle>
   </mat-button-toggle-group>
-
 </mat-menu>
 
 <mat-menu #print="matMenu">

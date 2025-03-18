@@ -1,13 +1,23 @@
 .list {
-  margin: 0.2rem 0;
+  margin: 0.2rem;
   display: grid;
   grid-template-columns: 1fr 3rem 4rem;
   column-gap: 1em;
   row-gap: 1em;
   justify-content: center;
 
-  input {
-    max-width: 1em;
+  input[type=checkbox] {
+    max-width: 1.5em;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+
+  .text-input {
+    display: grid;
+    gap: 0.5rem;
   }
 }
 
@@ -15,5 +25,9 @@
   span {
     color: var(--accent);
     font-size: 1.5rem;
+  }
+
+  .text-input {
+    display: grid;
   }
 }

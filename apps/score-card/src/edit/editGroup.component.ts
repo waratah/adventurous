@@ -13,19 +13,20 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { Observable } from 'rxjs';
 import { PageDisplay, question, questionGroup } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
 import { CollapseComponent } from '../utils/collapse/collapse.component';
 import { DialogQuestionComponent } from './dialog-question.component';
 import { DialogSectionComponent } from './dialog-section.component';
-
 @Component({
   selector: 'app-edit-group',
   standalone: true,
   imports: [
     DragDropModule,
     MatToolbarModule,
+    MatTooltipModule,
     MatFormFieldModule,
     MatButtonModule,
     MatSelectModule,
@@ -87,7 +88,7 @@ export class EditGroupComponent {
     });
   }
 
-  addQuestion(section: PageDisplay) {
+  addQuestion(section: PageDisplay, sections: PageDisplay[]) {
     const dialogRef = this.dialog.open(DialogQuestionComponent, {
       data: <question>{
         code: '',
@@ -96,10 +97,12 @@ export class EditGroupComponent {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log(`question Dialog result: ${result}`);
+      console.log(`question Dialog result: `);
+      console.log({ result });
       if (result) {
         const newQuestions = [...section.questions, result];
         section.questions = newQuestions;
+        this.questionsService.saveGroup(this.id() || '', sections);
       } else {
         console.error('result missing from question dialog');
       }
