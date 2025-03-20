@@ -14,6 +14,18 @@
     }
   </mat-form-field>
 
+  <mat-form-field>
+    <mat-label>Section description</mat-label>
+    <input
+      type="text"
+      matInput
+      formControlName="description"
+      [errorStateMatcher]="matcher"
+      placeholder="Optional expanded description."
+    />
+    <mat-hint>The heading may be simply about the typical hazards, you may want to ask for specific detail in the questions.</mat-hint>
+  </mat-form-field>
+
   <p>
     PDF?
     <mat-button-toggle-group

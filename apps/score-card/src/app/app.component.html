@@ -6,10 +6,10 @@
       >menu</mat-icon
     >
   </button>
-  <span
+  <h1
     >Rock School @if( selectedGroup$| async; as group ) { -
-    {{ group.name }}}</span
-  >
+    {{ group.name }}}
+  </h1>
   <button
     mat-icon-button
     aria-label="User settings screen"
@@ -30,7 +30,7 @@
 </mat-toolbar>
 
 <mat-menu #menu="matMenu">
-  @for ( group of groups$ | async; track group ) {
+  @for ( group of groups$ | async; track group.id ) {
   <button mat-menu-item (click)="gotoGroup(group)">
     <mat-icon>chevron_right</mat-icon>
     <span>{{ group.name }}</span>
@@ -67,5 +67,6 @@
     <span>Guide Workbook</span>
   </button>
 </mat-menu>
-
-<router-outlet></router-outlet>
+<main>
+  <router-outlet></router-outlet>
+</main>

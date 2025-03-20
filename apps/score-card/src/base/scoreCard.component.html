@@ -8,48 +8,56 @@
   </mat-toolbar>
 
   @for (d of detail$ | async; track d.heading) {
-
-  <app-collapse [heading]="d.heading" [show]="d.show">
-    <header>
-      @if(d.doneCount){
-      <span class="hint"ß>Completed Assessments: {{ d.doneCount }}/{{ d.totalCount }}</span>
+  <section [attr.aria-label]="d.heading">
+    <app-collapse [heading]="d.heading" [show]="d.show">
+      <header>
+        @if(d.doneCount){
+        <span class="hint"
+          >Completed Assessments: {{ d.doneCount }}/{{ d.totalCount }}</span
+        >
+        }
+      </header>
+      @if(d.description){
+      <div caption class="padding hint">
+        {{ d.description }}
+      </div>
       }
-    </header>
-    <div class="list">
-      @for (d of d.details; track d.question.code) { @switch( d.question.type) {
-      @default {
-      <span>{{ d.question.text }}</span>
-      <input
-        type="checkbox"
-        [checked]="d.answer.done"
-        (change)="updateDone(d.question.code, !d.answer.done)"
-      />
-      } @case("img") {
-      <img [src]="d.question.img" [alt]="d.question.text" />
-      <span></span>
-      } @case("textbox") {
-      <div class="text-input">
+      <div class="list">
+        @for (d of d.details; track d.question.code) { @switch( d.question.type)
+        { @default {
         <span>{{ d.question.text }}</span>
         <input
-          type="text"
-          [value]="d.answer.text || ''"
-          [placeholder]="d.question.placeholder"
-          matInput
-          (blur)="updateText(d.question.code, $event)"
+          type="checkbox"
+          [checked]="d.answer.done"
+          (change)="updateDone(d.question.code, !d.answer.done)"
         />
+        } @case("img") {
+        <img [src]="d.question.img" [alt]="d.question.text" />
+        <span></span>
+        } @case("textbox") {
+        <div class="text-input">
+          <span>{{ d.question.text }}</span>
+          <input
+            type="text"
+            [value]="d.answer.text || ''"
+            [placeholder]="d.question.placeholder"
+            matInput
+            (blur)="updateText(d.question.code, $event)"
+          />
+        </div>
+        <span></span>
+        } } @if(isVerify && d.question.type !== 'img') {
+        <input
+          type="checkbox"
+          [checked]="d.answer.verified"
+          (change)="updateVerify(d.question.code, !d.answer.verified)"
+        />
+        } @else {
+        <div></div>
+        } }
       </div>
-      <span></span>
-      } } @if(isVerify) {
-      <input
-        type="checkbox"
-        [checked]="d.answer.verified"
-        (change)="updateVerify(d.question.code, !d.answer.verified)"
-      />
-      } @else {
-      <div></div>
-      } }
-    </div>
-  </app-collapse>
+    </app-collapse>
+  </section>
   }
 </div>
 <button class="mat-margin-20" mat-raised-button (click)="print()">Print</button>

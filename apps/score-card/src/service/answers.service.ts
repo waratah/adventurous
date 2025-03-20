@@ -72,20 +72,21 @@ export class AnswersService {
   }
 
   updateCheck(questionId: string, value: boolean) {
-   this. updateAnswer({
+    this.updateAnswer({
       code: questionId,
       done: value,
       doneDate: new Date(),
-    })
+    });
   }
 
   updateText(questionId: string, value: string) {
     this.updateAnswer({
-    code: questionId,
+      code: questionId,
       done: Boolean(value),
       text: value,
       doneDate: new Date(),
- }) }
+    });
+  }
 
   private updateAnswer(answer: answer) {
     const docRef = doc(this.answerCollection, this.myId);
@@ -94,16 +95,16 @@ export class AnswersService {
         scoutNumber: this.myId,
         answers: [],
       };
-      const currentAnswers = store.answers
+      const currentAnswers = store.answers;
       const previous = currentAnswers.find((x) => x.code === answer.code);
 
       if (previous) {
         store.answers = [
-          ... currentAnswers.filter( x=> x.code != answer.code),
-          { ...previous, ...answer }
+          ...currentAnswers.filter((x) => x.code != answer.code),
+          { ...previous, ...answer },
         ];
       } else {
-          store.answers.push(answer);
+        store.answers.push(answer);
       }
       this.answers.next(store.answers);
       setDoc(docRef, store).catch((error) => console.error(error));
@@ -118,9 +119,12 @@ export class AnswersService {
         answers: [],
       };
 
-      const previous = store.answers.find((x) =>
-        x.code.localeCompare(questionId)
-      );
+      // The following removes duplicate keys.
+      // const result = store.answers.reduce( (unique: answer[], item) =>
+      //   unique.some( x=> x.code === item.code)? unique : [...unique, item], []);
+      // store.answers = result;
+
+      const previous = store.answers.find((x) => x.code === questionId);
       if (!previous) {
         if (value) {
           store.answers.push({

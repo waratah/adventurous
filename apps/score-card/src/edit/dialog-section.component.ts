@@ -1,3 +1,4 @@
+import { CdkTextareaAutosize, TextFieldModule } from '@angular/cdk/text-field';
 import { Component, Inject } from '@angular/core';
 import {
   FormControl,
@@ -5,6 +6,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import {
@@ -16,11 +18,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageDisplay } from '../definitions';
 import { MyErrorStateMatcher } from '../user/user-new/user-new.component';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-dialog-section',
   imports: [
+    CdkTextareaAutosize,
+    TextFieldModule,
     MatButtonToggleModule,
     MatButtonModule,
     MatCardModule,
@@ -41,6 +44,7 @@ export class DialogSectionComponent {
   sectionForm: FormGroup;
 
   private headingFormControl = new FormControl('', [Validators.required]);
+  private descriptionFormControl = new FormControl('');
 
   matcher = new MyErrorStateMatcher();
 
@@ -65,9 +69,11 @@ export class DialogSectionComponent {
         });
       }
       this.headingFormControl.setValue(this.section?.heading || '');
+      this.descriptionFormControl.setValue(this.section?.description || '');
     }
     this.sectionForm = new FormGroup({
       heading: this.headingFormControl,
+      description: this.descriptionFormControl,
     });
   }
 
@@ -82,11 +88,13 @@ export class DialogSectionComponent {
         ...this.section,
         level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
+        description: this.descriptionFormControl.getRawValue() || undefined,
       };
     } else {
       result = <PageDisplay>{
         level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
+        description: this.descriptionFormControl.getRawValue() || undefined,
         questions: [],
       };
     }

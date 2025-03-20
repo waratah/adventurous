@@ -79,6 +79,7 @@ export class QuestionsService {
               show: true,
               heading: p.heading,
               level: p.level,
+              description: p.description,
               questions: p.questions.map((code) =>
                 questions.find((x) => code === x.code)
               ),
@@ -187,10 +188,10 @@ export class QuestionsService {
           if (name) {
             group.name = name;
           }
-
           group.pages = sections.map((x) => ({
             heading: x.heading,
             level: x.level,
+            description: x.description || '',
             questions: x.questions.map((q) => q.code),
           }));
 
@@ -206,6 +207,7 @@ export class QuestionsService {
         pages: sections.map((x) => ({
           heading: x.heading,
           level: x.level,
+          description: x.description || '',
           questions: x.questions.map((q) => q.code),
         })),
       };

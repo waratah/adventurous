@@ -96,7 +96,7 @@ export class DialogQuestionComponent {
         this.urlFormControl.setValue(q.url || ' ');
         this.imgFormControl.setValue(q.img || ' ');
         this.controlType.set(q.type || '');
-        this.placeholderFormControl.setValue(q.type || '');
+        this.placeholderFormControl.setValue(q.placeholder || '');
         this.attachmentRequired = q.attachmentRequired || false;
       }
     });

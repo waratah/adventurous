@@ -27,6 +27,7 @@ interface detail {
 
 interface detailPage {
   heading?: string;
+  description?: string;
   details: detail[];
   show: boolean;
   totalCount: number;
@@ -75,6 +76,7 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
         return questions.map<detailPage>((p) => {
           const rv = <detailPage>{
             heading: p.heading,
+            description: p.description,
             show: true,
             details: p.questions.map((q) => {
               const d = <detail>{
@@ -93,7 +95,13 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
             (a, item) => a + (item.answer.done ? 1 : 0),
             0
           );
-          rv.totalCount = rv.details.length;
+
+          // Images do not have an answer
+          rv.totalCount = rv.details.reduce(
+            (a, item) => a + (item.question.type !== 'img' ? 1 : 0),
+            0
+          );
+
           rv.verifiedCount = rv.details.reduce(
             (a, item) => a + (item.answer.verified ? 1 : 0),
             0
@@ -133,9 +141,9 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
         const fileWidth = 200;
         const fileHeight = (canvas.height * fileWidth) / canvas.width;
 
-        const FILEURI = canvas.toDataURL('image/png');
+        const FileUri = canvas.toDataURL('image/png');
         const PDF = new jsPDF('p', 'mm', 'a4');
-        PDF.addImage(FILEURI, 'PNG', 5, 5, fileWidth, fileHeight);
+        PDF.addImage(FileUri, 'PNG', 5, 5, fileWidth, fileHeight);
         PDF.save('angular-demo.pdf');
       });
     } else {

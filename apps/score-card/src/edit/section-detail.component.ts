@@ -35,6 +35,7 @@ export class SectionDetailComponent {
   sectionForm: FormGroup;
 
   private headingFormControl = new FormControl('', [Validators.required]);
+  private descriptionFormControl = new FormControl('');
 
   matcher = new MyErrorStateMatcher();
 
@@ -48,10 +49,12 @@ export class SectionDetailComponent {
       }
       this.level = q.level || '';
       this.headingFormControl.setValue(q?.heading || '');
+      this.descriptionFormControl.setValue(q?.description || '');
     });
 
     this.sectionForm = new FormGroup({
       heading: this.headingFormControl,
+      description: this.descriptionFormControl,
     });
   }
 
@@ -73,6 +76,7 @@ export class SectionDetailComponent {
       const result = <PageDisplay>{
         level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
+        description: this.descriptionFormControl.getRawValue() || undefined,
         questions: [],
       };
       this.section.set(result);

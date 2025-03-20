@@ -1,4 +1,4 @@
-<div class="group">
+<div>
   <mat-toolbar class="group secondary">
     <button mat-icon-button (click)="show.set(!show())">
       <mat-icon class="open" [ngClass]="{ up: !show() }"
@@ -16,6 +16,9 @@
     </button>
     <ng-content select="header"> </ng-content>
   </mat-toolbar>
+  @if(show()) {
+  <div><ng-content select="[caption]"></ng-content></div>
+  }
   <div class="content" [ngClass]="{ close: !show(), open: show() }" cdkDropList>
     <ng-content></ng-content>
   </div>

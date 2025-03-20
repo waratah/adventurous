@@ -3,7 +3,7 @@
     <mat-label>Assignee</mat-label>
     <input type="text" matInput [formControl]="myControl" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="change($event)">
-      @for (option of filteredOptions | async; track option) {
+      @for (option of filteredOptions | async; track option.code) {
         <mat-option [value]="option">{{option.text}}</mat-option>
       }
     </mat-autocomplete>

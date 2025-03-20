@@ -161,12 +161,6 @@ export class EditGroupComponent {
       }
     });
   }
-  /*
-  public save() {
-    console.log('Saving');
-    this.isAddGroup.set(false);
-  }
-*/
 
   public addSection(sections: PageDisplay[]) {
     const dialogRef = this.dialog.open(DialogSectionComponent, {

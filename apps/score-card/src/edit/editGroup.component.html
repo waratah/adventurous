@@ -8,7 +8,7 @@
 >
   @for (d of sections; track d.heading; let idx = $index) {
   <div class="group" cdkDrag [cdkDragData]="d">
-    <app-collapse [heading]="d.heading">
+    <app-collapse [heading]="d.heading" [show]="!d.questions.length">
       <header>
         <span class="hint">({{ d.level }})</span>
         <button
@@ -29,7 +29,15 @@
         >
           <mat-icon>add</mat-icon>
         </button>
+
+        <sub class="hint">{{ d.questions.length }} questions in group</sub>
       </header>
+
+      <div caption class="padding hint" >
+        {{
+          d.description
+        }}
+      </div>
 
       <div
         class="list"
@@ -96,7 +104,9 @@
         }
       </div>
       <h4>add existing question</h4>
-      <app-question-select (optionChange)="addQuestion($event, d, sections)"></app-question-select>
+      <app-question-select
+        (optionChange)="addQuestion($event, d, sections)"
+      ></app-question-select>
     </app-collapse>
   </div>
   }

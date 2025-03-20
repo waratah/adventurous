@@ -6,14 +6,13 @@
   row-gap: 1em;
   justify-content: center;
 
-  input[type=checkbox] {
+  input[type='checkbox'] {
     max-width: 1.5em;
   }
 
   img {
     max-width: 100%;
   }
-
 
   .text-input {
     display: grid;

@@ -3,6 +3,7 @@ import { LevelCode } from './LevelCode';
 export interface page {
   heading: string;
   level: LevelCode;
+  description?: string;
   questions: string[];
 }
 

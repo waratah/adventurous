@@ -40,7 +40,6 @@ samp,
 small,
 strike,
 strong,
-sub,
 sup,
 tt,
 var,
@@ -138,6 +137,7 @@ button {
 }
 
 html {
+  scroll-behavior: smooth;
   color-scheme: light;
   @include mat.theme(
     (
@@ -210,10 +210,12 @@ p:has(.mat-button-toggle-group) {
 
 .hint {
   font-size: 12px;
-  line-height: 16px;
-  padding: 4px 16px;
 }
 
 .full-width {
   width: 100%;
+}
+
+.padding {
+  margin: 1rem;
 }

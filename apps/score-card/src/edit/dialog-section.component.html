@@ -1,4 +1,4 @@
-<form [formGroup]="sectionForm"  (ngSubmit)="save()">
+<form [formGroup]="sectionForm" (ngSubmit)="save()">
   <mat-form-field>
     <mat-label>Section heading</mat-label>
     <input
@@ -14,6 +14,24 @@
     }
   </mat-form-field>
 
+  <mat-form-field>
+    <mat-label>Section description</mat-label>
+    <textarea
+      matInput
+      cdkTextareaAutosize
+      #autosize="cdkTextareaAutosize"
+      cdkAutosizeMinRows="1"
+      cdkAutosizeMaxRows="5"
+      formControlName="description"
+      [errorStateMatcher]="matcher"
+      placeholder="Optional expanded description."
+    ></textarea>
+    <mat-hint
+      >The heading may be simply about the typical hazards, you may want to ask
+      for specific detail in the questions.</mat-hint
+    >
+  </mat-form-field>
+
   <p>
     PDF?
     <mat-button-toggle-group
@@ -27,11 +45,8 @@
     </mat-button-toggle-group>
   </p>
 
-
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-raised-button type="submit">
-      Save
-    </button>
+    <button mat-raised-button type="submit">Save</button>
   </mat-dialog-actions>
 </form>
