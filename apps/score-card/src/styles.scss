@@ -219,3 +219,26 @@ p:has(.mat-button-toggle-group) {
 .padding {
   margin: 1rem;
 }
+
+.hide-on-small {
+  display: inline-block;
+}
+
+@media screen and (max-width: 599px) {
+  .hide-on-small {
+    display: none;
+  }
+}
+
+main {
+  display: block;
+  // todo - set height correctly
+  height: calc(100% - 56px);
+  overflow-y: auto;
+}
+
+.mdc-button__label {
+  text-overflow: ellipsis;
+  width: 100%;
+  overflow: hidden;
+}

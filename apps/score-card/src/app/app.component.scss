@@ -1,7 +1,13 @@
 .mat-toolbar {
   display: grid;
-  grid-template-columns: 3em 1fr 3em 3em;
+  grid-template-columns: 2em 1fr 2em;
   column-gap: 1em;
   row-gap: 1em;
   justify-content: center;
+
+  h1 {
+    text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+  }
 }

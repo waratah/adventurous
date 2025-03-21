@@ -78,7 +78,7 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
             heading: p.heading,
             description: p.description,
             show: true,
-            details: p.questions.map((q) => {
+            details: p.questions.filter(x=>x).map((q) => {
               const d = <detail>{
                 question: q,
                 answer: { code: q.code, doneDate: new Date() },

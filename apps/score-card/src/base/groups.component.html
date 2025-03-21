@@ -12,23 +12,16 @@
   }
 </mat-toolbar>
 
-<mat-button-toggle-group
-  name="activity"
-  aria-label="Whether we are viewing, approving or editing"
->
-  <mat-button-toggle color="view" value="bold">View</mat-button-toggle>
-  <mat-button-toggle value="verify">Approve</mat-button-toggle>
-  <mat-button-toggle value="edit">Edit</mat-button-toggle>
-</mat-button-toggle-group>
+
 
 <div>
   <h3>Create a new Group</h3>
   <input
+    class="full-width"
     type="text"
     required
     [(value)]="newGroup"
     (blur)="changeGroupName($event)"
-    (keypress)="changeGroupName($event)"
   />
 
   <div>{{ newGroup }}</div>

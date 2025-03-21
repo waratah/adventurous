@@ -6,9 +6,10 @@
       >menu</mat-icon
     >
   </button>
-  <h1
-    >Rock School @if( selectedGroup$| async; as group ) { -
-    {{ group.name }}}
+  <h1>
+    @if( selectedGroup$| async; as group ) {
+    <span class="hide-on-small">Rock School -</span> {{ group.name }}} @else {
+    Rock School }
   </h1>
   <button
     mat-icon-button
@@ -20,13 +21,8 @@
       >settings</mat-icon
     >
   </button>
-  <button mat-icon-button aria-label="Export PDF" [matMenuTriggerFor]="print">
-    <mat-icon
-      matTooltip="Print selected activity PDF"
-      matTooltipPosition="below"
-      >print</mat-icon
-    >
-  </button>
+
+
 </mat-toolbar>
 
 <mat-menu #menu="matMenu">
@@ -38,6 +34,11 @@
 
   }
 
+  <button mat-menu-item routerLink="/">
+    <mat-icon>chevron_right</mat-icon>
+    <span>Home</span>
+  </button>
+
   <mat-button-toggle-group
     [value]="action"
     (change)="changeAction($event.value)"
@@ -47,22 +48,49 @@
     <mat-button-toggle value="verify">Verify</mat-button-toggle>
     <mat-button-toggle value="edit">Edit</mat-button-toggle>
   </mat-button-toggle-group>
-</mat-menu>
 
-<mat-menu #print="matMenu">
   <button mat-menu-item>
+    <mat-icon
+    matTooltip="Print selected activity PDF"
+    matTooltipPosition="below"
+    >print</mat-icon
+  >
     <mat-icon>done all</mat-icon>
     <span>Dump Completed</span>
   </button>
-  <button mat-menu-item>
+  <button mat-menu-item routerLink="/pdf/water-safe">
+    <mat-icon
+    matTooltip="Print selected activity PDF"
+    matTooltipPosition="below"
+    >print</mat-icon
+  >
     <mat-icon>voicemail</mat-icon>
-    <span>Safe Participant Workbook</span>
+    <span>Water Safe Participant Workbook</span>
   </button>
-  <button mat-menu-item>
+  <button mat-menu-item routerLink="/pdf/vertical-safe">
+    <mat-icon
+    matTooltip="Print selected activity PDF"
+    matTooltipPosition="below"
+    >print</mat-icon
+  >
+    <mat-icon>voicemail</mat-icon>
+    <span>Vertical Safe Participant Workbook</span>
+  </button>
+  <button mat-menu-item routerLink="/pdf/trained">
+    <mat-icon
+    matTooltip="Print selected activity PDF"
+    matTooltipPosition="below"
+    >print</mat-icon
+  >
     <mat-icon>notifications</mat-icon>
     <span>Trained Participant Workbook</span>
   </button>
-  <button mat-menu-item>
+  <button mat-menu-item routerLink="/pdf/guide">
+    <mat-icon
+    matTooltip="Print selected activity PDF"
+    matTooltipPosition="below"
+    >print</mat-icon
+  >
     <mat-icon>open_in_full</mat-icon>
     <span>Guide Workbook</span>
   </button>

@@ -1,5 +1,10 @@
-.mat-toolbar {
-  button {
-    min-width: 60ch;
-  }
+:host {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.mat-toolbar-row {
+  display: grid;
+  grid-template-columns: 1fr;
 }

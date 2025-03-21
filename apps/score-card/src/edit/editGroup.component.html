@@ -10,33 +10,35 @@
   <div class="group" cdkDrag [cdkDragData]="d">
     <app-collapse [heading]="d.heading" [show]="!d.questions.length">
       <header>
-        <span class="hint">({{ d.level }})</span>
-        <button
-          mat-icon-button
-          matTooltip="Edit section"
-          matTooltipPosition="below"
-          aria-label="Edit the section header or PDF it appears in"
-          (click)="editSection(d, idx, sections)"
-        >
-          <mat-icon>edit</mat-icon>
-        </button>
-        <button
-          mat-icon-button
-          matTooltip="Add a new question to this section"
-          matTooltipPosition="below"
-          aria-label="Add a question"
-          (click)="newQuestion(d, sections)"
-        >
-          <mat-icon>add</mat-icon>
-        </button>
+        <div class="edit-title">
+          <span class="hint">({{ d.level }})</span>
+          <button
+            mat-icon-button
+            matTooltip="Edit section"
+            matTooltipPosition="below"
+            aria-label="Edit the section header or PDF it appears in"
+            (click)="editSection(d, idx, sections)"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            matTooltip="Add a new question to this section"
+            matTooltipPosition="below"
+            aria-label="Add a question"
+            (click)="newQuestion(d, sections)"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
 
-        <sub class="hint">{{ d.questions.length }} questions in group</sub>
+          <sub class="hint"
+            >{{ d.questions.length }} questions in group</sub
+          >
+        </div>
       </header>
 
-      <div caption class="padding hint" >
-        {{
-          d.description
-        }}
+      <div caption class="padding hint">
+        {{ d.description }}
       </div>
 
       <div

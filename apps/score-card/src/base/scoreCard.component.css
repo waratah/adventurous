@@ -1,7 +1,7 @@
 .list {
   margin: 0.2rem;
   display: grid;
-  grid-template-columns: 1fr 3rem 4rem;
+  grid-template-columns: 1fr auto auto;
   column-gap: 1em;
   row-gap: 1em;
   justify-content: center;

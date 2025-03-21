@@ -15,6 +15,11 @@ mat-icon.open {
   }
 }
 
+.group {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+}
+
 
 .content {
   max-height: auto;
