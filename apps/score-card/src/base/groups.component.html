@@ -2,6 +2,7 @@
   @for ( group of groups$ | async; track group ) {
   <mat-toolbar-row>
     <button
+      class="group-button"
       mat-raised-button
       (click)="click(group)"
       [ngClass]="{ selected: group.id === groupId }"

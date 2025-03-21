@@ -2,6 +2,10 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
+
+  .group-button {
+    justify-self:center
+  }
 }
 
 .mat-toolbar-row {
