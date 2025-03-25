@@ -4,7 +4,7 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { AsyncPipe, JsonPipe, NgClass } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, effect, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,7 +37,6 @@ import { Router } from '@angular/router';
     MatDialogModule,
     CollapseComponent,
     AsyncPipe,
-    JsonPipe,
     NgClass,
     FormsModule,
     QuestionSelectComponent,

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PdfWaterSafeComponent } from './pdf-water-safe.component';
+import { PdfWorkbookComponent } from './pdf-workbook.component';
 
 describe('PdfWaterSafeComponent', () => {
-  let component: PdfWaterSafeComponent;
-  let fixture: ComponentFixture<PdfWaterSafeComponent>;
+  let component: PdfWorkbookComponent;
+  let fixture: ComponentFixture<PdfWorkbookComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PdfWaterSafeComponent],
+      imports: [PdfWorkbookComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PdfWaterSafeComponent);
+    fixture = TestBed.createComponent(PdfWorkbookComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

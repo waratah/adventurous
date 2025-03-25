@@ -42,7 +42,7 @@
   <mat-form-field>
     <mat-label>Safe workbook heading</mat-label>
     <input
-      type="img"
+      type="text"
       matInput
       formControlName="safeHeading"
       [errorStateMatcher]="matcher"
@@ -52,7 +52,22 @@
     <mat-error>Workbook heading is <strong>required</strong></mat-error>
     }
   </mat-form-field>
-  }
+
+  <mat-form-field>
+    <mat-label>Safe workbook footing</mat-label>
+    <input
+      type="text"
+      matInput
+      formControlName="safeFooting"
+      [errorStateMatcher]="matcher"
+      placeholder="Ex. /public/canoe.png"
+    />
+    @if (groupForm.controls['safeFooting'].hasError('required')) {
+    <mat-error>Workbook footer is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+
+}
 
   <div class="card">
     <mat-checkbox [checked]="hasTrained" (change)="setTrained($event.checked)"
@@ -86,6 +101,20 @@
     />
     @if (groupForm.controls['trainedHeading'].hasError('required')) {
     <mat-error>Workbook heading is <strong>required</strong></mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Trained Workbook footing</mat-label>
+    <input
+      type="text"
+      matInput
+      formControlName="trainedFooting"
+      [errorStateMatcher]="matcher"
+      placeholder="Sample of what the text should be"
+    />
+    @if (groupForm.controls['trainedHeading'].hasError('required')) {
+    <mat-error>Workbook footing is <strong>required</strong></mat-error>
     }
   </mat-form-field>
   }

@@ -27,6 +27,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class AppComponent {
   public groups$: Observable<questionGroup[]>;
   public selectedGroup$: Observable<questionGroup>;
+  public id = '';
 
   action = 'view';
   title = 'Adventurous Activities';
@@ -41,6 +42,7 @@ export class AppComponent {
 
   public gotoGroup(group: questionGroup) {
     this.questionsService.group = group.id;
+    this.id = group.id;
     this.router.navigate([this.action, group.id]);
   }
 

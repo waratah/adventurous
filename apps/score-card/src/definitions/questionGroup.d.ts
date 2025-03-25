@@ -9,7 +9,8 @@ export interface page {
 
 export interface BookDetail {
   name: string;
-  header: string;
+  heading: string;
+  footing: string;
 }
 
 export interface Books {

@@ -43,10 +43,14 @@ export class DialogGroupComponent {
   hasSafe = false;
   private safeNameFormControl = new FormControl('', [Validators.required]);
   private safeHeadingFormControl = new FormControl('', [Validators.required]);
+  private safeFootingFormControl = new FormControl('', [Validators.required]);
 
   hasTrained = false;
   private trainedNameFormControl = new FormControl('', [Validators.required]);
   private trainedHeadingFormControl = new FormControl('', [
+    Validators.required,
+  ]);
+  private trainedFootingFormControl = new FormControl('', [
     Validators.required,
   ]);
 
@@ -67,12 +71,14 @@ export class DialogGroupComponent {
     if (group.books.safe) {
       this.hasSafe = true;
       this.safeNameFormControl.setValue(group.books.safe.name);
-      this.safeHeadingFormControl.setValue(group.books.safe.header);
+      this.safeHeadingFormControl.setValue(group.books.safe.heading);
+      this.safeFootingFormControl.setValue(group.books.safe.footing);
     }
     if (group.books.trained) {
       this.hasTrained = true;
       this.trainedNameFormControl.setValue(group.books.trained.name);
-      this.trainedHeadingFormControl.setValue(group.books.trained.header);
+      this.trainedHeadingFormControl.setValue(group.books.trained.heading);
+      this.trainedFootingFormControl.setValue(group.books.trained.footing);
     }
 
     this.groupForm = new FormGroup({
@@ -88,9 +94,11 @@ export class DialogGroupComponent {
     if (value) {
       this.groupForm.addControl('safeName', this.safeNameFormControl);
       this.groupForm.addControl('safeHeading', this.safeHeadingFormControl);
+      this.groupForm.addControl('safeFooting', this.safeFootingFormControl);
     } else {
       this.groupForm.removeControl('safeName');
       this.groupForm.removeControl('safeHeading');
+      this.groupForm.removeControl('safeFooting');
     }
   }
 
@@ -102,9 +110,14 @@ export class DialogGroupComponent {
         'trainedHeading',
         this.trainedHeadingFormControl
       );
+      this.groupForm.addControl(
+        'trainedFooting',
+        this.trainedFootingFormControl
+      );
     } else {
       this.groupForm.removeControl('trainedName');
       this.groupForm.removeControl('trainedHeading');
+      this.groupForm.removeControl('trainedFooting');
     }
   }
 
@@ -120,16 +133,22 @@ export class DialogGroupComponent {
       };
 
       if (this.hasSafe) {
-        const sb = result.books.safe || { name: '', header: '' };
+        const sb = result.books.safe || { name: '', heading: '', footing: '' };
         sb.name = this.safeNameFormControl.getRawValue() || '';
-        sb.header = this.safeHeadingFormControl.getRawValue() || '';
+        sb.heading = this.safeHeadingFormControl.getRawValue() || '';
+        sb.footing = this.safeFootingFormControl.getRawValue() || '';
         result.books.safe = sb;
       }
 
       if (this.hasTrained) {
-        const tb = result.books.trained || { name: '', header: '' };
+        const tb = result.books.trained || {
+          name: '',
+          heading: '',
+          footing: '',
+        };
         tb.name = this.trainedNameFormControl.getRawValue() || '';
-        tb.header = this.trainedHeadingFormControl.getRawValue() || '';
+        tb.heading = this.trainedHeadingFormControl.getRawValue() || '';
+        tb.footing = this.trainedFootingFormControl.getRawValue() || '';
         result.books.trained = tb;
       }
 

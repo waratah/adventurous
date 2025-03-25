@@ -27,14 +27,9 @@ export const appRoutes: Route[] = [
       import('../PDF/pdf-user.component').then((m) => m.PdfUserComponent),
   },
   {
-    path: 'pdf/water-safe',
+    path: 'pdf/:level/:id',
     loadComponent: () =>
-      import('../PDF/pdf-water-safe.component').then((m) => m.PdfWaterSafeComponent),
-  },
-  {
-    path: 'pdf/vertical-safe',
-    loadComponent: () =>
-      import('../PDF/pdf-abseil-safe.component').then((m) => m.PdfAbseilSafeComponent),
+      import('../PDF/pdf-workbook.component').then((m) => m.PdfWorkbookComponent),
   },
   {
     path: ':action/:id',

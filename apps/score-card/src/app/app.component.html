@@ -58,7 +58,7 @@
     <mat-icon>done all</mat-icon>
     <span>Dump Completed</span>
   </button>
-  <button mat-menu-item routerLink="/pdf/water-safe">
+  <button mat-menu-item [routerLink]="['pdf','safe', id]">
     <mat-icon
     matTooltip="Print selected activity PDF"
     matTooltipPosition="below"
