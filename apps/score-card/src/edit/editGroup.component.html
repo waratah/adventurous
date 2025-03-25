@@ -1,5 +1,4 @@
 @if( sections$ | async; as sections ) {
-
 <div
   cdkDropListGroup
   cdkDropList
@@ -30,10 +29,17 @@
           >
             <mat-icon>add</mat-icon>
           </button>
-
-          <sub class="hint"
-            >{{ d.questions.length }} questions in group</sub
+          <button
+            mat-icon-button
+            matTooltip="Clone an entire section and create NEW questions"
+            matTooltipPosition="below"
+            aria-label="Clone an entire section and create NEW questions"
+            (click)="cloneSection(d, idx, sections)"
           >
+            <mat-icon>tab_duplicate</mat-icon>
+          </button>
+
+          <sub class="hint">{{ d.questions.length }} questions in group</sub>
         </div>
       </header>
 
@@ -113,7 +119,14 @@
   </div>
   }
 </div>
-<button mat-raised-button (click)="addSection(sections)">
-  Add a new section
-</button>
+
+<mat-toolbar>
+  <button mat-raised-button (click)="addSection(sections)">
+    Add a new section
+  </button>
+
+  <button mat-raised-button (click)="addGroup()">Create new group</button>
+
+  <button mat-raised-button (click)="editGroup()">Edit group</button>
+</mat-toolbar>
 }

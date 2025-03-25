@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import {
-  Firestore,
-  doc,
-  setDoc,
+  addDoc,
   collection,
-  FirestoreDataConverter,
   collectionData,
   CollectionReference,
+  doc,
   DocumentData,
-  addDoc,
+  Firestore,
+  FirestoreDataConverter,
   getDoc,
+  setDoc,
 } from '@angular/fire/firestore';
-import { PageDisplay, Question, questionGroup } from '../definitions';
 import { combineLatest, map, Observable, ReplaySubject, take } from 'rxjs';
+import { PageDisplay, Question, questionGroup } from '../definitions';
 
 @Injectable({
   providedIn: 'root',
@@ -82,7 +82,7 @@ export class QuestionsService {
               description: p.description,
               questions: p.questions.map((code) =>
                 questions.find((x) => code === x.code)
-              ),
+              ).filter(x=>x),
             }
         );
       })
@@ -171,23 +171,12 @@ export class QuestionsService {
     }
   }
 
-  public createGroup(name: string) {
-    this.saveGroup('', [], name);
-  }
-
-  public async saveGroup(
-    groupId: string,
-    sections: PageDisplay[],
-    name?: string
-  ) {
+  public async saveGroup(groupId: string, sections: PageDisplay[]) {
     try {
       if (groupId) {
         const docRef = doc(this.groupCollection, groupId);
         const group = (await getDoc(docRef)).data();
         if (group) {
-          if (name) {
-            group.name = name;
-          }
           group.pages = sections.map((x) => ({
             heading: x.heading,
             level: x.level,
@@ -203,7 +192,8 @@ export class QuestionsService {
 
       const group: questionGroup = {
         id: groupId,
-        name: name || 'Unknown',
+        name: 'Unknown',
+        books: {},
         pages: sections.map((x) => ({
           heading: x.heading,
           level: x.level,
@@ -211,6 +201,23 @@ export class QuestionsService {
           questions: x.questions.map((q) => q.code),
         })),
       };
+      const ref = await addDoc(this.groupCollection, group);
+      group.id = ref?.id || '';
+      return group;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
+  async updateGroup(group: questionGroup) {
+    try {
+      if (group.id) {
+        const docRef = doc(this.groupCollection, group.id);
+        await setDoc(docRef, group);
+        return group;
+      }
+
       const ref = await addDoc(this.groupCollection, group);
       group.id = ref?.id || '';
       return group;

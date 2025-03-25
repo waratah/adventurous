@@ -1,41 +1,35 @@
-import { Component, effect, Inject, model } from '@angular/core';
+import { Component, effect, model } from '@angular/core';
 import {
   FormControl,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { Question, QuestionType } from '../definitions';
-import { QuestionsService } from '../service/questions.service';
-import { MyErrorStateMatcher } from '../user/user-new/user-new.component';
+import { Question, QuestionType } from '../../definitions';
+import { QuestionsService } from '../../service/questions.service';
+import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
-  selector: 'app-dialog-question',
+  selector: 'app-question-detail',
   imports: [
-    MatButtonModule,
-    MatCheckboxModule,
-    MatDialogModule,
+    FormsModule,
     MatButtonToggleModule,
+    MatCheckboxModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './dialog-question.component.html',
-  styleUrl: './dialog-question.component.css',
+  templateUrl: './question-detail.component.html',
+  styleUrl: './question-detail.component.css',
 })
-export class DialogQuestionComponent {
+export class QuestionDetailComponent {
   question = model<Question>();
   controlType = model<QuestionType>();
   attachmentRequired = false;
@@ -53,12 +47,7 @@ export class DialogQuestionComponent {
   ]);
   matcher = new MyErrorStateMatcher();
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) private data: { question: Question },
-    private dialogRef: MatDialogRef<DialogQuestionComponent>,
-    private questionService: QuestionsService
-  ) {
-    this.question.set(data.question);
+  constructor(public questionService: QuestionsService) {
     effect(() => {
       const ct = this.controlType();
 
@@ -94,9 +83,8 @@ export class DialogQuestionComponent {
       if (q) {
         this.textFormControl.setValue(q.text);
         this.urlFormControl.setValue(q.url || ' ');
-        this.imgFormControl.setValue(q.img || ' ');
         this.controlType.set(q.type || '');
-        this.placeholderFormControl.setValue(q.placeholder || '');
+        this.placeholderFormControl.setValue(q.type || '');
         this.attachmentRequired = q.attachmentRequired || false;
       }
     });
@@ -110,7 +98,7 @@ export class DialogQuestionComponent {
     this.controlType.set(value);
   }
 
-  async save() {
+  save() {
     if (this.questionForm.invalid) {
       return;
     }
@@ -126,10 +114,6 @@ export class DialogQuestionComponent {
       type: this.controlType(),
     };
 
-    await this.questionService
-      .updateQuestion(result)
-      .catch((error) => console.error(error));
-
-    this.dialogRef.close(result);
+    this.questionService.updateQuestion(result);
   }
 }

@@ -32,7 +32,7 @@ export class AppComponent {
   title = 'Adventurous Activities';
 
   constructor(
-    public questionsService: QuestionsService,
+    private questionsService: QuestionsService,
     private router: Router
   ) {
     this.groups$ = questionsService.allQuestionGroups$;

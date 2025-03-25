@@ -8,6 +8,9 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { questionGroup } from '../definitions';
 import { QuestionsService } from '../service/questions.service';
+import { DialogGroupComponent } from '../edit/dialog-group/dialog-group.component';
+import { MatDialog } from '@angular/material/dialog';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-groups',
@@ -17,6 +20,7 @@ import { QuestionsService } from '../service/questions.service';
     MatSlideToggleModule,
     MatButtonToggleModule,
     MatButtonModule,
+    MatCardModule,
     MatToolbarModule,
   ],
   templateUrl: './groups.component.html',
@@ -35,6 +39,7 @@ export class GroupsComponent {
 
   constructor(
     public questionsService: QuestionsService,
+    private dialog: MatDialog,
     private router: Router
   ) {
     this.groups$ = questionsService.allQuestionGroups$;
@@ -68,13 +73,29 @@ export class GroupsComponent {
     }
   }
 
-  public changeGroupName(event: any) {
-    this.newGroup = event.target.value;
+  public addNewGroup() {
+    const group: questionGroup = {
+      name: '',
+      id: '',
+      books: {},
+      pages: [],
+    };
+    this.editGroupDetail(group);
   }
 
-  public createNew() {
-    if (this.newGroup) {
-      this.questionsService.createGroup(this.newGroup);
+   public editGroupDetail(group: questionGroup) {
+      const dialogRef = this.dialog.open(DialogGroupComponent, {
+        data: {
+          group,
+        },
+      });
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result?.id) {
+          this.router.navigate(['edit', this.questionsService.group]);
+        } else {
+          console.info({ result });
+        }
+      });
     }
-  }
 }

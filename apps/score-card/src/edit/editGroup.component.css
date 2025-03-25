@@ -49,9 +49,9 @@ h4 {
   display: inline-grid;
   gap: 0.15rem;
   height: 2rem;
-  grid-template-areas: 'level edit question counter';
+  grid-template-areas: 'level edit question clone counter';
   grid-template-rows: 2em;
-  grid-template-columns: 2em 2em 5em 2em;
+  grid-template-columns: 2em 2em 2em 2em 3em;
 
   & > :first-child {
     grid-area: level;
@@ -63,6 +63,9 @@ h4 {
     grid-area: question;
   }
   & > :nth-child(4) {
+    grid-area: clone;
+  }
+  & > :nth-child(5) {
     grid-area: counter;
   }
 }
@@ -78,5 +81,15 @@ h4 {
     & > :nth-child(4) {
       display: none;
     }
+    & > :nth-child(5) {
+      display: none;
+    }
   }
+}
+
+.bottom-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+
 }

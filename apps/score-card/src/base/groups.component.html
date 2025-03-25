@@ -15,16 +15,8 @@
 
 
 
-<div>
-  <h3>Create a new Group</h3>
-  <input
-    class="full-width"
-    type="text"
-    required
-    [(value)]="newGroup"
-    (blur)="changeGroupName($event)"
-  />
 
-  <div>{{ newGroup }}</div>
-  <button mat-button (click)="createNew()">Add New Group</button>
-</div>
+ <mat-card>
+
+  <button mat-button (click)="addNewGroup()">Add New Group</button>
+</mat-card>
