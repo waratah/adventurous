@@ -1,5 +1,4 @@
 import { GroupId } from './GroupId';
-import { answer } from './answer';
 
 interface User {
   verifyGroups: GroupId[];
@@ -9,6 +8,5 @@ interface User {
   section: string;
   group: string;
   email: string;
-  answers?: answer[];
   phone: string;
 }

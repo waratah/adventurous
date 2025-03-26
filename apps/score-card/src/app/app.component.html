@@ -65,27 +65,19 @@
     >print</mat-icon
   >
     <mat-icon>voicemail</mat-icon>
-    <span>Water Safe Participant Workbook</span>
+    <span>Safe Workbook</span>
   </button>
-  <button mat-menu-item routerLink="/pdf/vertical-safe">
-    <mat-icon
-    matTooltip="Print selected activity PDF"
-    matTooltipPosition="below"
-    >print</mat-icon
-  >
-    <mat-icon>voicemail</mat-icon>
-    <span>Vertical Safe Participant Workbook</span>
-  </button>
-  <button mat-menu-item routerLink="/pdf/trained">
+
+  <button mat-menu-item [routerLink]="['pdf','trained', id]">
     <mat-icon
     matTooltip="Print selected activity PDF"
     matTooltipPosition="below"
     >print</mat-icon
   >
     <mat-icon>notifications</mat-icon>
-    <span>Trained Participant Workbook</span>
+    <span>Trained Workbook</span>
   </button>
-  <button mat-menu-item routerLink="/pdf/guide">
+  <button mat-menu-item [routerLink]="['pdf','guide', id]">
     <mat-icon
     matTooltip="Print selected activity PDF"
     matTooltipPosition="below"
