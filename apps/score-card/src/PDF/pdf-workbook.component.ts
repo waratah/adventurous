@@ -7,24 +7,30 @@ import { PdfUserComponent } from './pdf-user.component';
 import { QuestionsService } from '../service/questions.service';
 import { page } from '../definitions/questionGroup';
 import { AnswersService } from '../service/answers.service';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-pdf-water-safe',
-  imports: [PdfUserComponent],
+  selector: 'app-pdf-workbook',
+  imports: [PdfUserComponent, MatButtonModule],
   templateUrl: './pdf-workbook.component.html',
   styleUrl: './pdf-workbook.component.css',
 })
 export class PdfWorkbookComponent implements OnDestroy {
-  level = input.required<string>();
+  level = input.required<'safe' | 'trained' | 'guide'>();
   id = input.required<string>();
 
   readonly lineStart = 25;
   readonly lineWidth = 160;
-  readonly pageTop = 32;
+  readonly lineEnd = this.lineStart + this.lineWidth;
+  readonly boxStart = this.lineStart - 3;
+  readonly boxWidth = this.lineWidth + 6;
+  readonly pageTop = 26;
   readonly pageBottom = 265;
   readonly cssPixelSize = 0.2645833333;
 
   private execute$ = new Subject();
+
+  title = 'Rock school Workbook';
 
   user?: User;
   group?: questionGroup;
@@ -56,6 +62,9 @@ export class PdfWorkbookComponent implements OnDestroy {
         if (!group.books) {
           group.books = {};
         }
+        this.title = this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} Participant`;
+
+        console.log(this.title);
 
         if (this.user && this.group && this.questions) {
           this.execute$.next('');
@@ -64,7 +73,7 @@ export class PdfWorkbookComponent implements OnDestroy {
     );
 
     // pause the execution until all the data is loaded completely
-    this.subs.push(this.execute$.pipe(debounce(() => interval(500))).subscribe(() => this.print()));
+    // this.subs.push(this.execute$.pipe(debounce(() => interval(500))).subscribe(() => this.print()));
   }
 
   ngOnDestroy(): void {
@@ -80,13 +89,11 @@ export class PdfWorkbookComponent implements OnDestroy {
       format: 'a4',
     });
 
-    const title = this.group?.books.safe?.name || this.group?.name + ' Safe Participant';
-
     this.headings(doc);
 
     // const footer = `Page ${i} of ${pageCount}`;
 
-    let y = this.createTitle(doc, 0, title);
+    let y = this.createTitle(doc, 0, this.title);
 
     // y = this.instructions(y, doc, title);
 
@@ -96,7 +103,7 @@ export class PdfWorkbookComponent implements OnDestroy {
 
     await this.printSections(doc);
 
-    doc.save(`${this.group?.name}-${this.level()}-workbook.pdf`);
+    doc.save(`${this.user?.scoutNumber}-${this.group?.name}-${this.level()}-workbook.pdf`);
   }
 
   async printSections(doc: jsPDF) {
@@ -118,35 +125,35 @@ export class PdfWorkbookComponent implements OnDestroy {
       doc.addPage('a4', 'portrait').setDrawColor(0);
       y = this.headings(doc);
       while (y < this.pageBottom - sectionBuffer && current) {
-        if (y != 32) {
+        if (y != this.pageTop) {
           y += 10;
         }
         doc
-          // .setFillColor(204, 204, 204);
-          .rect(this.lineStart, y - 6, this.lineWidth, 10)
+          .setFillColor(252, 244, 163)
+          .rect(this.boxStart, y - 6, this.boxWidth, 10, 'FD')
           .setFontSize(12)
           .setFont('helvetica', 'bold')
-          .text(current.heading, 30, y)
+          .text(current.heading, this.lineStart, y)
           .setFont('helvetica')
           .setFontSize(10);
 
         y += 8;
 
-        if (current.description) {
+        // only display full text on first appearance of the header
+        if (current.description && questionIndex == 0) {
           const fontSize = 9;
           doc.setFontSize(fontSize);
 
-          // break description on lines,  print each adn estimate the height.
+          // break description on lines,  print each and estimate the height.
           current.description.split(/\r\n|\r|\n/).forEach(line => {
             if (line) {
               const width = this.lineWidth - 5;
               doc.text(line, this.lineStart, y, { maxWidth: width });
               const totalWidth = doc.getTextWidth(line);
               const lines = Math.floor(totalWidth / width) + 1;
-              y += (lines + 1) * 3.2; // 9 point is about 3.175
+              y += lines * 3.2 + 4.5; // 9 point is about 3.175
             }
           });
-          y += 8;
           doc.setFontSize(10);
         }
         let myQuestion = current.questions[questionIndex];
@@ -157,28 +164,33 @@ export class PdfWorkbookComponent implements OnDestroy {
 
           if (asked) {
             switch (asked.type) {
+              case undefined:
               case '':
               case 'checkbox':
-                doc.setDrawColor(0, 0, 0).rect(this.lineWidth - 5, y - 4, 5, 5);
-
-                y = this.textHeight(doc, asked.text, this.lineStart, y, this.lineWidth - 10, 10).y;
-
+                y++;
+                doc.setDrawColor(0, 0, 0).rect(this.lineEnd - 5, y - 2, 5, 5);
                 if (answer?.done) {
-                  doc.text('x', this.lineWidth - 4, y);
+                  doc.text('x', this.lineEnd - 3.5, y + 1.5);
                 }
-                y += 4;
+                doc.setTextColor(93, 93, 93);
+                y = this.textHeight(doc, asked.text, this.lineStart, y, this.lineWidth - 10, 10).y;
+                doc.setTextColor(0, 0, 0);
+
+                y += 6;
                 break;
 
               case 'textbox':
+                doc.setTextColor(93, 93, 93);
                 y = this.textHeight(doc, asked.text, this.lineStart, y, this.lineWidth - 10, 10).y;
+                doc.setTextColor(0, 0, 0);
                 y += 5;
                 if (answer?.text) {
-                  const temp = this.textHeight(doc, answer.text, this.lineStart + 2, y + 1, this.lineWidth - 4, 10);
+                  const temp = this.textHeight(doc, answer.text, this.lineStart, y + 1, this.lineWidth - 4, 10);
                   const boxHeight = temp.extraLines * temp.lineHeight + temp.lineHeight + 4;
-                  doc.setDrawColor(192, 192, 192).rect(this.lineStart, y - 3, this.lineWidth, boxHeight);
+                  doc.setDrawColor(173, 216, 230).rect(this.boxStart, y - 3, this.boxWidth, boxHeight);
                   y = temp.y + 3;
                 } else {
-                  doc.setDrawColor(0, 0, 0).rect(this.lineStart, y - 3, this.lineWidth, 5);
+                  doc.setDrawColor(0, 0, 0).rect(this.boxStart, y - 3, this.boxWidth, 5);
                 }
 
                 y += 6;
@@ -189,9 +201,8 @@ export class PdfWorkbookComponent implements OnDestroy {
                   const img = await this.imageUrlToBase64(asked.img);
 
                   const size = await this.getImageDimensions(img);
-                  console.log(size);
                   const newSize = { width: size.width * this.cssPixelSize, height: size.height * this.cssPixelSize };
-                  if( newSize.width < this.lineWidth) {
+                  if (newSize.width < this.lineWidth) {
                     doc.addImage(img, 'png', this.lineStart, y, newSize.width, newSize.height);
                   }
                   y += newSize.height + 4;
@@ -201,6 +212,7 @@ export class PdfWorkbookComponent implements OnDestroy {
                 break;
 
               case 'url':
+                console.log(asked);
                 doc.text(asked.text, this.lineStart, y, {
                   maxWidth: this.lineWidth,
                 });
@@ -327,28 +339,30 @@ export class PdfWorkbookComponent implements OnDestroy {
   // }
 
   createTitle(doc: jsPDF, y: number, title: string): number {
-    y = 32;
+    y = this.pageTop;
+
+    const centre = 115;
     doc
       .setTextColor(0, 0, 0)
       .setDrawColor(0)
       .setFillColor(204, 204, 204)
-      .rect(18, this.lineStart, this.lineWidth, 25, 'FD') //Fill and Border
+      .rect(this.boxStart, this.pageTop - 7, this.boxWidth, 25, 'FD') //Fill and Border
       .setFontSize(16)
       .setFont('helvetica', 'bold')
-      .text('ADVENTUROUS ACTIVITIES PROGRAM', 65, y);
+      .text('ADVENTUROUS ACTIVITIES PROGRAM', centre, y, { align: 'center' });
 
-    y += 8;
-    doc.setFontSize(16).setTextColor(255, 0, 0).text(title, 67, y);
+    y += 7;
+    doc.setFontSize(16).setTextColor(255, 0, 0).text(title, centre, y, { align: 'center' });
 
-    y += 8;
-    doc.setTextColor('black').setFillColor('white').text('Assessment of Proficiency', 86, y).setFont('helvetica');
+    y += 7;
+    doc.setTextColor('black').text('Assessment of Proficiency', centre, y, { align: 'center' }).setFont('helvetica');
     return y;
   }
 
   headings(doc: jsPDF) {
     this.page++;
-    const header = this.group?.books.safe?.heading || this.group?.name + ' Safe Participant Workbook';
-    const footer = this.group?.books.safe?.footing || this.group?.name + ' Safe Participant Workbook';
+    const header = this.group?.books[this.level()]?.heading || `${this.group?.name} ${this.level()} Participant Workbook`;
+    const footer = this.group?.books[this.level()]?.footing || `${this.group?.name} ${this.level()} Participant Workbook`;
 
     doc
       .setTextColor(173, 216, 230)
@@ -364,39 +378,38 @@ export class PdfWorkbookComponent implements OnDestroy {
       .text(footer, 105, 281, { align: 'center' });
 
     // location of top of the page...
-    return 32;
+    return this.pageTop;
   }
 
   verifiers(doc: jsPDF, y: number): number {
     y += 10;
 
-    const box = 50;
-    const start = 30;
+    const box = Math.floor(this.boxWidth / 3);
 
-    doc.text('Who instructed or assisted you in your activity course and to complete the workbook', start, y);
+    doc.text('Who instructed or assisted you in your activity course and to complete the workbook', this.lineStart, y);
 
     y += 4;
 
     doc.setDrawColor(0);
 
-    [start, start + box, start + box + box].forEach(x => {
-      doc.setFillColor(204, 204, 204).rect(x, y, 50, 10, 'FD');
+    [this.boxStart, this.boxStart + box, this.boxStart + box + box].forEach(x => {
+      doc.setFillColor(204, 204, 204).rect(x, y, box, 10, 'FD');
     });
 
     y += 6;
     doc
       .setFontSize(12)
       .setFont('helvetica', 'bold')
-      .text('Name', start + 10, y)
-      .text('Role', start + 10 + box, y)
-      .text('Qualification', start + 10 + box + box, y);
+      .text('Name', this.lineStart, y)
+      .text('Role', this.lineStart + box, y)
+      .text('Qualification', this.lineStart + box + box, y);
 
     y += 4;
     doc.setFillColor('white');
 
     [1, 2, 3].forEach(() => {
-      [start, start + box, start + box + box].forEach(x => {
-        doc.rect(x, y, 50, 10, 'FD');
+      [this.boxStart, this.boxStart + box, this.boxStart + box + box].forEach(x => {
+        doc.rect(x, y, box, 10, 'FD');
       });
       y += 10;
     });
@@ -416,18 +429,18 @@ export class PdfWorkbookComponent implements OnDestroy {
       y += 10;
       doc
         .setFillColor(204, 204, 204)
-        .rect(start, y, box + 10, 10, 'FD')
+        .rect(this.boxStart, y, box + 10, 10, 'FD')
         .setFillColor('white')
-        .rect(start + box + 10, y, box + box - 10, 10, 'FD')
-        .text(t, start + 3, y + 6);
+        .rect(this.boxStart + box + 10, y, box + box - 10, 10, 'FD')
+        .text(t, this.lineStart, y + 6);
     });
 
     y += 20;
 
     doc
       .setFontSize(10)
-      .text('I certify that proficiency in Core Skills-Trained Participant has been attained by:', start, y)
-      .line(start, y + 12, 170, y + 12, 'S');
+      .text('I certify that proficiency in Core Skills-Trained Participant has been attained by:', this.lineStart, y)
+      .line(this.boxStart, y + 12, this.boxStart + this.boxWidth, y + 12, 'S');
 
     y += 12;
 
@@ -453,10 +466,10 @@ export class PdfWorkbookComponent implements OnDestroy {
       { h: 'Email', t: this.user?.email },
     ].forEach(data => {
       doc.setFillColor(204, 204, 204);
-      doc.rect(18, y, 40, 10, 'FD'); //Fill and Border
+      doc.rect(this.boxStart, y, 43, 10, 'FD'); //Fill and Border
       y += 5;
-      doc.text(data.h, 21, y);
-      doc.text(data.t || '', 60, y);
+      doc.text(data.h, this.lineStart, y);
+      doc.text(data.t || '', this.lineStart + 47, y);
       y += 5;
     });
 

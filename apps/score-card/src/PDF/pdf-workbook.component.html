@@ -1,72 +1,19 @@
-<button (click)="print()">Print</button>
 
-<div class="page">
-  <div class="table">
-    <div class="logo"></div>
-    <div class="title">
-      <div>ADVENTUROUS ACTIVITIES PROGRAM</div>
-      <div class="accent">{{group?.name}} {{level()}}</div>
-      <div>Assessment of Proficiency Folio</div>
-    </div>
-  </div>
-
-  <div>
-    <p class="title">
-      This proficiency document is for use in the completion for the Scouts
-      Australia requirements of Paddling Flat Water - Safe Participant.
-    </p>
-    <ul>
-      <li>
-        This document can be used as supporting evidence in the Outdoor
-        Adventure Skills (OAS) Stage 5 Paddling
-      </li>
-      <li>
-        This document is aligned to the following units and can be used as
-        partial evidence towards the Unit of Competency - SISOCNE001 Paddle a
-        craft using fundamental skills
-      </li>
-    </ul>
-  </div>
-  <div>
-    <app-pdf-user></app-pdf-user>
-  </div>
-  <p>
-    Who instructed or assisted you in your activity course and to complete the
-    Folio:
-  </p>
-
-  <div class="sign">
-    <div class="title">Name</div>
-    <div class="title">Role</div>
-    <div class="title">Qualification</div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-
-  <p>
-    I certify that proficiency in Abseiling -Safe Participant - Natural /
-    Artificial / Both (circle) has been attained by:
-  </p>
-
-  <div class="table">
-    <div>Name</div>
-    <div class="box"></div>
-    <div>Qualification & Number</div>
-    <div class="box"></div>
-    <div>Date</div>
-    <div class="box"></div>
-    <div>Signature</div>
-    <div class="box"></div>
-  </div>
-
-  I certify that proficiency in {{group?.name}} {{level()}} has been
-  attained by: <b>{{ user?.name }} ({{ user?.scoutNumber }})</b>
-  ________________________________________________________________________________
+<div class="table">
+<div class="title">
+  <div>ADVENTUROUS ACTIVITIES PROGRAM</div>
+  <div class="title">{{ title }}</div>
+  <div>Assessment of Proficiency Folio</div>
 </div>
+<div class="accent">Group: {{ group?.name }}</div>
+<div class="accent">Level: {{ level() }}</div>
+<div>
+  Attained by: <b>{{ user?.name }} ({{ user?.scoutNumber }})</b>
+</div>
+
+<button mat-raised-button (click)="print()">Print</button>
+
+</div>
+
+
+<app-pdf-user></app-pdf-user>
