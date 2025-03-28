@@ -59,6 +59,7 @@ export class QuestionsService {
             level: 'None',
             questions,
             show: true,
+            requiresSignOff: false,
           });
           return list;
         }
@@ -69,6 +70,7 @@ export class QuestionsService {
             level: 'None',
             questions,
             show: true,
+            requiresSignOff: false,
           });
           return list;
         }
@@ -80,6 +82,7 @@ export class QuestionsService {
               heading: p.heading,
               level: p.level,
               description: p.description,
+              requiresSignOff: p.requiresSignOff || false,
               questions: p.questions.map((code) =>
                 questions.find((x) => code === x.code)
               ).filter(x=>x),
@@ -181,6 +184,7 @@ export class QuestionsService {
             heading: x.heading,
             level: x.level,
             description: x.description || '',
+            requiresSignOff: x.requiresSignOff,
             questions: x.questions.map((q) => q.code),
           }));
 

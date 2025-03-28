@@ -173,6 +173,7 @@ export class EditGroupComponent {
       data: {
         section,
       },
+      minWidth: 600,
     });
 
     dialogRef.afterClosed().subscribe((result) => {
@@ -195,6 +196,7 @@ export class EditGroupComponent {
           questions: [],
         },
       },
+      minWidth: 600,
     });
 
     dialogRef.afterClosed().subscribe((result) => {

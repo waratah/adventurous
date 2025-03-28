@@ -1,21 +1,14 @@
 import { CdkTextareaAutosize, TextFieldModule } from '@angular/cdk/text-field';
 import { Component, Inject } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { PageDisplay } from '../../definitions';
 import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
 
@@ -27,10 +20,11 @@ import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
     MatButtonToggleModule,
     MatButtonModule,
     MatCardModule,
+    MatCheckboxModule,
     MatDialogModule,
-
     MatFormFieldModule,
     MatInputModule,
+    MatToolbarModule,
     ReactiveFormsModule,
   ],
   templateUrl: './dialog-section.component.html',
@@ -41,6 +35,7 @@ export class DialogSectionComponent {
   section?: PageDisplay;
 
   level = '';
+  requiresSignOff = false;
   sectionForm: FormGroup;
 
   private headingFormControl = new FormControl('', [Validators.required]);
@@ -48,10 +43,7 @@ export class DialogSectionComponent {
 
   matcher = new MyErrorStateMatcher();
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) data: { section: PageDisplay },
-    private dialogRef: MatDialogRef<DialogSectionComponent>
-  ) {
+  constructor(@Inject(MAT_DIALOG_DATA) data: { section: PageDisplay }, private dialogRef: MatDialogRef<DialogSectionComponent>) {
     this.section = data.section;
     if (!this.section) {
       this.headingFormControl.setValue('');
@@ -62,7 +54,7 @@ export class DialogSectionComponent {
         const heading = this.section.heading.toLocaleLowerCase();
 
         // convert headings to levels it they match
-        ['safe', 'trained'].forEach((l) => {
+        ['safe', 'trained'].forEach(l => {
           if (!heading.localeCompare(l)) {
             this.level = l;
           }
@@ -70,6 +62,7 @@ export class DialogSectionComponent {
       }
       this.headingFormControl.setValue(this.section?.heading || '');
       this.descriptionFormControl.setValue(this.section?.description || '');
+      this.requiresSignOff = this.section.requiresSignOff;
     }
     this.sectionForm = new FormGroup({
       heading: this.headingFormControl,
@@ -89,12 +82,14 @@ export class DialogSectionComponent {
         level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
         description: this.descriptionFormControl.getRawValue() || undefined,
+        requiresSignOff: this.requiresSignOff,
       };
     } else {
       result = <PageDisplay>{
         level: this.level || '',
         heading: this.headingFormControl.getRawValue() || undefined,
         description: this.descriptionFormControl.getRawValue() || undefined,
+        requiresSignOff: this.requiresSignOff,
         questions: [],
       };
     }

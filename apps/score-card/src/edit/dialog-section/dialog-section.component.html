@@ -1,13 +1,11 @@
 <form [formGroup]="sectionForm" (ngSubmit)="save()">
+  <mat-toolbar>
+    <h2>Section detail</h2>
+  </mat-toolbar>
+
   <mat-form-field>
     <mat-label>Section heading</mat-label>
-    <input
-      type="text"
-      matInput
-      formControlName="heading"
-      [errorStateMatcher]="matcher"
-      placeholder="Name Parts of canoe paddle"
-    />
+    <input type="text" matInput formControlName="heading" [errorStateMatcher]="matcher" placeholder="Name Parts of canoe paddle" />
     <mat-hint>This is the main grouping heading for the users</mat-hint>
     @if (sectionForm.controls['heading'].hasError('required')) {
     <mat-error>Heading is <strong>required</strong></mat-error>
@@ -21,29 +19,28 @@
       cdkTextareaAutosize
       #autosize="cdkTextareaAutosize"
       cdkAutosizeMinRows="1"
-      cdkAutosizeMaxRows="5"
+      cdkAutosizeMaxRows="6"
       formControlName="description"
       [errorStateMatcher]="matcher"
       placeholder="Optional expanded description."
     ></textarea>
-    <mat-hint
-      >The heading may be simply about the typical hazards, you may want to ask
-      for specific detail in the questions.</mat-hint
-    >
+    <mat-hint>The heading may be simply about the typical hazards, you may want to ask for specific detail in the questions.</mat-hint>
   </mat-form-field>
 
-  <p>
-    PDF?
-    <mat-button-toggle-group
-      [value]="level"
-      (change)="level = $event.value"
-      aria-label="safe, Trained or unknown"
-    >
+  <mat-card>
+    <div class="label">What PDF does this section appear?</div>
+    <mat-button-toggle-group [value]="level" (change)="level = $event.value" aria-label="safe, Trained or unknown">
       <mat-button-toggle value="safe">Safe Participant</mat-button-toggle>
       <mat-button-toggle value="trained">Trained Participant</mat-button-toggle>
+      <mat-button-toggle value="assist">Assistant Guide</mat-button-toggle>
+      <mat-button-toggle value="guide">Guide</mat-button-toggle>
       <mat-button-toggle value="">No PDF yet</mat-button-toggle>
     </mat-button-toggle-group>
-  </p>
+  </mat-card>
+
+  <mat-card>
+    <mat-checkbox [checked]="requiresSignOff" (change)="requiresSignOff = $event.checked">A signature is required ont the PDF</mat-checkbox>
+  </mat-card>
 
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancel</button>

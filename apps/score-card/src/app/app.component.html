@@ -1,28 +1,14 @@
 <mat-toolbar>
   <button mat-icon-button aria-label="menu" [matMenuTriggerFor]="menu">
-    <mat-icon
-      matTooltip="Menu - select activity like abseil, canoe, kayak, etc"
-      matTooltipPosition="below"
-      >menu</mat-icon
-    >
+    <mat-icon matTooltip="Menu - select activity like abseil, canoe, kayak, etc" matTooltipPosition="below">menu</mat-icon>
   </button>
   <h1>
     @if( selectedGroup$| async; as group ) {
-    <span class="hide-on-small">Rock School -</span> {{ group.name }}} @else {
-    Rock School }
+    <span class="hide-on-small">Rock School -</span> {{ group.name }}} @else { Rock School }
   </h1>
-  <button
-    mat-icon-button
-    aria-label="User settings screen"
-    [routerLink]="['/user']"
-    routerLinkActive="active-link"
-  >
-    <mat-icon matTooltip="View Your User" matTooltipPosition="below"
-      >settings</mat-icon
-    >
+  <button mat-icon-button aria-label="User settings screen" [routerLink]="['/user']" routerLinkActive="active-link">
+    <mat-icon matTooltip="View Your User" matTooltipPosition="below">settings</mat-icon>
   </button>
-
-
 </mat-toolbar>
 
 <mat-menu #menu="matMenu">
@@ -39,53 +25,35 @@
     <span>Home</span>
   </button>
 
-  <mat-button-toggle-group
-    [value]="action"
-    (change)="changeAction($event.value)"
-    aria-label="Action"
-  >
+  <mat-button-toggle-group [value]="action" (change)="changeAction($event.value)" aria-label="Action">
     <mat-button-toggle value="view">View</mat-button-toggle>
     <mat-button-toggle value="verify">Verify</mat-button-toggle>
     <mat-button-toggle value="edit">Edit</mat-button-toggle>
   </mat-button-toggle-group>
 
+  @if( id()) {
   <button mat-menu-item>
-    <mat-icon
-    matTooltip="Print selected activity PDF"
-    matTooltipPosition="below"
-    >print</mat-icon
-  >
+    <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
     <mat-icon>done all</mat-icon>
     <span>Dump Completed</span>
   </button>
-  <button mat-menu-item [routerLink]="['pdf','safe', id]">
-    <mat-icon
-    matTooltip="Print selected activity PDF"
-    matTooltipPosition="below"
-    >print</mat-icon
-  >
+  <button mat-menu-item [routerLink]="['pdf', 'safe', id()]">
+    <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
     <mat-icon>voicemail</mat-icon>
     <span>Safe Workbook</span>
   </button>
 
-  <button mat-menu-item [routerLink]="['pdf','trained', id]">
-    <mat-icon
-    matTooltip="Print selected activity PDF"
-    matTooltipPosition="below"
-    >print</mat-icon
-  >
+  <button mat-menu-item [routerLink]="['pdf', 'trained', id()]">
+    <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
     <mat-icon>notifications</mat-icon>
     <span>Trained Workbook</span>
   </button>
-  <button mat-menu-item [routerLink]="['pdf','guide', id]">
-    <mat-icon
-    matTooltip="Print selected activity PDF"
-    matTooltipPosition="below"
-    >print</mat-icon
-  >
+  <button mat-menu-item [routerLink]="['pdf', 'guide', id()]">
+    <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
     <mat-icon>open_in_full</mat-icon>
     <span>Guide Workbook</span>
   </button>
+  }
 </mat-menu>
 <main>
   <router-outlet></router-outlet>

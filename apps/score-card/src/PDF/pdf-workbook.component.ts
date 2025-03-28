@@ -1,4 +1,4 @@
-import { Component, effect, input, OnDestroy } from '@angular/core';
+import { Component, effect, input, OnDestroy, signal } from '@angular/core';
 import jsPDF from 'jspdf';
 import { combineLatest, debounce, interval, Subject, Subscription } from 'rxjs';
 import { answer, Question, questionGroup, User } from '../definitions';
@@ -30,7 +30,7 @@ export class PdfWorkbookComponent implements OnDestroy {
 
   private execute$ = new Subject();
 
-  title = 'Rock school Workbook';
+  title = signal('Rock school Workbook');
 
   user?: User;
   group?: questionGroup;
@@ -43,6 +43,9 @@ export class PdfWorkbookComponent implements OnDestroy {
   constructor(userService: UsersService, questionService: QuestionsService, answersService: AnswersService) {
     effect(() => {
       questionService.group = this.id();
+
+      this.title.set( this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} Participant`);
+
     });
 
     answersService.userId = userService.userId;
@@ -62,9 +65,7 @@ export class PdfWorkbookComponent implements OnDestroy {
         if (!group.books) {
           group.books = {};
         }
-        this.title = this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} Participant`;
-
-        console.log(this.title);
+        this.title.set( this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} level`);
 
         if (this.user && this.group && this.questions) {
           this.execute$.next('');
@@ -93,7 +94,7 @@ export class PdfWorkbookComponent implements OnDestroy {
 
     // const footer = `Page ${i} of ${pageCount}`;
 
-    let y = this.createTitle(doc, 0, this.title);
+    let y = this.createTitle(doc, 0, this.title());
 
     // y = this.instructions(y, doc, title);
 
