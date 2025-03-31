@@ -1,7 +1,7 @@
 import { Component, Inject, signal } from '@angular/core';
 import { UploadImageComponent } from '../../utils/';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { UploadResult } from '../../definitions';
+import { UploadParameters, UploadResult } from '../../definitions';
 
 @Component({
   selector: 'app-dialog-upload',
@@ -18,10 +18,7 @@ export class DialogUploadComponent {
   directory = signal('misc');
   fileExtensions = signal(['jpg', 'jpeg', 'png', 'pdf']);
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) data: { directory: string; multiple?: boolean; fileMaxSize?: number; fileMaxCount?: number },
-    private dialogRef: MatDialogRef<DialogUploadComponent>
-  ) {
+  constructor(@Inject(MAT_DIALOG_DATA) data: UploadParameters, private dialogRef: MatDialogRef<DialogUploadComponent>) {
     if (data.directory) {
       this.directory.set(data.directory);
     } else {
