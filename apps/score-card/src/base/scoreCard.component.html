@@ -7,30 +7,23 @@
     }
   </mat-toolbar>
 
-  @for (d of detail$ | async; track d.heading) {
-  <section [attr.aria-label]="d.heading">
-    <app-collapse [heading]="d.heading" [show]="d.show">
+  @for (page of detail$ | async; track page.heading) {
+  <section [attr.aria-label]="page.heading">
+    <app-collapse [heading]="page.heading" [show]="page.show">
       <header>
-        @if(d.doneCount){
-        <span class="hint"
-          >Completed Assessments: {{ d.doneCount }}/{{ d.totalCount }}</span
-        >
+        @if(page.doneCount){
+        <span class="hint"><span class="hide-on-small">Completed Assessments: </span>{{ page.doneCount }}/{{ page.totalCount }}</span>
         }
       </header>
-      @if(d.description){
+      @if(page.description){
       <div caption class="padding hint">
-        {{ d.description }}
+        {{ page.description }}
       </div>
       }
       <div class="list">
-        @for (d of d.details; track d.question.code) { @switch( d.question.type)
-        { @default {
+        @for (d of page.details; track d.question.code) { @switch( d.question.type) { @default {
         <span>{{ d.question.text }}</span>
-        <input
-          type="checkbox"
-          [checked]="d.answer.done"
-          (change)="updateDone(d.question.code, !d.answer.done)"
-        />
+        <input type="checkbox" [checked]="d.answer.done" (change)="updateDone(d.question.code, !d.answer.done)" />
         } @case("img") {
         <img [src]="d.question.img" [alt]="d.question.text" />
         <span></span>
@@ -47,14 +40,14 @@
         </div>
         <span></span>
         } } @if(isVerify && d.question.type !== 'img') {
-        <input
-          type="checkbox"
-          [checked]="d.answer.verified"
-          (change)="updateVerify(d.question.code, !d.answer.verified)"
-        />
+        <input type="checkbox" [checked]="d.answer.verified" (change)="updateVerify(d.question.code, !d.answer.verified)" />
+        } @else { @if( d.question.attachmentRequired) {
+        <div>
+          <button mat-icon-button (click)="uploadProof(d)"><mat-icon>attach_file_add</mat-icon></button>
+        </div>
         } @else {
         <div></div>
-        } }
+        } } }
       </div>
     </app-collapse>
   </section>

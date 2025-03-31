@@ -242,3 +242,10 @@ main {
   width: 100%;
   overflow: hidden;
 }
+
+
+.centred {
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  }

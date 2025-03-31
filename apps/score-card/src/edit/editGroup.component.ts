@@ -1,9 +1,4 @@
-import {
-  CdkDragDrop,
-  DragDropModule,
-  moveItemInArray,
-  transferArrayItem,
-} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, effect, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -14,15 +9,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
 import { PageDisplay, Question, questionGroup } from '../definitions';
-import { QuestionsService } from '../service/questions.service';
-import { CollapseComponent } from '../utils';
-import { DialogQuestionComponent } from './dialog-question/dialog-question.component';
-import { DialogSectionComponent } from './dialog-section/dialog-section.component';
-import { QuestionSelectComponent } from '../utils/question-select/question-select.component';
-import { DialogGroupComponent } from './dialog-group/dialog-group.component';
-import { Router } from '@angular/router';
+import { DialogGroupComponent, DialogQuestionComponent, DialogSectionComponent } from '../dialog';
+import { QuestionsService } from '../service';
+import { CollapseComponent, QuestionSelectComponent } from '../utils';
 @Component({
   selector: 'app-edit-group',
   standalone: true,
@@ -55,11 +47,7 @@ export class EditGroupComponent {
   public sections$: Observable<PageDisplay[]>;
   public groups$: Observable<questionGroup[]>;
 
-  constructor(
-    private questionsService: QuestionsService,
-    private dialog: MatDialog,
-    private router: Router
-  ) {
+  constructor(private questionsService: QuestionsService, private dialog: MatDialog, private router: Router) {
     this.sections$ = questionsService.sections$;
     this.groups$ = questionsService.allQuestionGroups$;
 
@@ -67,26 +55,13 @@ export class EditGroupComponent {
   }
 
   public dropHeading(event: CdkDragDrop<PageDisplay[]>) {
-    moveItemInArray(
-      event.previousContainer.data,
-      event.previousIndex,
-      event.currentIndex
-    );
+    moveItemInArray(event.previousContainer.data, event.previousIndex, event.currentIndex);
 
-    this.questionsService.saveGroup(
-      this.questionsService.group,
-      event.previousContainer.data
-    );
+    this.questionsService.saveGroup(this.questionsService.group, event.previousContainer.data);
   }
 
-  removeQuestion(
-    question: Question,
-    section: PageDisplay,
-    sections: PageDisplay[]
-  ) {
-    section.questions = section.questions.filter(
-      (x) => x.code !== question.code
-    );
+  removeQuestion(question: Question, section: PageDisplay, sections: PageDisplay[]) {
+    section.questions = section.questions.filter(x => x.code !== question.code);
     this.questionsService.saveGroup(this.id() || '', sections);
   }
 
@@ -98,11 +73,7 @@ export class EditGroupComponent {
     });
   }
 
-  addQuestion(
-    question: Question,
-    section: PageDisplay,
-    sections: PageDisplay[]
-  ) {
+  addQuestion(question: Question, section: PageDisplay, sections: PageDisplay[]) {
     if (question) {
       const list = [...section.questions, question];
       section.questions = list;
@@ -113,23 +84,17 @@ export class EditGroupComponent {
     }
   }
 
-  public async cloneSection(
-    section: PageDisplay,
-    index: number,
-    sections: PageDisplay[]
-  ) {
+  public async cloneSection(section: PageDisplay, index: number, sections: PageDisplay[]) {
     const questions = section.questions;
 
     const newSection = { ...section };
     newSection.questions = [];
     await Promise.all(
-      questions.map((q) => {
+      questions.map(q => {
         const result = { ...q };
         result.code = ''; // new question
         newSection.questions.push(result as Question);
-        return this.questionsService
-          .updateQuestion(result)
-          .catch((error) => console.error(error));
+        return this.questionsService.updateQuestion(result).catch(error => console.error(error));
       })
     );
 
@@ -145,25 +110,16 @@ export class EditGroupComponent {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(result => {
       this.addQuestion(result, section, sections);
     });
   }
 
   public dropSection(event: CdkDragDrop<Question[]>, sections: PageDisplay[]) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(
-        event.previousContainer.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      moveItemInArray(event.previousContainer.data, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
     this.questionsService.saveGroup(this.id() || '', sections);
   }
@@ -176,7 +132,7 @@ export class EditGroupComponent {
       minWidth: 600,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
         sections[index] = result;
 
@@ -199,7 +155,7 @@ export class EditGroupComponent {
       minWidth: 600,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(result => {
       if (result) {
         sections.push(result);
         this.questionsService.saveGroup(this.id() || '', sections);
@@ -220,7 +176,7 @@ export class EditGroupComponent {
   }
 
   editGroup() {
-    this.questionsService.selectedGroup$.pipe(take(1)).subscribe( g=> this.editGroupDetail(g))
+    this.questionsService.selectedGroup$.pipe(take(1)).subscribe(g => this.editGroupDetail(g));
   }
 
   public editGroupDetail(group: questionGroup) {
@@ -230,7 +186,7 @@ export class EditGroupComponent {
       },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().subscribe(result => {
       if (result?.id) {
         this.router.navigate(['edit', this.questionsService.group]);
       } else {

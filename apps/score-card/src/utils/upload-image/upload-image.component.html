@@ -1,0 +1,32 @@
+<div
+  for="fileInput"
+  #dragArea
+  class="drag"
+  (drop)="dropHandler($event)"
+  (dragover)="dragOverHandler($event)"
+  (dragleave)="onDragLeave($event)"
+>
+  <h2 for="">Drag and drop files here</h2>
+
+  <mat-icon>cloud_upload</mat-icon>
+
+  <p>or</p>
+
+  <button mat-raised-button (click)="fileInput.click()">Browse files</button>
+</div>
+
+@if (errorMessage()) {
+<div class="message">
+  {{ errorMessage() }}
+</div>
+}
+
+<input
+  type="file"
+  #fileInput
+  [multiple]="multiple() ? 'multiple' : ''"
+  [attr.capture]="fileInputCapture()"
+  (click)="fileInput.value = ''"
+  (change)="onChange(fileInput.files)"
+  [accept]="accept()"
+/>

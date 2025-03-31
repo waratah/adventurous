@@ -1,28 +1,21 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { questionGroup } from '../definitions';
-import { QuestionsService } from '../service/questions.service';
-import { DialogGroupComponent } from '../edit/dialog-group/dialog-group.component';
-import { MatDialog } from '@angular/material/dialog';
-import { MatCardModule } from '@angular/material/card';
+import { DialogGroupComponent } from '../dialog';
+import { QuestionsService } from '../service';
 
 @Component({
   selector: 'app-groups',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatSlideToggleModule,
-    MatButtonToggleModule,
-    MatButtonModule,
-    MatCardModule,
-    MatToolbarModule,
-  ],
+  imports: [MatSlideToggleModule, MatButtonToggleModule, MatButtonModule, MatCardModule, MatToolbarModule, NgClass, AsyncPipe],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
 })
@@ -37,11 +30,7 @@ export class GroupsComponent {
 
   public newGroup = '';
 
-  constructor(
-    public questionsService: QuestionsService,
-    private dialog: MatDialog,
-    private router: Router
-  ) {
+  constructor(public questionsService: QuestionsService, private dialog: MatDialog, private router: Router) {
     this.groups$ = questionsService.allQuestionGroups$;
     this.selectedGroup$ = questionsService.selectedGroup$;
   }
@@ -83,19 +72,19 @@ export class GroupsComponent {
     this.editGroupDetail(group);
   }
 
-   public editGroupDetail(group: questionGroup) {
-      const dialogRef = this.dialog.open(DialogGroupComponent, {
-        data: {
-          group,
-        },
-      });
+  public editGroupDetail(group: questionGroup) {
+    const dialogRef = this.dialog.open(DialogGroupComponent, {
+      data: {
+        group,
+      },
+    });
 
-      dialogRef.afterClosed().subscribe((result) => {
-        if (result?.id) {
-          this.router.navigate(['edit', this.questionsService.group]);
-        } else {
-          console.info({ result });
-        }
-      });
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.id) {
+        this.router.navigate(['edit', this.questionsService.group]);
+      } else {
+        console.info({ result });
+      }
+    });
+  }
 }

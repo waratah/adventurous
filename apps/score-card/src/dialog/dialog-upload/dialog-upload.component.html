@@ -1,0 +1,8 @@
+<app-upload-image
+  [directory]="directory()"
+  [multiple]="multiple()"
+  [fileMaxSize]="fileMaxSize()"
+  [fileMaxCount]="fileMaxCount()"
+  [fileExtensions]="fileExtensions()"
+  (files)="close($event)"
+></app-upload-image>
