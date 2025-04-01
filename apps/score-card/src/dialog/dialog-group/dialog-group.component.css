@@ -1,6 +1,6 @@
 :host {
   > * {
-    margin: 2rem;
+    margin: 1.5rem;
   }
 }
 
@@ -9,6 +9,7 @@ form {
   max-width: 60ch;
   display: grid;
   grid-template-columns: 1fr;
+  gap: 0.5rem;
 }
 
 .mat-mdc-form-field:first {
@@ -16,8 +17,7 @@ form {
 }
 
 .card {
-  margin: 1rem 0;
-  padding: 0 0.5rem;
+  padding: 0 0.3rem;
   background-color: var(
     --mdc-filled-text-field-container-color,
     var(--mat-sys-surface-variant)

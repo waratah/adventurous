@@ -10,7 +10,7 @@ import {
   setDoc,
 } from '@angular/fire/firestore';
 import { ReplaySubject } from 'rxjs';
-import { answer, answerStore as AnswerStore } from '../definitions';
+import { Answer, AnswerStore } from '../definitions';
 
 @Injectable({
   providedIn: 'root',
@@ -18,22 +18,20 @@ import { answer, answerStore as AnswerStore } from '../definitions';
 export class AnswersService {
   private myId = '';
 
-  private answers = new ReplaySubject<answer[]>(1);
+  private answers = new ReplaySubject<Answer[]>(1);
   answers$ = this.answers.asObservable();
 
   private answerCollection: CollectionReference<AnswerStore, DocumentData>;
 
   constructor(private store: Firestore) {
-    this.answerCollection = collection(this.store, 'answers').withConverter(
-      this.createAnswerConverter
-    );
+    this.answerCollection = collection(this.store, 'answers').withConverter(this.createAnswerConverter);
   }
 
   private createAnswerConverter: FirestoreDataConverter<AnswerStore> = {
     toFirestore(modelObject) {
       const objToUpload = { ...modelObject } as DocumentData; // DocumentData is mutable
       delete objToUpload['scoutNumber']; // make sure to remove ID so it's not uploaded to the document
-      Object.keys(objToUpload).forEach((key) => {
+      Object.keys(objToUpload).forEach(key => {
         if (!objToUpload[key]) {
           delete objToUpload[key];
         }
@@ -51,7 +49,7 @@ export class AnswersService {
   };
 
   private loadAnswers(id: string) {
-    getDoc(doc(this.answerCollection, id)).then((d) => {
+    getDoc(doc(this.answerCollection, id)).then(d => {
       const result = d.data() as AnswerStore | undefined;
       if (result?.answers) {
         this.answers.next(result.answers);
@@ -71,49 +69,29 @@ export class AnswersService {
     return this.myId;
   }
 
-  updateCheck(questionId: string, value: boolean) {
-    this.updateAnswer({
-      code: questionId,
-      done: value,
-      doneDate: new Date(),
-    });
-  }
-
-  updateText(questionId: string, value: string) {
-    this.updateAnswer({
-      code: questionId,
-      done: Boolean(value),
-      text: value,
-      doneDate: new Date(),
-    });
-  }
-
-  private updateAnswer(answer: answer) {
+  updateAnswer(answer: Answer) {
     const docRef = doc(this.answerCollection, this.myId);
-    getDoc(docRef).then((answerStore) => {
+    getDoc(docRef).then(answerStore => {
       const store = answerStore.data() || {
         scoutNumber: this.myId,
         answers: [],
       };
       const currentAnswers = store.answers;
-      const previous = currentAnswers.find((x) => x.code === answer.code);
+      const previous = currentAnswers.find(x => x.code === answer.code);
 
       if (previous) {
-        store.answers = [
-          ...currentAnswers.filter((x) => x.code != answer.code),
-          { ...previous, ...answer },
-        ];
+        store.answers = [...currentAnswers.filter(x => x.code != answer.code), { ...previous, ...answer }];
       } else {
         store.answers.push(answer);
       }
       this.answers.next(store.answers);
-      setDoc(docRef, store).catch((error) => console.error(error));
+      setDoc(docRef, store).catch(error => console.error(error));
     });
   }
 
   public updateVerify(questionId: string, value: boolean) {
     const docRef = doc(this.answerCollection, this.myId);
-    getDoc(docRef).then((answerStore) => {
+    getDoc(docRef).then(answerStore => {
       const store = answerStore.data() || {
         scoutNumber: this.myId,
         answers: [],
@@ -124,7 +102,7 @@ export class AnswersService {
       //   unique.some( x=> x.code === item.code)? unique : [...unique, item], []);
       // store.answers = result;
 
-      const previous = store.answers.find((x) => x.code === questionId);
+      const previous = store.answers.find(x => x.code === questionId);
       if (!previous) {
         if (value) {
           store.answers.push({

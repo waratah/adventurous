@@ -23,29 +23,23 @@
       <div class="list">
         @for (d of page.details; track d.question.code) { @switch( d.question.type) { @default {
         <span>{{ d.question.text }}</span>
-        <input type="checkbox" [checked]="d.answer.done" (change)="updateDone(d.question.code, !d.answer.done)" />
+        <input type="checkbox" [checked]="d.answer.done" (change)="updateDone(d, !d.answer.done)" />
         } @case("img") {
         <img [src]="d.question.img" [alt]="d.question.text" />
         <span></span>
         } @case("textbox") {
         <div class="text-input">
           <span>{{ d.question.text }}</span>
-          <input
-            type="text"
-            [value]="d.answer.text || ''"
-            [placeholder]="d.question.placeholder"
-            matInput
-            (blur)="updateText(d.question.code, $event)"
-          />
+          <input type="text" [value]="d.answer.text || ''" [placeholder]="d.question.placeholder" matInput (blur)="updateText(d, $event)" />
         </div>
         <span></span>
         } } @if(isVerify && d.question.type !== 'img') {
         <input type="checkbox" [checked]="d.answer.verified" (change)="updateVerify(d.question.code, !d.answer.verified)" />
         } @else { @if( d.question.attachmentRequired) {
-        <div>
-          <button mat-icon-button (click)="uploadProof(d)"><mat-icon>attach_file_add</mat-icon></button>
-        </div>
-        } @else {
+        <button mat-icon-button (click)="uploadProof(d)"><mat-icon>attach_file_add</mat-icon></button>
+        @if(d.answer.proof){
+        <button mat-icon-button (click)="viewProof(d)"><mat-icon>cloud_download</mat-icon></button>
+        } } @else {
         <div></div>
         } } }
       </div>

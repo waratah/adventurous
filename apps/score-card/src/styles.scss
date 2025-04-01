@@ -132,10 +132,6 @@ table {
 
 /*.  end reset */
 
-button {
-  background-color: inherit;
-}
-
 html {
   scroll-behavior: smooth;
   color-scheme: light;
@@ -146,6 +142,10 @@ html {
       density: 0,
     )
   );
+}
+
+img {
+  max-width: 100%;
 }
 
 body.dark-mode {
@@ -169,17 +169,21 @@ body {
 }
 
 .mat-toolbar {
-  button {
-    border-color: inherit;
-  }
+
   --mat-toolbar-container-background-color: var(--mat-sys-primary);
-  --mat-icon-color: var(--mat-sys-on-primary);
+  --mat-icon-color: var(--mat-sys-primary);
   gap: 0.25rem;
 
   &.secondary {
     font: var(--mat-sys-display-medium);
     --mat-toolbar-container-background-color: var(--mat-sys-secondary);
     --mat-icon-color: var(--mat-sys-on-secondary);
+
+    button[mat-icon-button] {
+
+      background-color: rgba(0, 0, 0, 0.25);
+
+    }
 
     mat-button-toggle {
       border-color: var(--mat-sys-on-primary);
@@ -243,9 +247,22 @@ main {
   overflow: hidden;
 }
 
-
 .centred {
   display: grid;
   grid-template-columns: 1fr;
   justify-items: center;
-  }
+  gap: 0.5rem;
+}
+
+.error {
+  border-radius: 0.5rem;
+  background-color: var(--mat-sys-on-error-container);
+  color: var(--mat-sys-on-error);
+}
+
+mat-icon.error {
+  font-size: 3rem;
+  padding: 0.2rem;
+  width: auto;
+  height: auto;
+}

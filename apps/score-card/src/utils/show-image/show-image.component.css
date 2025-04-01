@@ -1,0 +1,8 @@
+
+.message {
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding: 1rem;
+}

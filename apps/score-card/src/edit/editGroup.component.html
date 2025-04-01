@@ -30,6 +30,15 @@
             <mat-icon>add</mat-icon>
           </button>
           <button
+          mat-icon-button
+          matTooltip="Delete the section"
+          matTooltipPosition="below"
+          aria-label="Delete an entire section"
+          (click)="deleteSection(d, idx, sections)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+          <button
             mat-icon-button
             matTooltip="Clone an entire section and create NEW questions"
             matTooltipPosition="below"
@@ -48,8 +57,6 @@
       </div>
 
       <div
-        class="list"
-        [ngClass]="{ hide: !d.show }"
         cdkDropList
         [cdkDropListData]="d.questions"
         (cdkDropListDropped)="dropSection($event, sections)"

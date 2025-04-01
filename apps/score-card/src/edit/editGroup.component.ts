@@ -1,5 +1,5 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, effect, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,9 +12,16 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
 import { PageDisplay, Question, questionGroup } from '../definitions';
-import { DialogGroupComponent, DialogQuestionComponent, DialogSectionComponent } from '../dialog';
+import {
+  ConfirmationOptions,
+  DialogConfirmComponent,
+  DialogGroupComponent,
+  DialogQuestionComponent,
+  DialogSectionComponent,
+} from '../dialog';
 import { QuestionsService } from '../service';
 import { CollapseComponent, QuestionSelectComponent } from '../utils';
+
 @Component({
   selector: 'app-edit-group',
   standalone: true,
@@ -29,7 +36,6 @@ import { CollapseComponent, QuestionSelectComponent } from '../utils';
     MatDialogModule,
     CollapseComponent,
     AsyncPipe,
-    NgClass,
     FormsModule,
     QuestionSelectComponent,
   ],
@@ -85,21 +91,54 @@ export class EditGroupComponent {
   }
 
   public async cloneSection(section: PageDisplay, index: number, sections: PageDisplay[]) {
-    const questions = section.questions;
+    const param: ConfirmationOptions = {
+      message: `Please confirm you want to clone ${section.heading}`,
+      continueText: 'Clone section'
+    };
 
-    const newSection = { ...section };
-    newSection.questions = [];
-    await Promise.all(
-      questions.map(q => {
-        const result = { ...q };
-        result.code = ''; // new question
-        newSection.questions.push(result as Question);
-        return this.questionsService.updateQuestion(result).catch(error => console.error(error));
-      })
-    );
+    const dialogRef = this.dialog.open(DialogConfirmComponent, {
+      data: param,
+    });
 
-    sections.splice(index, 0, newSection);
-    this.questionsService.saveGroup(this.id() || '', sections);
+    dialogRef.afterClosed().subscribe(async (result: boolean) => {
+      if (result) {
+        const questions = section.questions;
+
+        const newSection = { ...section };
+        newSection.heading = newSection.heading + ' - 2';
+        newSection.questions = [];
+        await Promise.all(
+          questions.map(q => {
+            const result = { ...q };
+            result.code = ''; // new question
+            newSection.questions.push(result as Question);
+            return this.questionsService.updateQuestion(result).catch(error => console.error(error));
+          })
+        );
+
+        sections.splice(index, 0, newSection);
+        this.questionsService.saveGroup(this.id() || '', sections);
+      }
+    });
+  }
+
+  public async deleteSection(section: PageDisplay, index: number, sections: PageDisplay[]) {
+    const param: ConfirmationOptions = {
+      message: `Please confirm you want to delete ${section.heading}, questions will not be removed`,
+      continueText: 'Delete'
+    };
+
+    const dialogRef = this.dialog.open(DialogConfirmComponent, {
+      data: param,
+    });
+
+    dialogRef.afterClosed().subscribe(async (result: boolean) => {
+      if (result) {
+
+        sections.splice(index, 1);
+        this.questionsService.saveGroup(this.id() || '', sections);
+      }
+    });
   }
 
   newQuestion(section: PageDisplay, sections: PageDisplay[]) {
@@ -134,9 +173,12 @@ export class EditGroupComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        sections[index] = result;
+        // Clone sections so it does not disrupt change checking.
+        const ns = [...sections];
 
-        this.questionsService.saveGroup(this.id() || '', sections);
+        ns[index] = result;
+
+        this.questionsService.saveGroup(this.id() || '', ns);
       } else {
         console.error('result missing from section this.dialog');
       }
@@ -189,8 +231,6 @@ export class EditGroupComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result?.id) {
         this.router.navigate(['edit', this.questionsService.group]);
-      } else {
-        console.info({ result });
       }
     });
   }

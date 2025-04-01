@@ -1,7 +1,7 @@
 import { Component, effect, input, OnDestroy, signal } from '@angular/core';
 import jsPDF from 'jspdf';
-import { combineLatest, debounce, interval, Subject, Subscription } from 'rxjs';
-import { answer, Question, questionGroup, User } from '../definitions';
+import { combineLatest,  Subject, Subscription } from 'rxjs';
+import { Answer, Question, questionGroup, User } from '../definitions';
 import { UsersService } from '../service/users.service';
 import { PdfUserComponent } from './pdf-user.component';
 import { QuestionsService } from '../service/questions.service';
@@ -35,7 +35,7 @@ export class PdfWorkbookComponent implements OnDestroy {
   user?: User;
   group?: questionGroup;
   questions?: Question[];
-  answers?: answer[];
+  answers?: Answer[];
   page = 0;
 
   subs: Subscription[] = [];

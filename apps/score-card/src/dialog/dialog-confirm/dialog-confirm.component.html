@@ -1,0 +1,14 @@
+<div class="surround">
+  <mat-toolbar>
+    <h2>{{ heading() }}</h2>
+  </mat-toolbar>
+
+  <div class="message">
+    {{ message() }}
+  </div>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>{{ cancelText() }}</button>
+    <button mat-raised-button (click)="close(true)">{{ continueText() }}</button>
+  </mat-dialog-actions>
+</div>

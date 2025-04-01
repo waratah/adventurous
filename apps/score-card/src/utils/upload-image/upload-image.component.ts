@@ -30,7 +30,7 @@ export class UploadImageComponent {
   // Points to the root reference
   private storageRef = ref(this.storage);
 
-  // Points to 'uploadd' directory - should be overwritten
+  // Points to 'upload' directory - should be overwritten
   private uploadRef: StorageReference = ref(this.storageRef, 'upload');
 
   /**
@@ -88,6 +88,8 @@ export class UploadImageComponent {
     console.log(`… ${file.name}`);
     console.log({ file });
 
+  const uploadName = `${this.directory()}/${file.name}`;
+
     const storageRef = ref(this.uploadRef, file.name);
 
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -107,7 +109,8 @@ export class UploadImageComponent {
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
           const result: UploadResult = {
-            filenames: [downloadURL],
+            filenames: [uploadName],
+            urls: [downloadURL]
           };
 
           this.files.emit(result);

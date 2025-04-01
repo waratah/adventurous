@@ -1,0 +1,11 @@
+<div class="centred">
+  @if(URL()) {
+  <img [src]="URL()" alt="" />
+  } @if(!found() ) {
+  <mat-icon class="error">broken_image</mat-icon>
+  } @if(errorMessage()) {
+  <div class="message error">
+    {{ errorMessage() }}
+  </div>
+  }
+</div>

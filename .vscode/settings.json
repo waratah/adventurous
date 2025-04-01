@@ -3,7 +3,9 @@
         "firestore",
         "Foskey",
         "operoo",
+        "polyfills",
         "Resumable",
-        "Zapfdingbats"
+        "Zapfdingbats",
+        "Zoneless"
     ]
 }

@@ -8,14 +8,15 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { questionGroup } from '../definitions';
-import { DialogGroupComponent } from '../dialog';
+import { questionGroup, UploadParameters } from '../definitions';
+import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
 import { QuestionsService } from '../service';
+import { ShowImageComponent } from '../utils';
 
 @Component({
   selector: 'app-groups',
   standalone: true,
-  imports: [MatSlideToggleModule, MatButtonToggleModule, MatButtonModule, MatCardModule, MatToolbarModule, NgClass, AsyncPipe],
+  imports: [MatSlideToggleModule, MatButtonToggleModule, MatButtonModule, MatCardModule, MatToolbarModule, NgClass, AsyncPipe, ShowImageComponent],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
 })
@@ -85,6 +86,20 @@ export class GroupsComponent {
       } else {
         console.info({ result });
       }
+    });
+  }
+
+  upload() {
+    const param: UploadParameters = {
+      directory: 'upload',
+    };
+
+    const dialogRef = this.dialog.open(DialogUploadComponent, {
+      data: param,
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log({ result });
     });
   }
 }

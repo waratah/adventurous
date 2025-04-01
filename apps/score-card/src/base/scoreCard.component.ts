@@ -1,27 +1,27 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, effect, ElementRef, input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
-import { answer, PageDisplay, Question, questionGroup } from '../definitions';
-import { AnswersService } from '../service/answers.service';
-import { QuestionsService } from '../service/questions.service';
+import { Answer, PageDisplay, Question, questionGroup, UploadParameters, UploadResult } from '../definitions';
+import { DialogUploadComponent } from '../dialog';
+import { AnswersService, QuestionsService, UsersService } from '../service';
 import { CollapseComponent } from '../utils';
-import { UsersService } from '../service/users.service';
-import { MatIconModule } from '@angular/material/icon';
 
-interface detail {
-  answer: answer;
+interface Detail {
+  answer: Answer;
   question: Question;
 }
 
-interface detailPage {
+interface DetailPage {
   heading?: string;
   description?: string;
-  details: detail[];
+  details: Detail[];
   show: boolean;
   totalCount: number;
   doneCount: number;
@@ -45,7 +45,7 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
 
   public questions$: Observable<PageDisplay[]>;
   public groups$: Observable<questionGroup[]>;
-  public detail$: Observable<detailPage[]>;
+  public detail$: Observable<DetailPage[]>;
 
   private sub?: Subscription;
 
@@ -53,7 +53,8 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
     public answerService: AnswersService,
     public usersService: UsersService,
     private route: ActivatedRoute,
-    private questionsService: QuestionsService
+    private questionsService: QuestionsService,
+    private dialog: MatDialog
   ) {
     effect(() => (this.isVerify = this.action() == 'verify'));
     effect(() => (this.questionsService.group = this.id()));
@@ -63,15 +64,15 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
     this.groups$ = questionsService.allQuestionGroups$;
     this.detail$ = combineLatest([this.questions$, this.answerService.answers$]).pipe(
       map(([questions, answers]) => {
-        return questions.map<detailPage>(p => {
-          const rv = <detailPage>{
+        return questions.map<DetailPage>(p => {
+          const rv = <DetailPage>{
             heading: p.heading,
             description: p.description,
             show: true,
             details: p.questions
               .filter(x => x)
               .map(q => {
-                const d = <detail>{
+                const d = <Detail>{
                   question: q,
                   answer: { code: q.code, doneDate: new Date() },
                 };
@@ -103,12 +104,18 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.sub?.unsubscribe();
   }
-  public updateDone(id: string, value: boolean) {
-    this.answerService.updateCheck(id, value);
+  public updateDone(detail: Detail, value: boolean) {
+    const answer = detail.answer;
+    answer.done = value;
+    answer.doneDate = new Date();
+    this.answerService.updateAnswer(answer);
   }
-  public updateText(id: string, event: FocusEvent) {
+  public updateText(detail: Detail, event: FocusEvent) {
     const target = event.target as HTMLInputElement;
-    this.answerService.updateText(id, target.value);
+    const answer = detail.answer;
+    answer.text = target.value;
+    answer.done = Boolean(target.value);
+    this.answerService.updateAnswer(answer);
   }
 
   public updateVerify(id: string, value: boolean) {
@@ -132,7 +139,40 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
     }
   }
 
-  uploadProof(question: detail) {
-    console.log(question);
+  uploadProof(detail: Detail) {
+    console.log(detail);
+
+    const param: UploadParameters = {
+      directory: `upload/${this.answerService.userId}`,
+    };
+
+    const dialogRef = this.dialog.open(DialogUploadComponent, {
+      data: param,
+    });
+
+    dialogRef.afterClosed().subscribe((result: UploadResult) => {
+      detail.answer.proof = result.filenames[0];
+      detail.answer.done = true;
+      detail.answer.doneDate = new Date();
+      this.answerService.updateAnswer(detail.answer);
+    });
+  }
+
+  viewProof(detail: Detail) {
+
+    const param: UploadParameters = {
+      directory: `upload/${this.answerService.userId}`,
+    };
+
+    const dialogRef = this.dialog.open(DialogUploadComponent, {
+      data: param,
+    });
+
+    dialogRef.afterClosed().subscribe((result: UploadResult) => {
+      detail.answer.proof = result.filenames[0];
+      detail.answer.done = true;
+      detail.answer.doneDate = new Date();
+      this.answerService.updateAnswer(detail.answer);
+    });
   }
 }

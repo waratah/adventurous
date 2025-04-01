@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { questionGroup } from '../../definitions';
 import { QuestionsService } from '../../service/questions.service';
 import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
+import { MatToolbar } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-dialog-group',
@@ -30,6 +31,7 @@ import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatToolbar,
     ReactiveFormsModule,
   ],
   templateUrl: './dialog-group.component.html',

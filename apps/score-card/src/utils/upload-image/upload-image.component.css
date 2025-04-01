@@ -33,9 +33,6 @@
   grid-template-columns: 1fr;
   justify-items: center;
   padding: 1rem;
-
-  background-color: var(--mat-sys-on-error-container);
-  color: var(--mat-sys-on-error);
 }
 
 input[type='file'] {

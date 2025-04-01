@@ -1,14 +1,14 @@
 .list {
-  margin: 0.2rem;
   display: grid;
   grid-template-columns: 1fr auto auto;
   column-gap: 1em;
-  row-gap: 1em;
   justify-content: center;
 
   input[type='checkbox'] {
-    max-width: 1.5em;
+    min-width: 1.4rem;
   }
+
+  * {min-height: 40px;align-self: center;}
 
   img {
     max-width: 100%;
@@ -21,6 +21,7 @@
 }
 
 .list.titles {
+  margin-bottom: 0.2rem;
   span {
     color: var(--accent);
     font-size: 1.5rem;
