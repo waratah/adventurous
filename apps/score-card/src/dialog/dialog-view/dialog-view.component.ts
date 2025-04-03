@@ -4,7 +4,7 @@ import { ShowImageComponent } from '../../utils';
 
 export interface DialogViewOptions {
   filename: string;
-  URL: string;
+  URL?: string;
 }
 
 @Component({
@@ -21,8 +21,13 @@ export class DialogViewComponent {
     if (data.filename) {
       this.filename.set(data.filename || '');
       this.URL.set(data.URL || '');
+      console.log(this.filename())
     } else {
       throw 'filename is required in DialogView';
     }
+  }
+
+  close() {
+    this.dialogRef.close(true);
   }
 }

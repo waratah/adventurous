@@ -9,7 +9,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { Answer, PageDisplay, Question, questionGroup, UploadParameters, UploadResult } from '../definitions';
-import { DialogUploadComponent } from '../dialog';
+import { DialogUploadComponent, DialogViewComponent, DialogViewOptions } from '../dialog';
 import { AnswersService, QuestionsService, UsersService } from '../service';
 import { CollapseComponent } from '../utils';
 
@@ -160,19 +160,15 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
 
   viewProof(detail: Detail) {
 
-    const param: UploadParameters = {
-      directory: `upload/${this.answerService.userId}`,
+    const param: DialogViewOptions = {
+      // filename: `upload/${this.answerService.userId}/${detail.answer.proof}`,
+      filename: detail.answer.proof || '',
     };
 
-    const dialogRef = this.dialog.open(DialogUploadComponent, {
+    this.dialog.open(DialogViewComponent, {
       data: param,
     });
 
-    dialogRef.afterClosed().subscribe((result: UploadResult) => {
-      detail.answer.proof = result.filenames[0];
-      detail.answer.done = true;
-      detail.answer.doneDate = new Date();
-      this.answerService.updateAnswer(detail.answer);
-    });
+
   }
 }

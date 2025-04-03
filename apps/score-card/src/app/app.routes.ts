@@ -2,6 +2,11 @@ import { Route } from '@angular/router';
 
 export const appRoutes: Route[] = [
   {
+    path: 'login',
+    loadComponent: () =>
+      import('../login/login.component').then((m) => m.LoginComponent),
+  },
+  {
     path: 'edit/:id',
     loadComponent: () =>
       import('../edit/editGroup.component').then((m) => m.EditGroupComponent),
@@ -41,6 +46,7 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('../base/groups.component').then((m) => m.GroupsComponent),
   },
+
   {
     path: '**',
     loadComponent: () =>

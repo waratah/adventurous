@@ -33,13 +33,18 @@
           <input type="text" [value]="d.answer.text || ''" [placeholder]="d.question.placeholder" matInput (blur)="updateText(d, $event)" />
         </div>
         <span></span>
-        } } @if(isVerify && d.question.type !== 'img') {
+        } }
+
+        @if(isVerify && d.question.type !== 'img') {
         <input type="checkbox" [checked]="d.answer.verified" (change)="updateVerify(d.question.code, !d.answer.verified)" />
         } @else { @if( d.question.attachmentRequired) {
-        <button mat-icon-button (click)="uploadProof(d)"><mat-icon>attach_file_add</mat-icon></button>
-        @if(d.answer.proof){
-        <button mat-icon-button (click)="viewProof(d)"><mat-icon>cloud_download</mat-icon></button>
-        } } @else {
+        <div>
+          <button mat-icon-button (click)="uploadProof(d)"><mat-icon>attach_file_add</mat-icon></button>
+          @if(d.answer.proof){
+          <button mat-icon-button (click)="viewProof(d)"><mat-icon>cloud_download</mat-icon></button>
+          }
+        </div>
+        } @else {
         <div></div>
         } } }
       </div>

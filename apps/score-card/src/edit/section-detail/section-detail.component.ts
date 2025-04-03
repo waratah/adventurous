@@ -1,28 +1,16 @@
 import { Component, effect, model } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageDisplay } from '../../definitions';
 import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-section-detail',
-  imports: [
-    FormsModule,
-    MatButtonToggleModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-  ],
+  imports: [FormsModule, MatButtonModule, MatButtonToggleModule, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
   templateUrl: './section-detail.component.html',
   styleUrl: './section-detail.component.css',
 })
@@ -73,10 +61,11 @@ export class SectionDetailComponent {
       };
       this.section.set(result);
     } else {
-      const result = <PageDisplay>{
+      const result: PageDisplay = {
         level: this.level || '',
-        heading: this.headingFormControl.getRawValue() || undefined,
+        heading: this.headingFormControl.getRawValue() || '',
         description: this.descriptionFormControl.getRawValue() || undefined,
+        requiresSignOff: false,
         questions: [],
       };
       this.section.set(result);

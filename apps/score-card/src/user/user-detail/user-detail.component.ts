@@ -1,23 +1,25 @@
-import { Component, model, effect } from '@angular/core';
+import { Component, effect, model } from '@angular/core';
 import {
   FormControl,
   FormGroupDirective,
-  NgForm,
-  Validators,
   FormsModule,
+  NgForm,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatInputModule } from '@angular/material/input';
+import { ErrorStateMatcher } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { UsersService } from '../../service/users.service';
+import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { User } from '../../definitions';
+import { UsersService } from '../../service';
 @Component({
   selector: 'app-user-detail',
   imports: [
     FormsModule,
+    MatButton,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,

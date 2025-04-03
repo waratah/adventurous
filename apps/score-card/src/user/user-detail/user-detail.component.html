@@ -1,13 +1,7 @@
 <form #userForm="ngForm" (ngSubmit)="saveUser()">
   <mat-form-field>
     <mat-label>Name</mat-label>
-    <input
-      type="text"
-      matInput
-      [formControl]="nameFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. Bert Trainee"
-    />
+    <input type="text" matInput [formControl]="nameFormControl" [errorStateMatcher]="matcher" placeholder="Ex. Bert Trainee" />
     <mat-hint>Your first name and last name!</mat-hint>
     @if (nameFormControl.hasError('required')) {
     <mat-error>Name is <strong>required</strong></mat-error>
@@ -16,13 +10,7 @@
 
   <mat-form-field>
     <mat-label>Email</mat-label>
-    <input
-      type="email"
-      matInput
-      [formControl]="emailFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. pat@example.com"
-    />
+    <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com" />
     <mat-hint>Errors appear instantly!</mat-hint>
     @if (emailFormControl.hasError('required')) {
     <mat-error>Email is <strong>required</strong></mat-error>
@@ -33,13 +21,7 @@
 
   <mat-form-field>
     <mat-label>Scout member number</mat-label>
-    <input
-      type="text"
-      matInput
-      [formControl]="memberFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. 1234"
-    />
+    <input type="text" matInput [formControl]="memberFormControl" [errorStateMatcher]="matcher" placeholder="Ex. 1234" />
     <mat-hint>You can find this in operoo</mat-hint>
     @if (memberFormControl.hasError('required')) {
     <mat-error>Member number is <strong>required</strong></mat-error>
@@ -50,26 +32,14 @@
 
   <mat-form-field>
     <mat-label>Group</mat-label>
-    <input
-      type="text"
-      matInput
-      [formControl]="groupFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. Heathcote"
-    />
+    <input type="text" matInput [formControl]="groupFormControl" [errorStateMatcher]="matcher" placeholder="Ex. Heathcote" />
     @if (groupFormControl.hasError('required')) {
     <mat-error>Group is <strong>required</strong></mat-error>
     }
   </mat-form-field>
   <mat-form-field>
     <mat-label>Section</mat-label>
-    <input
-      type="text"
-      matInput
-      [formControl]="sectionFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. Venturers"
-    />
+    <input type="text" matInput [formControl]="sectionFormControl" [errorStateMatcher]="matcher" placeholder="Ex. Venturers" />
     @if (sectionFormControl.hasError('required')) {
     <mat-error>Section is <strong>required</strong></mat-error>
     }
@@ -77,13 +47,7 @@
 
   <mat-form-field>
     <mat-label>State</mat-label>
-    <input
-      type="text"
-      matInput
-      [formControl]="stateFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. NSW"
-    />
+    <input type="text" matInput [formControl]="stateFormControl" [errorStateMatcher]="matcher" placeholder="Ex. NSW" />
     @if (stateFormControl.hasError('required')) {
     <mat-error>State is <strong>required</strong></mat-error>
     }
@@ -91,13 +55,7 @@
 
   <mat-form-field>
     <mat-label>Mobile</mat-label>
-    <input
-      type="tel"
-      matInput
-      [formControl]="phoneFormControl"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. 0412345678"
-    />
+    <input type="tel" matInput [formControl]="phoneFormControl" [errorStateMatcher]="matcher" placeholder="Ex. 0412345678" />
     @if (phoneFormControl.hasError('required')) {
     <mat-error>Phone is <strong>required</strong></mat-error>
     }@else { @if (phoneFormControl.hasError('pattern')) {
@@ -105,7 +63,8 @@
     }}
   </mat-form-field>
 
-  <mat-card-actions>
+  <mat-card-actions align="end">
+    <button mat-stroked-button type="cancel">Cancel</button>
     <button mat-raised-button type="submit">Create</button>
   </mat-card-actions>
 </form>

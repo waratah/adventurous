@@ -1,0 +1,31 @@
+<form [formGroup]="loginForm" (ngSubmit)="save()">
+  <mat-card>
+    <mat-card-title> Logo -- menu </mat-card-title>
+
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input type="text" matInput formControlName="name" placeholder="Enter your username" />
+
+      @if (loginForm.controls['name'].hasError('required')) {
+      <mat-error>User name is <strong>required</strong></mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input [type]="hide() ? 'password' : 'text'" matInput formControlName="password" />
+      <button mat-icon-button matSuffix (click)="clickEvent($event)" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide()">
+        <mat-icon>{{ hide() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+
+      @if (loginForm.controls['password'].hasError('required')) {
+      <mat-error>Password is <strong>required</strong></mat-error>
+      }
+    </mat-form-field>
+
+    <mat-card-actions align="end">
+      <button mat-stroked-button type="cancel" routerLink="/">Cancel</button>
+      <button mat-raised-button type="submit">Login</button>
+    </mat-card-actions>
+  </mat-card>
+</form>
