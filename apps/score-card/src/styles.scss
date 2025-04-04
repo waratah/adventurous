@@ -160,37 +160,38 @@ body {
 
 // Customize the entire app. Change :root to your selector if you want to scope the styles.
 :root {
+
+  --mdc-protected-button-label-text-color: var(--mat-sys-on-primary);
+  --mdc-protected-button-container-color: var(--mat-sys-primary);
+  --mdc-protected-button-label-text-size: 1.2rem;
+
   @include mat.toolbar-overrides(
     (
       container-background-color: var(--mat-sys-primary),
       container-text-color: var(--mat-sys-on-primary),
     )
   );
-
-  --mdc-protected-button-label-text-color: var(--mat-sys-on-primary);
-  --mdc-protected-button-container-color: var(--mat-sys-primary);
-  --mdc-protected-button-label-text-size: 1.2rem;
 }
 
 .mat-toolbar {
   --mat-toolbar-container-background-color: var(--mat-sys-primary);
   --mat-icon-color: var(--mat-sys-primary);
+  --mdc-protected-button-label-text-color: var(--mat-sys-primary);
+  --mdc-protected-button-container-color: var(--mat-sys-on-primary);
+
   gap: 0.25rem;
 
   &.secondary {
+
+    font: var(--mat-sys-display-medium);
+    --mat-icon-color: var(--mat-sys-on-secondary);
+
     @include mat.toolbar-overrides(
       (
         container-background-color: var(--mat-sys-secondary),
         container-text-color: var(--mat-sys-on-secondary),
       )
     );
-
-    font: var(--mat-sys-display-medium);
-
-    --mat-icon-color: var(--mat-sys-on-secondary);
-
-    --mdc-protected-button-label-text-color: var(--mat-sys-primary);
-    --mdc-protected-button-container-color: var(--mat-sys-on-primary);
 
     button[mat-icon-button] {
       background-color: hsl(from var(--mat-sys-secondary) h s calc(l - 10));

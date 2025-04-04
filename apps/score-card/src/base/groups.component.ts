@@ -11,12 +11,11 @@ import { Observable } from 'rxjs';
 import { questionGroup, UploadParameters } from '../definitions';
 import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
 import { QuestionsService } from '../service';
-import { ShowImageComponent } from '../utils';
 
 @Component({
   selector: 'app-groups',
   standalone: true,
-  imports: [MatSlideToggleModule, MatButtonToggleModule, MatButtonModule, MatCardModule, MatToolbarModule, NgClass, AsyncPipe, ShowImageComponent],
+  imports: [MatSlideToggleModule, MatButtonToggleModule, MatButtonModule, MatCardModule, MatToolbarModule, NgClass, AsyncPipe],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
 })

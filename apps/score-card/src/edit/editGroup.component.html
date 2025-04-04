@@ -1,53 +1,49 @@
 @if( sections$ | async; as sections ) {
-<div
-  cdkDropListGroup
-  cdkDropList
-  [cdkDropListData]="sections"
-  (cdkDropListDropped)="dropHeading($event)"
->
+<div cdkDropListGroup cdkDropList [cdkDropListData]="sections" (cdkDropListDropped)="dropHeading($event)">
   @for (d of sections; track d.heading; let idx = $index) {
   <div class="group" cdkDrag [cdkDragData]="d">
     <app-collapse [heading]="d.heading" [show]="!d.questions.length">
       <header>
         <div class="edit-title">
           <span class="hint">({{ d.level }})</span>
-          <button
-            mat-icon-button
-            matTooltip="Edit section"
-            matTooltipPosition="below"
-            aria-label="Edit the section header or PDF it appears in"
-            (click)="editSection(d, idx, sections)"
-          >
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button
-            mat-icon-button
-            matTooltip="Add a new question to this section"
-            matTooltipPosition="below"
-            aria-label="Add a question"
-            (click)="newQuestion(d, sections)"
-          >
-            <mat-icon>add</mat-icon>
-          </button>
-          <button
-          mat-icon-button
-          matTooltip="Delete the section"
-          matTooltipPosition="below"
-          aria-label="Delete an entire section"
-          (click)="deleteSection(d, idx, sections)"
-        >
-          <mat-icon>delete</mat-icon>
-        </button>
-          <button
-            mat-icon-button
-            matTooltip="Clone an entire section and create NEW questions"
-            matTooltipPosition="below"
-            aria-label="Clone an entire section and create NEW questions"
-            (click)="cloneSection(d, idx, sections)"
-          >
-            <mat-icon>tab_duplicate</mat-icon>
-          </button>
-
+          <div>
+            <button
+              mat-icon-button
+              matTooltip="Edit section"
+              matTooltipPosition="below"
+              aria-label="Edit the section header or PDF it appears in"
+              (click)="editSection(d, idx, sections)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matTooltip="Add a new question to this section"
+              matTooltipPosition="below"
+              aria-label="Add a question"
+              (click)="newQuestion(d, sections)"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matTooltip="Delete the section"
+              matTooltipPosition="below"
+              aria-label="Delete an entire section"
+              (click)="deleteSection(d, idx, sections)"
+            >
+              <mat-icon>delete</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              matTooltip="Clone an entire section and create NEW questions"
+              matTooltipPosition="below"
+              aria-label="Clone an entire section and create NEW questions"
+              (click)="cloneSection(d, idx, sections)"
+            >
+              <mat-icon>tab_duplicate</mat-icon>
+            </button>
+          </div>
           <sub class="hint">{{ d.questions.length }} questions in group</sub>
         </div>
       </header>
@@ -56,11 +52,7 @@
         {{ d.description }}
       </div>
 
-      <div
-        cdkDropList
-        [cdkDropListData]="d.questions"
-        (cdkDropListDropped)="dropSection($event, sections)"
-      >
+      <div cdkDropList [cdkDropListData]="d.questions" (cdkDropListDropped)="dropSection($event, sections)">
         @for (q of d.questions; track q.code) {
         <div cdkDrag [cdkDragData]="q" class="question-item">
           <div>
@@ -85,52 +77,32 @@
           </div>
           <div>
             @switch(q.type) { @default {
-            <mat-icon matTooltip="Yes or no question" matTooltipPosition="above"
-              >check_box</mat-icon
-            >
+            <mat-icon matTooltip="Yes or no question" matTooltipPosition="above">check_box</mat-icon>
             } @case ('img') {
-            <mat-icon matTooltip="Image display only" matTooltipPosition="above"
-              >image</mat-icon
-            >
+            <mat-icon matTooltip="Image display only" matTooltipPosition="above">image</mat-icon>
             } @case ('textbox') {
-            <mat-icon
-              matTooltip="Text answer required"
-              matTooltipPosition="above"
-              >description</mat-icon
-            >
+            <mat-icon matTooltip="Text answer required" matTooltipPosition="above">description</mat-icon>
             } @case ('url') {
-            <mat-icon
-              matTooltip="URL to an application image at this stage"
-              matTooltipPosition="above"
-              >link</mat-icon
-            >
+            <mat-icon matTooltip="URL to an application image at this stage" matTooltipPosition="above">link</mat-icon>
             } }
 
             <span>{{ q.text }}</span>
             @if(q.attachmentRequired) {
-            <mat-icon
-              matTooltip="Upload required - may not be implemented yet"
-              matTooltipPosition="above"
-              >attach_file</mat-icon
-            >
+            <mat-icon matTooltip="Upload required - may not be implemented yet" matTooltipPosition="above">attach_file</mat-icon>
             }
           </div>
         </div>
         }
       </div>
       <h4>add existing question</h4>
-      <app-question-select
-        (optionChange)="addQuestion($event, d, sections)"
-      ></app-question-select>
+      <app-question-select (optionChange)="addQuestion($event, d, sections)"></app-question-select>
     </app-collapse>
   </div>
   }
 </div>
 
 <mat-toolbar>
-  <button mat-raised-button (click)="addSection(sections)">
-    Add a new section
-  </button>
+  <button mat-raised-button (click)="addSection(sections)">Add a new section</button>
 
   <button mat-raised-button (click)="addGroup()">Create new group</button>
 
