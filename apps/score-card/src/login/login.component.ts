@@ -8,10 +8,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AuthService } from '../service/auth.service';
 import { Router, RouterLink } from '@angular/router';
+import { UsersService } from '../service';
 
 @Component({
   selector: 'app-login',
-  imports: [MatToolbarModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatCardModule, MatIconModule, RouterLink],
+  imports: [
+    MatToolbarModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    MatIconModule,
+    RouterLink,
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -26,7 +36,7 @@ export class LoginComponent {
   ]);
   private passwordFormControl = new FormControl('', [Validators.required]);
 
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(private authService: AuthService, private userService: UsersService, private router: Router) {
     this.loginForm = new FormGroup({
       name: this.useridFormControl,
       password: this.passwordFormControl,
@@ -40,11 +50,19 @@ export class LoginComponent {
 
   async login() {
     this.error.set(false);
+    const email = this.useridFormControl.value || '';
+    const password = this.passwordFormControl.value || '';
     if (this.useridFormControl.valid) {
       return this.authService
-        .login(this.useridFormControl.value || '', this.passwordFormControl.value || '')
-        .then(() => {
-          this.router.navigateByUrl('/groups');
+        .login(email, password)
+        .then(async () => {
+          const hasUser = await this.userService.loadEmail(email);
+          console.log({ hasUser });
+          if (hasUser) {
+            this.router.navigateByUrl('/groups');
+          } else {
+            this.router.navigateByUrl('/user');
+          }
         })
         .catch(error => {
           this.error.set(true);
@@ -54,10 +72,16 @@ export class LoginComponent {
   }
 
   async guestLogin() {
+    const email = 'guest@nsw.scouts.com.au';
     return this.authService
-      .login('guest@nsw.scouts.com.au', 'fake_password')
-      .then(() => {
-        this.router.navigateByUrl('/groups');
+      .login(email, 'fake_password')
+      .then(async () => {
+        const hasUser = await this.userService.loadEmail(email);
+        if (hasUser) {
+          this.router.navigateByUrl('/groups');
+        } else {
+          this.router.navigateByUrl('/user');
+        }
       })
       .catch(error => {
         this.error.set(true);

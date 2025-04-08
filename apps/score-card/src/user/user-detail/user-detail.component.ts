@@ -1,10 +1,5 @@
-import { Component, effect, model } from '@angular/core';
-import {
-  FormControl,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, effect, model, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -16,74 +11,80 @@ import { MyErrorStateMatcher } from '../../utils';
 
 @Component({
   selector: 'app-user-detail',
-  imports: [
-    FormsModule,
-    MatButton,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-  ],
+  imports: [MatButton, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
   templateUrl: './user-detail.component.html',
   styleUrl: './user-detail.component.css',
 })
 export class UserDetailComponent {
   user = model<User>();
+  saved = signal(false);
+  error = signal(false);
 
-  nameFormControl = new FormControl('', [Validators.required]);
-  stateFormControl = new FormControl('', [Validators.required]);
-  groupFormControl = new FormControl('', [Validators.required]);
-  sectionFormControl = new FormControl('', [Validators.required]);
-  phoneFormControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern(
-      /^(?:\+?(61))? ?(?:\((?=.*\)))?(0?[2-57-8])\)? ?(\d\d(?:[- ](?=\d{3})|(?!\d\d[- ]?\d[- ]))\d\d[- ]?\d[- ]?\d{3})$/
-    ),
-  ]);
-  memberFormControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern(/[1-9]+/),
-  ]);
-  emailFormControl = new FormControl('', [
-    Validators.required,
-    Validators.email,
-  ]);
+  userForm = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+    state: new FormControl('', [Validators.required]),
+    group: new FormControl('', [Validators.required]),
+    section: new FormControl('', [Validators.required]),
+    phone: new FormControl('', [
+      Validators.required,
+      Validators.pattern(
+        /^(?:\+?(61))? ?(?:\((?=.*\)))?(0?[2-57-8])\)? ?(\d\d(?:[- ](?=\d{3})|(?!\d\d[- ]?\d[- ]))\d\d[- ]?\d[- ]?\d{3})$/
+      ),
+    ]),
+    member: new FormControl('', [Validators.required, Validators.pattern(/[1-9]+/)]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+  });
 
   matcher = new MyErrorStateMatcher();
 
   constructor(public userService: UsersService, private router: Router) {
-    this.stateFormControl.setValue('NSW');
+    this.userForm.controls.state.setValue('NSW');
 
     effect(() => {
       const u = this.user();
       if (u) {
-        this.emailFormControl.setValue(u.email);
-        this.groupFormControl.setValue(u.group);
-        this.nameFormControl.setValue(u.name);
-        this.stateFormControl.setValue(u.state);
-        this.memberFormControl.setValue(u.scoutNumber);
-        this.sectionFormControl.setValue(u.section);
-        this.phoneFormControl.setValue(u.phone);
+        this.userForm.controls.email.setValue(u.email);
+        this.userForm.controls.group.setValue(u.group);
+        this.userForm.controls.name.setValue(u.name);
+        this.userForm.controls.state.setValue(u.state);
+        this.userForm.controls.member.setValue(u.scoutNumber);
+        this.userForm.controls.section.setValue(u.section);
+        this.userForm.controls.phone.setValue(u.phone);
       }
     });
   }
 
   saveUser() {
+    this.error.set(false);
+    this.saved.set(false);
+
+    if (this.userForm.invalid) {
+      this.error.set(true);
+      return;
+    }
     const u = this.user();
 
     if (u) {
       const result = {
         ...u,
-        email: this.emailFormControl.getRawValue() || '',
-        group: this.groupFormControl.getRawValue() || '',
-        name: this.nameFormControl.getRawValue() || '',
-        state: this.stateFormControl.getRawValue() || '',
-        scoutNumber: this.memberFormControl.getRawValue() || '',
-        section: this.sectionFormControl.getRawValue() || '',
-        phone: this.phoneFormControl.getRawValue() || '',
+        email: this.userForm.controls.email.getRawValue() || '',
+        group: this.userForm.controls.group.getRawValue() || '',
+        name: this.userForm.controls.name.getRawValue() || '',
+        state: this.userForm.controls.state.getRawValue() || '',
+        scoutNumber: this.userForm.controls.member.getRawValue() || '',
+        section: this.userForm.controls.section.getRawValue() || '',
+        phone: this.userForm.controls.phone.getRawValue() || '',
       };
 
-      this.userService.saveUser(result);
+      if (this.userService.saveUser(result)) {
+        this.saved.set(true);
+      } else {
+        this.error.set(true);
+      }
     }
+  }
+
+  cancel() {
+    this.router.navigate(['/']);
   }
 }

@@ -7,10 +7,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, take } from 'rxjs';
 import { questionGroup } from '../definitions';
 import { AuthService } from '../service/auth.service';
 import { QuestionsService } from '../service/questions.service';
+import { UsersService } from '../service';
 
 @Component({
   imports: [AsyncPipe, RouterModule, MatButtonToggleModule, MatToolbarModule, MatTooltipModule, MatIconModule, MatMenuModule],
@@ -30,11 +31,22 @@ export class AppComponent implements OnDestroy {
 
   private sub: Subscription;
 
-  constructor(private questionsService: QuestionsService, private authService: AuthService, private router: Router) {
+  constructor(
+    private questionsService: QuestionsService,
+    private authService: AuthService,
+    private userService: UsersService,
+    private router: Router
+  ) {
     this.login$ = this.authService.user$;
     this.groups$ = questionsService.allQuestionGroups$;
     this.selectedGroup$ = questionsService.selectedGroup$;
     this.sub = this.questionsService.groupId$.subscribe(i => this.id.set(i));
+
+    this.login$.pipe(take(1)).subscribe(u => {
+      if (u?.email) {
+        this.userService.loadEmail(u?.email);
+      }
+    });
   }
 
   ngOnDestroy(): void {

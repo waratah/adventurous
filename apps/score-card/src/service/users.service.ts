@@ -7,8 +7,11 @@ import {
   collection,
   collectionData,
   doc,
+  query,
   getDoc,
   setDoc,
+  where,
+  getDocs,
 } from '@angular/fire/firestore';
 import { Observable, ReplaySubject, map } from 'rxjs';
 import { User } from '../definitions';
@@ -17,7 +20,7 @@ import { User } from '../definitions';
   providedIn: 'root',
 })
 export class UsersService {
-  private myId = '174424';
+  private myId = '';
 
   // temporary to negate check
   public get userId(): string {
@@ -37,13 +40,9 @@ export class UsersService {
   currentUser$ = this.currentUser.asObservable();
 
   constructor(private store: Firestore) {
-    this.userCollection = collection(this.store, 'users').withConverter(
-      this.createUserConverter
-    );
+    this.userCollection = collection(this.store, 'users').withConverter(this.createUserConverter);
 
-    this.allUsers$ = collectionData(this.userCollection).pipe(
-      map((list) => list.sort((a, b) => a.name.localeCompare(b.name)))
-    );
+    this.allUsers$ = collectionData(this.userCollection).pipe(map(list => list.sort((a, b) => a.name.localeCompare(b.name))));
 
     this.loadUser(this.myId);
   }
@@ -52,7 +51,7 @@ export class UsersService {
     toFirestore(modelObject) {
       const objToUpload = { ...modelObject } as DocumentData; // DocumentData is mutable
       delete objToUpload['scoutNumber']; // make sure to remove ID so it's not uploaded to the document
-      Object.keys(objToUpload).forEach((key) => {
+      Object.keys(objToUpload).forEach(key => {
         if (!objToUpload[key]) {
           delete objToUpload[key];
         }
@@ -70,27 +69,57 @@ export class UsersService {
   };
 
   private loadUser(id: string) {
-    if(id) {
-    getDoc(doc(this.userCollection, id)).then((d) => {
-      const result = d.data() as User | undefined;
-      if (result) {
-        if (!result.state) {
-          result.state = 'NSW';
+    if (id) {
+      getDoc(doc(this.userCollection, id)).then(d => {
+        const result = d.data() as User | undefined;
+        if (result) {
+          if (!result.state) {
+            result.state = 'NSW';
+          }
+          this.currentUser.next(result);
+        } else {
+          this.currentUser.next(undefined);
         }
-        this.currentUser.next(result);
-      } else {
-        this.currentUser.next(undefined);
-      }
-    });
-  } else {
-    this.currentUser.next(undefined);
+      });
+    } else {
+      this.currentUser.next(undefined);
+    }
   }
+
+  async loadEmail(email: string) {
+    const q = query(this.userCollection, where('email', '==', email));
+    console.log({ email });
+
+    const querySnapshot = await getDocs(q);
+    let result = false;
+    querySnapshot.forEach(doc => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, ' => ', doc.data());
+      result = true;
+      this.currentUser.next(doc.data());
+    });
+    if (!result) {
+      const user: User = {
+        email: email,
+        group: '',
+        name: '',
+        phone: '',
+        scoutNumber: '',
+        section: '',
+        state: 'NSW',
+        verifyGroups: [],
+      };
+      this.currentUser.next(user);
+      console.error(`Unable to locate: ${email}`);
+    }
+    console.log({ result });
+    return result;
   }
 
   public saveUser(user: User) {
     if (user.scoutNumber) {
       const docRef = doc(this.store, 'users', user.scoutNumber);
-      setDoc(docRef, user).catch((x) => console.error(x));
+      setDoc(docRef, user).catch(x => console.error(x));
       return true;
     } else {
       console.error('Scout Number was not defined in create user, aborting');

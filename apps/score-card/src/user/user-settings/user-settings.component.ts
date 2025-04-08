@@ -6,11 +6,10 @@ import { UsersService } from '../../service/users.service';
 
 @Component({
   selector: 'app-user-settings',
-  imports: [UserDetailComponent, AsyncPipe ],
+  imports: [UserDetailComponent, AsyncPipe],
   templateUrl: './user-settings.component.html',
   styleUrl: './user-settings.component.css',
 })
 export class UserSettingsComponent {
-  constructor(public userService: UsersService) {
-  }
+  constructor(public userService: UsersService) {}
 }
