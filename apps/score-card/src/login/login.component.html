@@ -1,10 +1,15 @@
-<form [formGroup]="loginForm" (ngSubmit)="save()">
+<form [formGroup]="loginForm" (ngSubmit)="login()">
   <mat-card>
-    <mat-card-title> Logo -- menu </mat-card-title>
+    <mat-card-title> Logon to Rock School</mat-card-title>
+
+    @if(error()) {
+    <div class="error"> An Error has occurred signing in.<br/>
+       Check your userid and password and try again. </div>
+    }
 
     <mat-form-field>
       <mat-label>Username</mat-label>
-      <input type="text" matInput formControlName="name" placeholder="Enter your username" />
+      <input type="text" matInput formControlName="name" placeholder="Enter your scouts email address" />
 
       @if (loginForm.controls['name'].hasError('required')) {
       <mat-error>User name is <strong>required</strong></mat-error>
@@ -27,5 +32,11 @@
       <button mat-stroked-button type="cancel" routerLink="/">Cancel</button>
       <button mat-raised-button type="submit">Login</button>
     </mat-card-actions>
-  </mat-card>
+
+    <mat-card>
+      <button mat-stroked-button type="reset" routerLink="/user/new">I am new here.  Create a new user</button>
+      <button mat-stroked-button type="reset" (click)="guestLogin()">Guest Login</button>
+    </mat-card>
+
+    </mat-card>
 </form>

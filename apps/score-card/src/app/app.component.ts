@@ -1,5 +1,6 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, signal } from '@angular/core';
+import { User } from '@angular/fire/auth';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
@@ -8,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
 import { questionGroup } from '../definitions';
+import { AuthService } from '../service/auth.service';
 import { QuestionsService } from '../service/questions.service';
 
 @Component({
@@ -17,6 +19,8 @@ import { QuestionsService } from '../service/questions.service';
   styleUrl: './app.component.scss',
 })
 export class AppComponent implements OnDestroy {
+  public login$: Observable<User | null>;
+
   public groups$: Observable<questionGroup[]>;
   public selectedGroup$: Observable<questionGroup>;
   public id = signal('');
@@ -26,7 +30,8 @@ export class AppComponent implements OnDestroy {
 
   private sub: Subscription;
 
-  constructor(private questionsService: QuestionsService, private router: Router) {
+  constructor(private questionsService: QuestionsService, private authService: AuthService, private router: Router) {
+    this.login$ = this.authService.user$;
     this.groups$ = questionsService.allQuestionGroups$;
     this.selectedGroup$ = questionsService.selectedGroup$;
     this.sub = this.questionsService.groupId$.subscribe(i => this.id.set(i));
@@ -46,5 +51,9 @@ export class AppComponent implements OnDestroy {
     if (this.questionsService.group) {
       this.router.navigate([action, this.questionsService.group]);
     }
+  }
+
+  public logout() {
+    this.authService.logout().then(() => this.router.navigate(['login']));
   }
 }

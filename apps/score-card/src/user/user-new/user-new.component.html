@@ -1,70 +1,87 @@
-<form #userForm="ngForm" (ngSubmit)="createUser()">
-  <mat-form-field>
-    <mat-label>Name</mat-label>
-    <input type="text" matInput [formControl]="nameFormControl" [errorStateMatcher]="matcher" placeholder="Ex. Bert Trainee" />
-    <mat-hint>Your first name and last name!</mat-hint>
-    @if (nameFormControl.hasError('required')) {
-    <mat-error>Name is <strong>required</strong></mat-error>
-    }
-  </mat-form-field>
+<form [formGroup]="userForm" (ngSubmit)="createUser()">
+  <mat-card>
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input type="text" matInput formControlName="name" [errorStateMatcher]="matcher" placeholder="Ex. Bert Trainee" />
+      <mat-hint>Your first name and last name!</mat-hint>
+      @if (userForm.controls.name.hasError('required')) {
+      <mat-error>Name is <strong>required</strong></mat-error>
+      }
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Email</mat-label>
-    <input type="email" matInput [formControl]="emailFormControl" [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com" />
-    <mat-hint>Errors appear instantly!</mat-hint>
-    @if (emailFormControl.hasError('required')) {
-    <mat-error>Email is <strong>required</strong></mat-error>
-    } @else { @if (emailFormControl.hasError('email')) {
-    <mat-error>Please enter a valid email address</mat-error>
-    }}
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input type="email" matInput formControlName="email" [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com" />
+      <mat-hint>you&#64;nsw.scouts.com.au address is preferred so that everything links up</mat-hint>
+      @if (userForm.controls.email.hasError('required')) {
+      <mat-error>Email is <strong>required</strong></mat-error>
+      } @else { @if (userForm.controls.email.hasError('email')) {
+      <mat-error>Please enter a valid email address</mat-error>
+      }}
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Scout member number</mat-label>
-    <input type="text" matInput [formControl]="memberFormControl" [errorStateMatcher]="matcher" placeholder="Ex. 1234" />
-    <mat-hint>You can find this in operoo</mat-hint>
-    @if (memberFormControl.hasError('required')) {
-    <mat-error>Member number is <strong>required</strong></mat-error>
-    } @else { @if (memberFormControl.hasError('pattern')) {
-    <mat-error>Please enter a valid member number</mat-error>
-    }}
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input [type]="hidePassword() ? 'password' : 'text'" matInput formControlName="password" />
+      <button mat-icon-button matSuffix (click)="passwordClick($event)" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword()">
+        <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+<mat-hint>you&#64;nsw.scouts.com.au address is preferred so that everything links up</mat-hint>
+      @if (userForm.controls.password.hasError('required')) {
+      <mat-error>Password is <strong>required</strong></mat-error>
+      } @else { @if (userForm.controls.password.hasError('pattern')) {
+      <mat-error>Please enter a valid Password. ... todo ...</mat-error>
+      }}
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Group</mat-label>
-    <input type="text" matInput [formControl]="groupFormControl" [errorStateMatcher]="matcher" placeholder="Ex. Heathcote" />
-    @if (groupFormControl.hasError('required')) {
-    <mat-error>Group is <strong>required</strong></mat-error>
-    }
-  </mat-form-field>
-  <mat-form-field>
-    <mat-label>Section</mat-label>
-    <input type="text" matInput [formControl]="sectionFormControl" [errorStateMatcher]="matcher" placeholder="Ex. Venturers" />
-    @if (sectionFormControl.hasError('required')) {
-    <mat-error>Section is <strong>required</strong></mat-error>
-    }
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Scout member number</mat-label>
+      <input type="text" matInput formControlName="member" [errorStateMatcher]="matcher" placeholder="Ex. 1234" />
+      <mat-hint>You can find this in operoo</mat-hint>
+      @if (userForm.controls.member.hasError('required')) {
+      <mat-error>Member number is <strong>required</strong></mat-error>
+      } @else { @if (userForm.controls.member.hasError('pattern')) {
+      <mat-error>Please enter a valid member number</mat-error>
+      }}
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>State</mat-label>
-    <input type="text" matInput [formControl]="stateFormControl" [errorStateMatcher]="matcher" placeholder="Ex. NSW" />
-    @if (stateFormControl.hasError('required')) {
-    <mat-error>State is <strong>required</strong></mat-error>
-    }
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>Group</mat-label>
+      <input type="text" matInput formControlName="group" [errorStateMatcher]="matcher" placeholder="Ex. Heathcote" />
+      @if (userForm.controls.group.hasError('required')) {
+      <mat-error>Group is <strong>required</strong></mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <mat-label>Section</mat-label>
+      <input type="text" matInput formControlName="section" [errorStateMatcher]="matcher" placeholder="Ex. Venturers" />
+      @if (userForm.controls.section.hasError('required')) {
+      <mat-error>Section is <strong>required</strong></mat-error>
+      }
+    </mat-form-field>
 
-  <mat-form-field>
-    <mat-label>Mobile</mat-label>
-    <input type="tel" matInput [formControl]="phoneFormControl" [errorStateMatcher]="matcher" placeholder="Ex. 0412345678" />
-    @if (phoneFormControl.hasError('required')) {
-    <mat-error>Phone is <strong>required</strong></mat-error>
-    }@else { @if (phoneFormControl.hasError('pattern')) {
-    <mat-error>Please enter a valid Australian phone number</mat-error>
-    }}
-  </mat-form-field>
+    <mat-form-field>
+      <mat-label>State</mat-label>
+      <input type="text" matInput formControlName="state" [errorStateMatcher]="matcher" placeholder="Ex. NSW" />
+      @if (userForm.controls.state.hasError('required')) {
+      <mat-error>State is <strong>required</strong></mat-error>
+      }
+    </mat-form-field>
 
-  <mat-card-actions align="end">
-    <button mat-stroked-button type="cancel">Cancel</button>
-    <button mat-raised-button type="submit">Create</button>
-  </mat-card-actions>
+    <mat-form-field>
+      <mat-label>Mobile</mat-label>
+      <input type="tel" matInput formControlName="phone" [errorStateMatcher]="matcher" placeholder="Ex. 0412345678" />
+      @if (userForm.controls.phone.hasError('required')) {
+      <mat-error>Phone is <strong>required</strong></mat-error>
+      }@else { @if (userForm.controls.phone.hasError('pattern')) {
+      <mat-error>Please enter a valid Australian phone number</mat-error>
+      }}
+    </mat-form-field>
+
+    <mat-card-actions align="end">
+      <button mat-stroked-button type="cancel" (click)="instantUser()">Test</button>
+      <button mat-stroked-button type="cancel" routerLink="/login">Cancel</button>
+      <button mat-raised-button type="submit">Create</button>
+    </mat-card-actions>
+  </mat-card>
 </form>

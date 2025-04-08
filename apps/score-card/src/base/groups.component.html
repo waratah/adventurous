@@ -1,17 +1,25 @@
-<mat-toolbar class="secondary">
-  @for ( group of groups$ | async; track group.id ) {
-  <mat-toolbar-row>
-    <button class="group-button" mat-raised-button (click)="click(group)" [ngClass]="{ selected: group.id === groupId }">
-      {{ group.name }}
-    </button>
-  </mat-toolbar-row>
+<mat-card>
+  <mat-toolbar class="secondary">
+    @for ( group of groups$ | async; track group.id ) {
+    <mat-toolbar-row>
+      <button class="group-button" mat-raised-button (click)="click(group)" [ngClass]="{ selected: group.id === groupId }">
+        {{ group.name }}
+      </button>
+    </mat-toolbar-row>
+    }
+  </mat-toolbar>
+
+  @if( (login$ | async ) === null ) {
+  <div class="login">
+    <button mat-stroked-button [routerLink]="['/user/new']">Create a new user</button>
+    <button mat-stroked-button [routerLink]="['/login']">Login</button>
+  </div>
   }
-</mat-toolbar>
-
-<mat-card>
-  <button mat-button (click)="addNewGroup()">Add New Group</button>
 </mat-card>
 
+@if( login$ | async ) {
+
 <mat-card>
-  <button mat-button (click)="upload()">Test upload</button>
+  <button mat-stroked-button (click)="addNewGroup()">Add New Group</button>
 </mat-card>
+}

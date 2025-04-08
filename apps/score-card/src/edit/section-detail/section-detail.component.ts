@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PageDisplay } from '../../definitions';
-import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
+import { MyErrorStateMatcher } from '../../utils';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({

@@ -6,9 +6,16 @@
     @if( selectedGroup$| async; as group ) {
     <span class="hide-on-small">Rock School -</span> {{ group.name }}} @else { Rock School }
   </h1>
-  <button mat-icon-button aria-label="User settings screen" [routerLink]="['/user']" routerLinkActive="active-link">
-    <mat-icon matTooltip="View Your User" matTooltipPosition="below">settings</mat-icon>
-  </button>
+  <div>
+    @if( login$ | async) {
+    <button mat-icon-button aria-label="User settings screen" (click)="logout()">
+      <mat-icon matTooltip="View Your User" matTooltipPosition="below">logout</mat-icon>
+    </button>
+    }
+    <button mat-icon-button aria-label="User settings screen" [routerLink]="['/user']" routerLinkActive="active-link">
+      <mat-icon matTooltip="View Your User" matTooltipPosition="below">settings</mat-icon>
+    </button>
+  </div>
 </mat-toolbar>
 
 <mat-menu #menu="matMenu">
@@ -31,7 +38,7 @@
     <mat-button-toggle value="edit">Edit</mat-button-toggle>
   </mat-button-toggle-group>
 
-  @if( id()) {
+  @if( id() && (login$ | async)) {
   <button mat-menu-item>
     <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
     <mat-icon>done all</mat-icon>

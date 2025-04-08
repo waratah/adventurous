@@ -16,10 +16,10 @@ import {
 } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatToolbar } from '@angular/material/toolbar';
 import { questionGroup } from '../../definitions';
 import { QuestionsService } from '../../service/questions.service';
-import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
-import { MatToolbar } from '@angular/material/toolbar';
+import { MyErrorStateMatcher } from '../../utils';
 
 @Component({
   selector: 'app-dialog-group',

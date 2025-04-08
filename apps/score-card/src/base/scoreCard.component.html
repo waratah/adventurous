@@ -12,7 +12,7 @@
     <app-collapse [heading]="page.heading" [show]="page.show">
       <header>
         @if(page.doneCount){
-        <span class="hint"><span class="hide-on-small">Completed Assessments: </span>{{ page.doneCount }}/{{ page.totalCount }}</span>
+        <span class="hint">{{ page.doneCount }}/{{ page.totalCount }} <span class="hide-on-small">Completed Assessments</span></span>
         }
       </header>
       @if(page.description){

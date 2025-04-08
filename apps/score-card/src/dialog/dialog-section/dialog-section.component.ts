@@ -10,7 +10,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { PageDisplay } from '../../definitions';
-import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
+import { MyErrorStateMatcher } from '../../utils';
 
 @Component({
   selector: 'app-dialog-section',

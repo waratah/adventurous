@@ -6,22 +6,24 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { questionGroup, UploadParameters } from '../definitions';
+import { User } from '@angular/fire/auth';
 import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
-import { QuestionsService } from '../service';
+import { AuthService, QuestionsService } from '../service';
 
 @Component({
   selector: 'app-groups',
   standalone: true,
-  imports: [MatSlideToggleModule, MatButtonToggleModule, MatButtonModule, MatCardModule, MatToolbarModule, NgClass, AsyncPipe],
+  imports: [MatSlideToggleModule, MatButtonToggleModule, MatButtonModule, MatCardModule, MatToolbarModule, NgClass, AsyncPipe, RouterLink],
   templateUrl: './groups.component.html',
   styleUrl: './groups.component.css',
 })
 export class GroupsComponent {
   public groups$: Observable<questionGroup[]>;
   public selectedGroup$: Observable<questionGroup>;
+  public login$: Observable<User | null>;
 
   public groupId?: string;
 
@@ -30,7 +32,13 @@ export class GroupsComponent {
 
   public newGroup = '';
 
-  constructor(public questionsService: QuestionsService, private dialog: MatDialog, private router: Router) {
+  constructor(
+    public questionsService: QuestionsService,
+    private dialog: MatDialog,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.login$ = this.authService.user$;
     this.groups$ = questionsService.allQuestionGroups$;
     this.selectedGroup$ = questionsService.selectedGroup$;
   }

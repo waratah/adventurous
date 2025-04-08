@@ -7,6 +7,11 @@ export const appRoutes: Route[] = [
       import('../login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'groups',
+    loadComponent: () =>
+      import('../base/groups.component').then((m) => m.GroupsComponent),
+  },
+  {
     path: 'edit/:id',
     loadComponent: () =>
       import('../edit/editGroup.component').then((m) => m.EditGroupComponent),

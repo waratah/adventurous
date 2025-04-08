@@ -1,6 +1,6 @@
 .mat-toolbar {
   display: grid;
-  grid-template-columns: 2em 1fr 2em;
+  grid-template-columns: 2em 1fr auto;
   column-gap: 1em;
   row-gap: 1em;
   justify-content: center;

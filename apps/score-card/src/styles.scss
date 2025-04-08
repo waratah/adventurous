@@ -160,7 +160,7 @@ body {
 
 // Customize the entire app. Change :root to your selector if you want to scope the styles.
 :root {
-
+  --small-threshold: 599px;
   --mdc-protected-button-label-text-color: var(--mat-sys-on-primary);
   --mdc-protected-button-container-color: var(--mat-sys-primary);
   --mdc-protected-button-label-text-size: 1.2rem;
@@ -182,7 +182,6 @@ body {
   gap: 0.25rem;
 
   &.secondary {
-
     font: var(--mat-sys-display-medium);
     --mat-icon-color: var(--mat-sys-on-secondary);
 
@@ -246,7 +245,7 @@ p:has(.mat-button-toggle-group) {
   display: inline-block;
 }
 
-@media screen and (max-width: 599px) {
+@media screen and (max-width: var(--small-threshold)) {
   .hide-on-small {
     display: none;
   }
@@ -276,6 +275,11 @@ main {
   border-radius: 0.5rem;
   background-color: var(--mat-sys-on-error-container);
   color: var(--mat-sys-on-error);
+  white-space: pre-line;
+  text-align: center;
+  &:not(mat-icon) {
+    padding: 0.5rem;
+  }
 }
 
 mat-icon.error {

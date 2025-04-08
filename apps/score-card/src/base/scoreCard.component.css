@@ -8,7 +8,10 @@
     min-width: 1.4rem;
   }
 
-  * {min-height: 40px;align-self: center;}
+  * {
+    min-height: 40px;
+    align-self: center;
+  }
 
   img {
     max-width: 100%;
@@ -29,5 +32,17 @@
 
   .text-input {
     display: grid;
+  }
+}
+
+.hint {
+  display: block;
+  width: 30ch;
+  text-align: right;
+}
+
+@media screen and (max-width: var(--small-threshold)) {
+  .hint {
+    width: 80ch;
   }
 }

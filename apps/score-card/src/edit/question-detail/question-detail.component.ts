@@ -8,12 +8,12 @@ import {
 } from '@angular/forms';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { Question, QuestionType } from '../../definitions';
 import { QuestionsService } from '../../service/questions.service';
-import { MyErrorStateMatcher } from '../../user/user-new/user-new.component';
-import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MyErrorStateMatcher } from '../../utils';
 
 @Component({
   selector: 'app-question-detail',

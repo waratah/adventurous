@@ -4,11 +4,25 @@
   gap: 1rem;
 
   .group-button {
-    justify-self:center
+    justify-self: center;
   }
 }
 
 .mat-toolbar-row {
   display: grid;
   grid-template-columns: 1fr;
+}
+
+.login {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: auto auto;
+  margin-bottom: 0.5rem;
+}
+
+mat-card {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  margin: 0.5rem;
 }
