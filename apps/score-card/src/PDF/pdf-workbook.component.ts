@@ -1,13 +1,11 @@
 import { Component, effect, input, OnDestroy, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import jsPDF from 'jspdf';
-import { combineLatest,  Subject, Subscription } from 'rxjs';
-import { Answer, Question, questionGroup, User } from '../definitions';
+import { combineLatest, Subject, Subscription } from 'rxjs';
+import { Answer, page, Question, questionGroup, User } from '../definitions';
+import { AnswersService, QuestionsService } from '../service';
 import { UsersService } from '../service/users.service';
 import { PdfUserComponent } from './pdf-user.component';
-import { QuestionsService } from '../service/questions.service';
-import { page } from '../definitions/questionGroup';
-import { AnswersService } from '../service/answers.service';
-import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-pdf-workbook',
@@ -44,8 +42,7 @@ export class PdfWorkbookComponent implements OnDestroy {
     effect(() => {
       questionService.group = this.id();
 
-      this.title.set( this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} Participant`);
-
+      this.title.set(this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} Participant`);
     });
 
     answersService.userId = userService.userId;
@@ -65,7 +62,7 @@ export class PdfWorkbookComponent implements OnDestroy {
         if (!group.books) {
           group.books = {};
         }
-        this.title.set( this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} level`);
+        this.title.set(this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} level`);
 
         if (this.user && this.group && this.questions) {
           this.execute$.next('');
@@ -227,12 +224,43 @@ export class PdfWorkbookComponent implements OnDestroy {
         }
 
         if (questionIndex >= current.questions.length) {
+          if (current.requiresSignOff) {
+            y = this.printSignOff(y, doc);
+          }
+
           sectionIndex++;
           questionIndex = 0;
           current = sections[sectionIndex];
         }
       }
     } while (current);
+  }
+
+  private printSignOff(y: number, doc: jsPDF) {
+    y += 4;
+    this.grey(doc);
+
+    doc.setFont('helvetica').text('The candidate demonstrated skills', this.lineStart, y);
+
+    y += 8;
+    doc
+      .setFont('helvetica', 'bold')
+      .setFontSize(12)
+      .text('On Program Leader Name:', this.lineStart + 10, y)
+      .line(this.lineStart + 70, y + 2, this.lineStart + 150, y + 2, 'S');
+
+    y += 10;
+    doc
+      .text('Signature:', this.lineStart + 10, y)
+      .line(this.lineStart + 32, y + 2, this.lineStart + 60, y + 2, 'S')
+
+      .text('Date:', this.lineStart + 65, y)
+      .line(this.lineStart + 80, y + 2, this.lineStart + 150, y + 2, 'S')
+      .setFont('helvetica')
+      .setFontSize(10);
+    this.black(doc);
+    y = this.pageBottom;
+    return y;
   }
 
   textHeight(doc: jsPDF, text: string, x: number, y: number, width: number, fontSize: number) {
@@ -358,6 +386,21 @@ export class PdfWorkbookComponent implements OnDestroy {
     y += 7;
     doc.setTextColor('black').text('Assessment of Proficiency', centre, y, { align: 'center' }).setFont('helvetica');
     return y;
+  }
+
+  grey(doc: jsPDF) {
+    doc.setTextColor(93, 93, 93);
+    return doc;
+  }
+
+  blue(doc: jsPDF) {
+    doc.setTextColor(173, 216, 230);
+    return doc;
+  }
+
+  black(doc: jsPDF) {
+    doc.setTextColor(0, 0, 0);
+    return doc;
   }
 
   headings(doc: jsPDF) {
