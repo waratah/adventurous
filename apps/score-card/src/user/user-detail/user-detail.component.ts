@@ -4,6 +4,7 @@ import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { User } from '../../definitions';
 import { UsersService } from '../../service';
@@ -11,18 +12,19 @@ import { MyErrorStateMatcher } from '../../utils';
 
 @Component({
   selector: 'app-user-detail',
-  imports: [MatButton, MatCardModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule],
+  imports: [MatButton, MatCardModule, MatFormFieldModule, MatInputModule, MatSelectModule, ReactiveFormsModule],
   templateUrl: './user-detail.component.html',
   styleUrl: './user-detail.component.css',
 })
 export class UserDetailComponent {
+  readonly states: string[];
   user = model<User>();
   saved = signal(false);
   error = signal(false);
 
   userForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    state: new FormControl('', [Validators.required]),
+    state: new FormControl('NSW', [Validators.required]),
     group: new FormControl('', [Validators.required]),
     section: new FormControl('', [Validators.required]),
     phone: new FormControl('', [
@@ -39,6 +41,7 @@ export class UserDetailComponent {
 
   constructor(public userService: UsersService, private router: Router) {
     this.userForm.controls.state.setValue('NSW');
+    this.states = this.userService.states;
 
     effect(() => {
       const u = this.user();

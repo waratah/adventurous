@@ -35,14 +35,14 @@
   }
 }
 
-.hint {
+.hint.title {
   display: block;
   width: 30ch;
   text-align: right;
 }
 
-@media screen and (max-width: var(--small-threshold)) {
-  .hint {
-    width: 80ch;
+@media screen and (max-width: 599px) {
+  .hint.title {
+    width: 8ch;
   }
 }

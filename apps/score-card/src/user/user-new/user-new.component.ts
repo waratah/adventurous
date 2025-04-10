@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterLink } from '@angular/router';
 import { User } from '../../definitions';
 import { AuthService, UsersService } from '../../service';
@@ -24,6 +25,7 @@ interface UserPlus extends User {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
+    MatSelectModule,
     ReactiveFormsModule,
   ],
   templateUrl: './user-new.component.html',
@@ -31,10 +33,13 @@ interface UserPlus extends User {
 })
 export class UserNewComponent {
   hidePassword = signal(true);
+  error = signal(false);
+
+  readonly states: string[];
 
   userForm = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    state: new FormControl('', [Validators.required]),
+    state: new FormControl('NSW', [Validators.required]),
     password: new FormControl('', [Validators.required]),
     group: new FormControl('', [Validators.required]),
     section: new FormControl('', [Validators.required]),
@@ -52,19 +57,27 @@ export class UserNewComponent {
 
   constructor(public userService: UsersService, private authService: AuthService, private router: Router) {
     this.userForm.controls['state'].setValue('NSW');
+    this.states = this.userService.states;
   }
 
   instantUser() {
+    this.error.set(false);
+
     this.authService
       // .createUser('ken.foskey@nsw.scouts.com.au', 'test')
       .createUser('guest@nsw.scouts.com.au', 'fake_password')
       .then(user => {
         console.log(user);
       })
-      .catch(error => console.error(error));
+      .catch(error => {
+        console.error({ error });
+        this.error.set(true);
+      });
   }
 
   createUser() {
+    this.error.set(false);
+
     if (this.userForm.invalid) {
       return;
     }
@@ -81,11 +94,17 @@ export class UserNewComponent {
       verifyGroups: [],
     };
 
-    this.authService.createUser(user.email, user.password || '').then(() => {
-      delete user.password;
+    this.authService
+      .createUser(user.email, user.password || '')
+      .then(() => {
+        delete user.password;
 
-      this.userService.saveUser(user);
-    });
+        this.userService.saveUser(user);
+      })
+      .catch(error => {
+        console.error(error);
+        this.error.set(true);
+      });
   }
 
   passwordClick(event: Event) {

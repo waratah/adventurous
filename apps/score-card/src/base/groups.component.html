@@ -8,17 +8,16 @@
     </mat-toolbar-row>
     }
   </mat-toolbar>
+</mat-card>
 
-  @if( (login$ | async ) === null ) {
+@if( (login$ | async ) === null ) {
+<mat-card>
   <div class="login">
     <button mat-stroked-button [routerLink]="['/user/new']">Create a new user</button>
     <button mat-stroked-button [routerLink]="['/login']">Login</button>
   </div>
-  }
 </mat-card>
-
-@if( login$ | async ) {
-
+} @if( login$ | async ) {
 <mat-card>
   <button mat-stroked-button (click)="addNewGroup()">Add New Group</button>
 </mat-card>

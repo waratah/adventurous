@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FirebaseError } from '@angular/fire/app';
 import { Auth, browserSessionPersistence, signInWithEmailAndPassword, signOut, user, User } from '@angular/fire/auth';
 import { createUserWithEmailAndPassword, setPersistence, UserCredential } from 'firebase/auth';
 import { Observable } from 'rxjs';
@@ -30,5 +31,16 @@ export class AuthService {
 
   async createUser(email: string, password: string) {
     return createUserWithEmailAndPassword(this.firebaseAuth, email, password);
+  }
+
+  error(e: FirebaseError) {
+    const code = e.code.split('/')[0];
+    switch (code) {
+      case 'auth/email-already-in-use':
+        return 'Email is already in use.';
+
+      default:
+        return e.message;
+    }
   }
 }

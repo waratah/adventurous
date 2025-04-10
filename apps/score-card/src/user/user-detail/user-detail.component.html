@@ -45,10 +45,14 @@
     }
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field                                                                                                 >
     <mat-label>State</mat-label>
-    <input type="text" matInput formControlName="state" [errorStateMatcher]="matcher" placeholder="Ex. NSW" />
-    @if (userForm.controls.state.hasError('required')) {
+    <mat-select formControlName="state">
+      @for (s of states; track s) {
+        <mat-option [value]="s">{{s}}</mat-option>
+      }
+    </mat-select>
+     @if (userForm.controls.state.hasError('required')) {
     <mat-error>State is <strong>required</strong></mat-error>
     }
   </mat-form-field>
@@ -64,7 +68,7 @@
   </mat-form-field>
 
   <mat-card-actions align="end">
-    <button mat-stroked-button type='reset' click='cancel()'>Cancel</button>
+    <button mat-stroked-button type="cancel" (click)="cancel()">Cancel</button>
     <button mat-raised-button type="submit">Create</button>
   </mat-card-actions>
 

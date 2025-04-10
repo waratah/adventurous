@@ -1,4 +1,6 @@
-
 @if( this.userService.currentUser$| async; as user ) {
-<app-user-detail [user]="user" ></app-user-detail>
+<app-user-detail [user]="user"></app-user-detail>
+} @else {
+  <a [routerLink]="['/login']">
+<h2>Please sign in</h2></a>
 }

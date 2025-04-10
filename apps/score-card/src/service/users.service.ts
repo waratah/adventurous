@@ -22,6 +22,18 @@ import { User } from '../definitions';
 export class UsersService {
   private myId = '';
 
+  public readonly states = [
+    'NSW',
+    'Queensland',
+    'Victoria',
+    'ACT',
+    'South Australia',
+    'Western Australia',
+    'Tasmania',
+    'Northern Territory',
+    'National',
+  ];
+
   // temporary to negate check
   public get userId(): string {
     return this.myId;
@@ -88,7 +100,6 @@ export class UsersService {
 
   async loadEmail(email: string) {
     const q = query(this.userCollection, where('email', '==', email));
-    console.log({ email });
 
     const querySnapshot = await getDocs(q);
     let result = false;
@@ -96,7 +107,9 @@ export class UsersService {
       // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, ' => ', doc.data());
       result = true;
+      const user = doc.data();
       this.currentUser.next(doc.data());
+      this.myId = user.scoutNumber;
     });
     if (!result) {
       const user: User = {
@@ -112,7 +125,6 @@ export class UsersService {
       this.currentUser.next(user);
       console.error(`Unable to locate: ${email}`);
     }
-    console.log({ result });
     return result;
   }
 

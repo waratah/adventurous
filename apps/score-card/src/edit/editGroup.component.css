@@ -51,7 +51,7 @@ h4 {
   }
 }
 
-@media screen and (max-width: var(--small-threshold)) {
+@media screen and (max-width: 599px) {
   .edit-title {
     grid-template-areas: 'edit question';
     grid-template-columns: auto;

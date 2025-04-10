@@ -2,7 +2,7 @@
   <mat-card>
     <mat-form-field>
       <mat-label>Name</mat-label>
-      <input type="text" matInput formControlName="name" [errorStateMatcher]="matcher" placeholder="Ex. Bert Trainee" />
+      <input type="text" matInput formControlName="name" [errorStateMatcher]="matcher" placeholder="Ex. Bert Trainee" autocomplete="off" />
       <mat-hint>Your first name and last name!</mat-hint>
       @if (userForm.controls.name.hasError('required')) {
       <mat-error>Name is <strong>required</strong></mat-error>
@@ -11,7 +11,14 @@
 
     <mat-form-field>
       <mat-label>Email</mat-label>
-      <input type="email" matInput formControlName="email" [errorStateMatcher]="matcher" placeholder="Ex. pat@example.com" />
+      <input
+        type="email"
+        matInput
+        formControlName="email"
+        [errorStateMatcher]="matcher"
+        placeholder="Ex. pat.leader@nsw.scouts.com.au"
+        autocomplete="off"
+      />
       <mat-hint>you&#64;nsw.scouts.com.au address is preferred so that everything links up</mat-hint>
       @if (userForm.controls.email.hasError('required')) {
       <mat-error>Email is <strong>required</strong></mat-error>
@@ -22,11 +29,17 @@
 
     <mat-form-field>
       <mat-label>Password</mat-label>
-      <input [type]="hidePassword() ? 'password' : 'text'" matInput formControlName="password" />
-      <button mat-icon-button matSuffix (click)="passwordClick($event)" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword()">
+      <input [type]="hidePassword() ? 'password' : 'text'" matInput formControlName="password" autocomplete="new-password" />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="passwordClick($event)"
+        [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hidePassword()"
+      >
         <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
       </button>
-<mat-hint>you&#64;nsw.scouts.com.au address is preferred so that everything links up</mat-hint>
+      <mat-hint>you&#64;nsw.scouts.com.au address is preferred so that everything links up</mat-hint>
       @if (userForm.controls.password.hasError('required')) {
       <mat-error>Password is <strong>required</strong></mat-error>
       } @else { @if (userForm.controls.password.hasError('pattern')) {
@@ -36,7 +49,7 @@
 
     <mat-form-field>
       <mat-label>Scout member number</mat-label>
-      <input type="text" matInput formControlName="member" [errorStateMatcher]="matcher" placeholder="Ex. 1234" />
+      <input type="text" matInput formControlName="member" [errorStateMatcher]="matcher" placeholder="Ex. 1234" autocomplete="off" />
       <mat-hint>You can find this in operoo</mat-hint>
       @if (userForm.controls.member.hasError('required')) {
       <mat-error>Member number is <strong>required</strong></mat-error>
@@ -47,14 +60,14 @@
 
     <mat-form-field>
       <mat-label>Group</mat-label>
-      <input type="text" matInput formControlName="group" [errorStateMatcher]="matcher" placeholder="Ex. Heathcote" />
+      <input type="text" matInput formControlName="group" [errorStateMatcher]="matcher" placeholder="Ex. Heathcote" autocomplete="off" />
       @if (userForm.controls.group.hasError('required')) {
       <mat-error>Group is <strong>required</strong></mat-error>
       }
     </mat-form-field>
     <mat-form-field>
       <mat-label>Section</mat-label>
-      <input type="text" matInput formControlName="section" [errorStateMatcher]="matcher" placeholder="Ex. Venturers" />
+      <input type="text" matInput formControlName="section" [errorStateMatcher]="matcher" placeholder="Ex. Venturers" autocomplete="off" />
       @if (userForm.controls.section.hasError('required')) {
       <mat-error>Section is <strong>required</strong></mat-error>
       }
@@ -62,7 +75,11 @@
 
     <mat-form-field>
       <mat-label>State</mat-label>
-      <input type="text" matInput formControlName="state" [errorStateMatcher]="matcher" placeholder="Ex. NSW" />
+      <mat-select formControlName="state">
+        @for (s of states; track s) {
+        <mat-option [value]="s">{{ s }}</mat-option>
+        }
+      </mat-select>
       @if (userForm.controls.state.hasError('required')) {
       <mat-error>State is <strong>required</strong></mat-error>
       }
@@ -70,7 +87,7 @@
 
     <mat-form-field>
       <mat-label>Mobile</mat-label>
-      <input type="tel" matInput formControlName="phone" [errorStateMatcher]="matcher" placeholder="Ex. 0412345678" />
+      <input type="tel" matInput formControlName="phone" [errorStateMatcher]="matcher" placeholder="Ex. 0412345678" autocomplete="off" />
       @if (userForm.controls.phone.hasError('required')) {
       <mat-error>Phone is <strong>required</strong></mat-error>
       }@else { @if (userForm.controls.phone.hasError('pattern')) {

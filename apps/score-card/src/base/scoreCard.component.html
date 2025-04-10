@@ -12,7 +12,7 @@
     <app-collapse [heading]="page.heading" [show]="page.show">
       <header>
         @if(page.doneCount){
-        <span class="hint">{{ page.doneCount }}/{{ page.totalCount }} <span class="hide-on-small">Completed Assessments</span></span>
+        <span class="hint title">{{ page.doneCount }}/{{ page.totalCount }} <span class="hide-on-small">Completed Assessments</span></span>
         }
       </header>
       @if(page.description){
@@ -52,4 +52,6 @@
   </section>
   }
 </div>
+<mat-card>
 <button class="mat-margin-20" mat-raised-button (click)="print()">Screen shot</button>
+</mat-card>

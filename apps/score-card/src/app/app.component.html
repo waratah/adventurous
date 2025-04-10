@@ -7,7 +7,7 @@
     <span class="hide-on-small">Rock School -</span> {{ group.name }}} @else { Rock School }
   </h1>
   <div class="buttons">
-    @if( login$ | async; as lg) {
+    @if( login()) {
     <button mat-icon-button aria-label="User settings screen" (click)="logout()">
       <mat-icon matTooltip="Log out" matTooltipPosition="below">logout</mat-icon>
     </button>
@@ -38,7 +38,7 @@
     <mat-button-toggle value="edit">Edit</mat-button-toggle>
   </mat-button-toggle-group>
 
-  @if( id() && (login$ | async)) {
+  @if( id() && login()) {
   <button mat-menu-item>
     <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
     <mat-icon>done all</mat-icon>

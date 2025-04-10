@@ -1,0 +1,11 @@
+<mat-form-field>
+  <mat-label>State</mat-label>
+  <mat-select id="state" [formControl]="formControl()" name="'state">
+    @for (s of states; track s) {
+    <mat-option [value]="s">{{ s }}</mat-option>
+    }
+  </mat-select>
+  @if (formControl().hasError('required')) {
+  <mat-error>State is <strong>required</strong></mat-error>
+  }
+</mat-form-field>

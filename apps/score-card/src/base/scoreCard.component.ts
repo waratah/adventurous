@@ -1,6 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, effect, ElementRef, input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -31,7 +32,7 @@ interface DetailPage {
 @Component({
   selector: 'app-score-card',
   standalone: true,
-  imports: [AsyncPipe, MatIconModule, MatToolbarModule, CollapseComponent, MatButtonModule],
+  imports: [AsyncPipe, MatIconModule, MatToolbarModule, CollapseComponent, MatButtonModule, MatCardModule],
   templateUrl: './scoreCard.component.html',
   styleUrl: './scoreCard.component.css',
 })
