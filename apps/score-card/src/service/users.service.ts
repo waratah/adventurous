@@ -105,7 +105,6 @@ export class UsersService {
     let result = false;
     querySnapshot.forEach(doc => {
       // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, ' => ', doc.data());
       result = true;
       const user = doc.data();
       this.currentUser.next(doc.data());

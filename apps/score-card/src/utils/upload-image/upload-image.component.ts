@@ -1,8 +1,8 @@
 import { Component, effect, input, output, signal } from '@angular/core';
+import { getDownloadURL, getStorage, ref, StorageReference, uploadBytesResumable } from '@angular/fire/storage';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { UploadResult } from '../../definitions';
-import { getDownloadURL, getStorage, ref, StorageReference, uploadBytesResumable } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-upload-image',
@@ -88,7 +88,7 @@ export class UploadImageComponent {
     console.log(`… ${file.name}`);
     console.log({ file });
 
-  const uploadName = `${this.directory()}/${file.name}`;
+    const uploadName = `${this.directory()}/${file.name}`;
 
     const storageRef = ref(this.uploadRef, file.name);
 
@@ -100,17 +100,17 @@ export class UploadImageComponent {
         const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
         this.progress.set(progress);
 
-        console.log({progress, snapshot})
+        console.log({ progress, snapshot });
       },
       error => {
-        console.error({error});
+        console.error({ error });
         this.errorMessage.set(error.message);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
           const result: UploadResult = {
             filenames: [uploadName],
-            urls: [downloadURL]
+            urls: [downloadURL],
           };
 
           this.files.emit(result);
