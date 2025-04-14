@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { QuestionsService, AuthService, UsersService } from '../service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { User } from '@angular/fire/auth';
 import { questionGroup } from '../definitions';
@@ -37,13 +37,25 @@ describe('AppComponent', () => {
       navigate: jest.fn(), // Mocking navigate method
     };
 
+    const activatedRouteMock = {
+      url: of([]),
+      data: of({}),
+      paramMap: of({
+        get: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'test-id'; // Adjust as needed for your tests
+          return null;
+        })
+      })
+    };
+
     await TestBed.configureTestingModule({
-      declarations: [AppComponent],
+      imports: [AppComponent],
       providers: [
         { provide: QuestionsService, useValue: questionsServiceMock },
         { provide: AuthService, useValue: authServiceMock },
         { provide: UsersService, useValue: usersServiceMock },
         { provide: Router, useValue: routerMock },
+         { provide: ActivatedRoute, useValue: activatedRouteMock }
       ],
     }).compileComponents();
   });

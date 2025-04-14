@@ -2,20 +2,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GroupsComponent } from './groups.component';
 import { QuestionsService } from '../service';
 import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../service';
 import { questionGroup } from '../definitions';
 import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
 
-export function mockFetch(data: any) {
-  return jest.fn().mockImplementation(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => data,
-    })
-  );
-}
 
 describe('GroupsComponent', () => {
   let component: GroupsComponent;
@@ -33,8 +25,6 @@ describe('GroupsComponent', () => {
       group: '1',
     };
 
-    window.fetch = mockFetch('');
-
     authServiceMock = {
       user$: of(null), // Mock for user observable
     };
@@ -49,13 +39,23 @@ describe('GroupsComponent', () => {
       navigate: jest.fn(), // Mock navigate function
     };
 
+    const activatedRouteMock = {
+      paramMap: of({
+        get: jest.fn().mockImplementation((key: string) => {
+          if (key === 'id') return 'test-id'; // Adjust as needed for your tests
+          return null;
+        })
+      })
+    };
+
     await TestBed.configureTestingModule({
-      declarations: [GroupsComponent],
+      imports: [GroupsComponent],
       providers: [
         { provide: QuestionsService, useValue: questionsServiceMock },
         { provide: AuthService, useValue: authServiceMock },
         { provide: MatDialog, useValue: dialogMock },
         { provide: Router, useValue: routerMock },
+        { provide: ActivatedRoute, useValue: activatedRouteMock }
       ],
     }).compileComponents();
   });
