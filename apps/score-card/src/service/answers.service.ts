@@ -49,14 +49,18 @@ export class AnswersService {
   };
 
   private loadAnswers(id: string) {
-    getDoc(doc(this.answerCollection, id)).then(d => {
-      const result = d.data() as AnswerStore | undefined;
-      if (result?.answers) {
-        this.answers.next(result.answers);
-      } else {
-        this.answers.next([]);
-      }
-    });
+    if (id) {
+      getDoc(doc(this.answerCollection, id)).then(d => {
+        const result = d.data() as AnswerStore | undefined;
+        if (result?.answers) {
+          this.answers.next(result.answers);
+        } else {
+          this.answers.next([]);
+        }
+      });
+    } else {
+      this.answers.next([]);
+    }
   }
 
   public set userId(id: string) {
@@ -70,6 +74,8 @@ export class AnswersService {
   }
 
   updateAnswer(answer: Answer) {
+    if (!this.myId) return;
+
     const docRef = doc(this.answerCollection, this.myId);
     getDoc(docRef).then(answerStore => {
       const store = answerStore.data() || {
@@ -90,6 +96,10 @@ export class AnswersService {
   }
 
   public updateVerify(questionId: string, value: boolean) {
+    if (!this.myId) {
+      console.error('Verify when not signed in');
+      return;
+    }
     const docRef = doc(this.answerCollection, this.myId);
     getDoc(docRef).then(answerStore => {
       const store = answerStore.data() || {

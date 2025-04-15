@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PdfWorkbookComponent } from './pdf-workbook.component';
 
-describe('PdfWaterSafeComponent', () => {
+describe('PdfWorkbookComponent', () => {
   let component: PdfWorkbookComponent;
   let fixture: ComponentFixture<PdfWorkbookComponent>;
 

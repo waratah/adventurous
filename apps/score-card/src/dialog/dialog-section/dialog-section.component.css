@@ -1,8 +1,8 @@
 
 form {
-  margin: 2em;
+  padding: 1.5em;
   display: grid;
-  gap: 2em;
+  gap: 1em;
   max-width: 60ch;
   grid-template-columns: 1fr;
 

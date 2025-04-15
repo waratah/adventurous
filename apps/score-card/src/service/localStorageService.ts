@@ -1,11 +1,15 @@
-import { Injectable, inject } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
+import { Injectable, inject } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocalStorageService {
-  private readonly localStorage = inject(DOCUMENT)?.defaultView?.localStorage;
+  private readonly localStorage;
+
+  constructor() {
+    this.localStorage = inject(DOCUMENT)?.defaultView?.localStorage;
+  }
 
   get<T>(key: string): T | null {
     const item = this.localStorage?.getItem(key);

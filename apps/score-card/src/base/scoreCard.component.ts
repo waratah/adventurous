@@ -51,8 +51,8 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   private sub?: Subscription;
 
   constructor(
-    public answerService: AnswersService,
-    public usersService: UsersService,
+    private answerService: AnswersService,
+    private usersService: UsersService,
     private route: ActivatedRoute,
     private questionsService: QuestionsService,
     private dialog: MatDialog

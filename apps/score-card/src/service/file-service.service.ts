@@ -5,8 +5,6 @@ import { UploadTask, getStorage, ref, uploadBytesResumable } from '@angular/fire
   providedIn: 'root',
 })
 export class FileServiceService {
-  // constructor() {}
-
   private readonly storage = getStorage();
 
   pushFileToStorage(basePath: string, fileUpload: File): UploadTask {

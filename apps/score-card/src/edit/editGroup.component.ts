@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { Component, effect, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
@@ -33,7 +33,6 @@ import { CollapseComponent, QuestionSelectComponent } from '../utils';
     MatButtonModule,
     MatSelectModule,
     MatIconModule,
-    MatDialogModule,
     CollapseComponent,
     AsyncPipe,
     FormsModule,
@@ -168,7 +167,7 @@ export class EditGroupComponent {
       data: {
         section,
       },
-      minWidth: 600,
+      minWidth: 630,
     });
 
     dialogRef.afterClosed().subscribe(result => {
