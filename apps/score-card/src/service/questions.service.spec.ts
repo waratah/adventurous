@@ -1,6 +1,6 @@
 import { QuestionsService } from './questions.service';
 import { addDoc, doc, setDoc, getDoc } from '@angular/fire/firestore';
-import { PageDisplay, Question, questionGroup } from '../definitions';
+import { PageDisplay, Question, QuestionGroup } from '../definitions';
 import { of } from 'rxjs';
 
 const docData = { data: 'MOCK_DATA' };
@@ -108,7 +108,7 @@ describe('QuestionsService', () => {
   });
 
   it('should update a group using setDoc', async () => {
-    const group = <questionGroup>{ id: 'groupId', name: 'Test Group' };
+    const group = <QuestionGroup>{ id: 'groupId', name: 'Test Group' };
 
     (setDoc as jest.Mock).mockResolvedValue(undefined);
 
@@ -119,7 +119,7 @@ describe('QuestionsService', () => {
   });
 
   it('should handle errors during updating a group', async () => {
-    const group = <questionGroup>{ id: 'groupId', name: 'Test Group' };
+    const group = <QuestionGroup>{ id: 'groupId', name: 'Test Group' };
 
     (setDoc as jest.Mock).mockRejectedValue(new Error('Error updating group'));
 

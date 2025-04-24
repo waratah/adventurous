@@ -11,7 +11,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 import { Observable, take } from 'rxjs';
-import { PageDisplay, Question, questionGroup } from '../definitions';
+import { PageDisplay, Question, QuestionGroup } from '../definitions';
 import {
   ConfirmationOptions,
   DialogConfirmComponent,
@@ -46,11 +46,12 @@ export class EditGroupComponent {
   public isAddSection = signal(false);
 
   public selectedSection = signal<PageDisplay | undefined>(undefined);
+  public saveError = signal<string | undefined>(undefined);
 
   public id = input<string>();
 
   public sections$: Observable<PageDisplay[]>;
-  public groups$: Observable<questionGroup[]>;
+  public groups$: Observable<QuestionGroup[]>;
 
   constructor(private questionsService: QuestionsService, private dialog: MatDialog, private router: Router) {
     this.sections$ = questionsService.sections$;
@@ -207,7 +208,7 @@ export class EditGroupComponent {
   }
 
   public addGroup() {
-    const group: questionGroup = {
+    const group: QuestionGroup = {
       name: '',
       id: '',
       books: {},
@@ -220,7 +221,7 @@ export class EditGroupComponent {
     this.questionsService.selectedGroup$.pipe(take(1)).subscribe(g => this.editGroupDetail(g));
   }
 
-  public editGroupDetail(group: questionGroup) {
+  public editGroupDetail(group: QuestionGroup) {
     const dialogRef = this.dialog.open(DialogGroupComponent, {
       data: {
         group,

@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { EditGroupComponent } from './editGroup.component';
-import { QuestionsService } from '../service';
 import { MatDialog } from '@angular/material/dialog';
-import { of } from 'rxjs';
 import { Router } from '@angular/router';
-import { PageDisplay, Question } from '../definitions';
-import { questionGroup } from '../definitions/questionGroup';
+import { of } from 'rxjs';
+import { PageDisplay, Question, QuestionGroup } from '../definitions';
+import { QuestionsService } from '../service';
+import { EditGroupComponent } from './editGroup.component';
 
 // Mock components for dialogues and services
 class MockQuestionsService {
@@ -20,7 +19,7 @@ class MockQuestionsService {
 class MockDialog {
   opened = false;
   data?: any;
-  open(data:any) {
+  open(data: any) {
     this.data = data;
     this.opened = true;
   }
@@ -58,7 +57,6 @@ describe('EditGroupComponent', () => {
   it('should create the component', () => {
     expect(component).toBeTruthy();
   });
-
 
   it('should remove a question from the section', () => {
     const mockSections: PageDisplay[] = [
@@ -100,7 +98,6 @@ describe('EditGroupComponent', () => {
     component.editQuestion(mockQuestion);
 
     expect(mockDialog.opened).toBe(true);
-
   });
 
   it('should handle dragging sections', () => {
@@ -166,7 +163,7 @@ describe('EditGroupComponent', () => {
     };
     mockDialog.open = jest.fn().mockReturnValue(dialogRef);
 
-    const g: questionGroup = {
+    const g: QuestionGroup = {
       id: '1',
       name: 'name',
       books: {},
@@ -177,5 +174,4 @@ describe('EditGroupComponent', () => {
 
     expect(mockRouter.navigate).toHaveBeenCalledWith(['edit', mockQuestionsService.group]);
   });
-
 });

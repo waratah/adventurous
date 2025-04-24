@@ -85,8 +85,6 @@ export class UploadImageComponent {
 
   loadFile(file: File) {
     this.errorMessage.set('');
-    console.log(`… ${file.name}`);
-    console.log({ file });
 
     const uploadName = `${this.directory()}/${file.name}`;
 
@@ -99,8 +97,6 @@ export class UploadImageComponent {
       snapshot => {
         const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
         this.progress.set(progress);
-
-        console.log({ progress, snapshot });
       },
       error => {
         console.error({ error });

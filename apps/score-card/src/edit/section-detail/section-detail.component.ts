@@ -69,7 +69,6 @@ export class SectionDetailComponent {
         questions: [],
       };
       this.section.set(result);
-      console.log(this.section());
     }
   }
 }

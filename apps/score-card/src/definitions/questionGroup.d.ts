@@ -22,7 +22,7 @@ export interface Books {
   assessor?: BookDetail;
 }
 
-export interface questionGroup {
+export interface QuestionGroup {
   id: string;
   name: string;
   books: Books;

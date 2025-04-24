@@ -1,7 +1,5 @@
-import { GroupId } from './GroupId';
-
-interface User {
-  verifyGroups: GroupId[];
+export interface User {
+  verifyGroups: string[];
   name: string;
   scoutNumber: string;
   state: string;
@@ -9,4 +7,5 @@ interface User {
   group: string;
   email: string;
   phone: string;
+  uid: string;
 }

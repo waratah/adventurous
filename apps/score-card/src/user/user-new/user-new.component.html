@@ -1,5 +1,12 @@
 <form [formGroup]="userForm" (ngSubmit)="createUser()">
   <mat-card>
+    @if(error()) {
+    <div class="error">
+      An Error has occurred: {{ error() }}.<br />
+      Check your userid and password and try again.
+    </div>
+    }
+
     <mat-form-field>
       <mat-label>Name</mat-label>
       <input type="text" matInput formControlName="name" [errorStateMatcher]="matcher" placeholder="Ex. Bert Trainee" autocomplete="off" />
@@ -29,7 +36,7 @@
 
     <mat-form-field>
       <mat-label>Password</mat-label>
-      <input [type]="hidePassword() ? 'password' : 'text'" matInput formControlName="password" autocomplete="new-password" />
+      <input [type]="hidePassword() ? 'password' : 'text'" matInput formControlName="password" autocomplete="new-password" minlength="6" />
       <button
         mat-icon-button
         matSuffix

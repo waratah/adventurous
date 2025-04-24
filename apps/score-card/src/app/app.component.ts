@@ -1,4 +1,3 @@
-import { AsyncPipe } from '@angular/common';
 import { Component, Signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { User } from '@angular/fire/auth';
@@ -8,12 +7,12 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
-import { Observable, take } from 'rxjs';
-import { questionGroup } from '../definitions';
+import { take } from 'rxjs';
+import { QuestionGroup } from '../definitions';
 import { AuthService, QuestionsService, UsersService } from '../service';
 
 @Component({
-  imports: [AsyncPipe, RouterModule, MatButtonToggleModule, MatToolbarModule, MatTooltipModule, MatIconModule, MatMenuModule],
+  imports: [RouterModule, MatButtonToggleModule, MatToolbarModule, MatTooltipModule, MatIconModule, MatMenuModule],
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -21,8 +20,8 @@ import { AuthService, QuestionsService, UsersService } from '../service';
 export class AppComponent {
   public login: Signal<User | null | undefined>;
 
-  public groups$: Observable<questionGroup[]>;
-  public selectedGroup$: Observable<questionGroup>;
+  public groups: Signal<QuestionGroup[] | undefined>;
+  public selectedGroup: Signal<QuestionGroup | undefined>;
   public id: Signal<string | undefined>;
 
   public action = 'view';
@@ -34,20 +33,21 @@ export class AppComponent {
     private userService: UsersService,
     private router: Router
   ) {
-    this.groups$ = questionsService.allQuestionGroups$;
-    this.selectedGroup$ = questionsService.selectedGroup$;
+    this.groups = toSignal(questionsService.allQuestionGroups$);
+    this.selectedGroup = toSignal(questionsService.selectedGroup$);
     this.id = toSignal(this.questionsService.groupId$);
 
     // test user on startup only...
     this.authService.user$.pipe(take(1)).subscribe(u => {
-      if (u?.email) {
-        this.userService.loadEmail(u?.email);
-      }
+      this.userService.loadUID(u?.uid);
+      this.authService.displayClaims();
+
+
     });
     this.login = toSignal(this.authService.user$);
   }
 
-  public gotoGroup(group: questionGroup) {
+  public gotoGroup(group: QuestionGroup) {
     this.questionsService.group = group.id;
     this.router.navigate([this.action, group.id]);
   }

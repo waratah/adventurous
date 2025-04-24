@@ -8,7 +8,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import { questionGroup, UploadParameters } from '../definitions';
+import { QuestionGroup, UploadParameters } from '../definitions';
 import { User } from '@angular/fire/auth';
 import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
 import { AuthService, QuestionsService } from '../service';
@@ -21,8 +21,8 @@ import { AuthService, QuestionsService } from '../service';
   styleUrl: './groups.component.css',
 })
 export class GroupsComponent {
-  public groups$: Observable<questionGroup[]>;
-  public selectedGroup$: Observable<questionGroup>;
+  public groups$: Observable<QuestionGroup[]>;
+  public selectedGroup$: Observable<QuestionGroup>;
   public login$: Observable<User | null>;
 
   public groupId?: string;
@@ -43,7 +43,7 @@ export class GroupsComponent {
     this.selectedGroup$ = questionsService.selectedGroup$;
   }
 
-  public click(group: questionGroup) {
+  public click(group: QuestionGroup) {
     this.questionsService.group = group.id;
     this.groupId = group.id;
 
@@ -71,7 +71,7 @@ export class GroupsComponent {
   }
 
   public addNewGroup() {
-    const group: questionGroup = {
+    const group: QuestionGroup = {
       name: '',
       id: '',
       books: {},
@@ -80,7 +80,7 @@ export class GroupsComponent {
     this.editGroupDetail(group);
   }
 
-  public editGroupDetail(group: questionGroup) {
+  public editGroupDetail(group: QuestionGroup) {
     const dialogRef = this.dialog.open(DialogGroupComponent, {
       data: {
         group,
@@ -106,7 +106,7 @@ export class GroupsComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log({ result });
+      console.info({ result });
     });
   }
 }

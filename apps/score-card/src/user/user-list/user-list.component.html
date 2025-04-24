@@ -1,1 +1,31 @@
-<p>user-list works!</p>
+<mat-card>
+  <mat-toolbar>
+    <h2>Select users to verify</h2>
+    by {{ currentUserId() }}
+  </mat-toolbar>
+
+  <div class="grid">
+    <h3>Name</h3>
+    <h3>Scout Number</h3>
+    <h3>Select</h3>
+    @for ( user of users(); track user.scoutNumber ) {
+    <div>{{ user.name }}</div>
+    <div>{{ user.scoutNumber }}</div>
+
+    <div>
+      <mat-checkbox
+        [checked]="this.selected[user.scoutNumber]"
+        [disabled]="currentUserId() === user.scoutNumber"
+        [ngClass]="{ mine: user.scoutNumber === currentUserId() }"
+      >
+      </mat-checkbox>
+    </div>
+    }
+  </div>
+</mat-card>
+
+<mat-card>
+  <div class="login">
+    <button mat-stroked-button [routerLink]="['/user/new']">Create a new user</button>
+  </div>
+</mat-card>

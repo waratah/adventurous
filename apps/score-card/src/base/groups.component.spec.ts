@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../service';
-import { questionGroup } from '../definitions';
+import { QuestionGroup } from '../definitions';
 import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
 
 
@@ -21,7 +21,7 @@ describe('GroupsComponent', () => {
   beforeEach(async () => {
     questionsServiceMock = {
       allQuestionGroups$: of([]), // Empty observable for testing
-      selectedGroup$: of(<questionGroup>{}), // Mock for selected group
+      selectedGroup$: of(<QuestionGroup>{}), // Mock for selected group
       group: '1',
     };
 
@@ -72,7 +72,7 @@ describe('GroupsComponent', () => {
 
   it('should navigate to edit route when clicking a group and isEdit is true', () => {
     component.isEdit = true;
-    const group: questionGroup = { id: '1', name: 'Test Group', books: {}, pages: [] };
+    const group: QuestionGroup = { id: '1', name: 'Test Group', books: {}, pages: [] };
 
     component.click(group);
 
@@ -81,7 +81,7 @@ describe('GroupsComponent', () => {
 
   it('should navigate to verify route when clicking a group and isVerify is true', () => {
     component.isVerify = true;
-    const group: questionGroup = { id: '2', name: 'Test Group', books: {}, pages: [] };
+    const group: QuestionGroup = { id: '2', name: 'Test Group', books: {}, pages: [] };
 
     component.click(group);
 
@@ -91,7 +91,7 @@ describe('GroupsComponent', () => {
   it('should navigate to check route when clicking a group without isEdit or isVerify', () => {
     component.isEdit = false;
     component.isVerify = false;
-    const group: questionGroup = { id: '3', name: 'Test Group', books: {}, pages: [] };
+    const group: QuestionGroup = { id: '3', name: 'Test Group', books: {}, pages: [] };
 
     component.click(group);
 
@@ -99,7 +99,7 @@ describe('GroupsComponent', () => {
   });
 
   it('should open the dialog for editing group details', () => {
-    const group: questionGroup = { id: '4', name: 'New Group', books: {}, pages: [] };
+    const group: QuestionGroup = { id: '4', name: 'New Group', books: {}, pages: [] };
 
     component.editGroupDetail(group);
 

@@ -57,7 +57,7 @@ export class UserDetailComponent {
     });
   }
 
-  saveUser() {
+  public async saveUser() {
     this.error.set(false);
     this.saved.set(false);
 
@@ -79,7 +79,7 @@ export class UserDetailComponent {
         phone: this.userForm.controls.phone.getRawValue() || '',
       };
 
-      if (this.userService.saveUser(result)) {
+      if (await this.userService.saveUser(result)) {
         this.saved.set(true);
       } else {
         this.error.set(true);
@@ -87,7 +87,7 @@ export class UserDetailComponent {
     }
   }
 
-  cancel() {
+  public cancel() {
     this.router.navigate(['/']);
   }
 }

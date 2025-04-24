@@ -43,7 +43,7 @@ export class LocalStorageService {
       JSON.parse(value);
       return true;
     } catch (error) {
-      console.log(error);
+      console.info(error);
       return false;
     }
   }

@@ -15,7 +15,7 @@ export class FileServiceService {
 
     task
       .then(x => {
-        console.log({ x });
+        console.info({ x });
       })
       .catch(error => console.error(error));
 

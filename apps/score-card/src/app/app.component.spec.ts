@@ -4,7 +4,7 @@ import { QuestionsService, AuthService, UsersService } from '../service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { User } from '@angular/fire/auth';
-import { questionGroup } from '../definitions';
+import { QuestionGroup } from '../definitions';
 
 describe('AppComponent', () => {
   let component: AppComponent;
@@ -19,7 +19,7 @@ describe('AppComponent', () => {
     // Mocking the services
     questionsServiceMock = {
       allQuestionGroups$: of([]), // Mocking an observable for question groups
-      selectedGroup$: of(<questionGroup>{}),
+      selectedGroup$: of(<QuestionGroup>{}),
       groupId$: of('group-id'), // Mocking groupId
       group: '1',
     };
@@ -80,7 +80,7 @@ describe('AppComponent', () => {
   });
 
   it('should navigate to the group when gotoGroup is called', () => {
-    const group: questionGroup = { id: 'group-id', name: 'Test Group', books: {}, pages: [] };
+    const group: QuestionGroup = { id: 'group-id', name: 'Test Group', books: {}, pages: [] };
 
     component.gotoGroup(group);
 

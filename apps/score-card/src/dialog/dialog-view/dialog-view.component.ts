@@ -21,7 +21,6 @@ export class DialogViewComponent {
     if (data.filename) {
       this.filename.set(data.filename || '');
       this.URL.set(data.URL || '');
-      console.log(this.filename())
     } else {
       throw 'filename is required in DialogView';
     }

@@ -1,8 +1,10 @@
 export { Answer, AnswerStore } from './answer';
+export { AuthClaims } from './AuthClaims';
 export { FileUpload } from './FileUpload';
 export { PageDisplay } from './PageDisplay';
 export { Question, QuestionType } from './question';
-export { questionGroup, page } from './questionGroup';
-export { User } from './User';
-export { UploadResult } from './UploadResult';
+export { page, QuestionGroup } from './questionGroup';
+export { Security } from './Security';
 export { UploadParameters } from './UploadParameters';
+export { UploadResult } from './UploadResult';
+export { User } from './User';

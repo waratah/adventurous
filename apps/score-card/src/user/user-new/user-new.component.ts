@@ -33,7 +33,7 @@ interface UserPlus extends User {
 })
 export class UserNewComponent {
   hidePassword = signal(true);
-  error = signal(false);
+  error = signal('');
 
   readonly states: string[];
 
@@ -61,22 +61,22 @@ export class UserNewComponent {
   }
 
   instantUser() {
-    this.error.set(false);
+    this.error.set('');
 
     this.authService
       // .createUser('ken.foskey@nsw.scouts.com.au', 'test')
       .createUser('guest@nsw.scouts.com.au', 'fake_password')
       .then(user => {
-        console.log(user);
+        console.info(user);
       })
       .catch(error => {
         console.error({ error });
-        this.error.set(true);
+        this.error.set(error.message);
       });
   }
 
-  createUser() {
-    this.error.set(false);
+  async createUser() {
+    this.error.set('');
 
     if (this.userForm.invalid) {
       return;
@@ -91,19 +91,21 @@ export class UserNewComponent {
       scoutNumber: this.userForm.controls.member.getRawValue() || '',
       section: this.userForm.controls.section.getRawValue() || '',
       phone: this.userForm.controls.phone.getRawValue() || '',
+      uid: '',
       verifyGroups: [],
     };
 
     this.authService
       .createUser(user.email, user.password || '')
-      .then(() => {
+      .then(async result => {
         delete user.password;
-
-        this.userService.saveUser(user);
+        user.uid = result.user.uid;
+        await this.userService.saveUser(user);
+        this.router.navigate(['groups'])
       })
       .catch(error => {
         console.error(error);
-        this.error.set(true);
+        this.error.set(error.message);
       });
   }
 

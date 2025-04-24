@@ -12,7 +12,7 @@ import {
   setDoc,
 } from '@angular/fire/firestore';
 import { combineLatest, map, Observable, ReplaySubject, take } from 'rxjs';
-import { PageDisplay, Question, questionGroup } from '../definitions';
+import { PageDisplay, Question, QuestionGroup } from '../definitions';
 
 @Injectable({
   providedIn: 'root',
@@ -22,35 +22,31 @@ export class QuestionsService {
   /** Provide the last read gate in list (zero is all) */
   groupId$ = this.currentGroupId.asObservable();
 
-  private currentGroup = new ReplaySubject<questionGroup>(1);
+  private currentGroup = new ReplaySubject<QuestionGroup>(1);
   /** Provide the last read gate in list (zero is all) */
   selectedGroup$ = this.currentGroup.asObservable();
 
+  private errorMessage = new ReplaySubject<string>(1);
+  /** Provide the last error message from trying to save, etc */
+  errorMessage$ = this.errorMessage.asObservable();
+
   allQuestions$: Observable<Question[]>;
-  allQuestionGroups$: Observable<questionGroup[]>;
+  allQuestionGroups$: Observable<QuestionGroup[]>;
   sections$: Observable<PageDisplay[]>;
 
   private groupId?: string;
 
   private questionCollection: CollectionReference<Question, DocumentData>;
-  private groupCollection: CollectionReference<questionGroup, DocumentData>;
+  private groupCollection: CollectionReference<QuestionGroup, DocumentData>;
 
   constructor(private store: Firestore) {
-    this.questionCollection = collection(this.store, 'questions').withConverter(
-      this.createQuestionConverter
-    );
-    this.groupCollection = collection(this.store, 'groups').withConverter(
-      this.idConverter
-    );
+    this.questionCollection = collection(this.store, 'questions').withConverter(this.createQuestionConverter);
+    this.groupCollection = collection(this.store, 'groups').withConverter(this.idConverter);
 
     this.allQuestions$ = collectionData(this.questionCollection);
     this.allQuestionGroups$ = collectionData(this.groupCollection);
 
-    this.sections$ = combineLatest([
-      this.allQuestions$,
-      this.allQuestionGroups$,
-      this.groupId$,
-    ]).pipe(
+    this.sections$ = combineLatest([this.allQuestions$, this.allQuestionGroups$, this.groupId$]).pipe(
       map(([questions, groups, groupId]) => {
         const list: PageDisplay[] = [];
         if (!groupId) {
@@ -63,7 +59,7 @@ export class QuestionsService {
           });
           return list;
         }
-        const sections = groups.find((x) => x.id === groupId);
+        const sections = groups.find(x => x.id === groupId);
         if (!sections) {
           list.push({
             heading: 'newGroup',
@@ -76,16 +72,14 @@ export class QuestionsService {
         }
 
         return sections.pages.map(
-          (p) =>
+          p =>
             <PageDisplay>{
               show: true,
               heading: p.heading,
               level: p.level,
               description: p.description,
               requiresSignOff: p.requiresSignOff || false,
-              questions: p.questions.map((code) =>
-                questions.find((x) => code === x.code)
-              ).filter(x=>x),
+              questions: p.questions.map(code => questions.find(x => code === x.code)).filter(x => x),
             }
         );
       })
@@ -94,11 +88,11 @@ export class QuestionsService {
     this.currentGroupId.next('');
   }
 
-  private idConverter: FirestoreDataConverter<questionGroup> = {
+  private idConverter: FirestoreDataConverter<QuestionGroup> = {
     toFirestore(modelObject) {
       const objToUpload = { ...modelObject } as DocumentData; // DocumentData is mutable
       delete objToUpload['id']; // make sure to remove ID so it's not uploaded to the document
-      Object.keys(objToUpload).forEach((key) => {
+      Object.keys(objToUpload).forEach(key => {
         if (!objToUpload[key]) {
           delete objToUpload[key];
         }
@@ -106,10 +100,10 @@ export class QuestionsService {
       return objToUpload;
     },
     fromFirestore(snapshot, options) {
-      const data = snapshot.data(options) as questionGroup; // "as Omit<Instance<typeof CompanyModel>, "id">" could be added here
-      data.pages.forEach((p) => {
+      const data = snapshot.data(options) as QuestionGroup; // "as Omit<Instance<typeof CompanyModel>, "id">" could be added here
+      data.pages.forEach(p => {
         const questions: any[] = p.questions;
-        p.questions = questions.map((q) => {
+        p.questions = questions.map(q => {
           return typeof q === 'number' ? q.toString() : q;
         });
       });
@@ -126,7 +120,7 @@ export class QuestionsService {
     toFirestore(modelObject) {
       const objToUpload = { ...modelObject } as DocumentData; // DocumentData is mutable
       delete objToUpload['code']; // make sure to remove ID so it's not uploaded to the document
-      Object.keys(objToUpload).forEach((key) => {
+      Object.keys(objToUpload).forEach(key => {
         if (!objToUpload[key]) {
           delete objToUpload[key];
         }
@@ -148,9 +142,9 @@ export class QuestionsService {
   set group(id: string | undefined | null) {
     this.groupId = id || undefined;
     this.currentGroupId.next(id || '');
-    this.allQuestionGroups$.pipe(take(1)).subscribe((list) => {
+    this.allQuestionGroups$.pipe(take(1)).subscribe(list => {
       if (list) {
-        const group = list.find((g) => g.id === id);
+        const group = list.find(g => g.id === id);
         if (group) {
           this.currentGroup.next(group);
         }
@@ -162,30 +156,35 @@ export class QuestionsService {
   }
 
   public async updateQuestion(q: Question) {
+    this.errorMessage.next('');
+
     if (q.code) {
-      await setDoc(doc(this.questionCollection, q.code), q).catch((x) =>
-        console.error(x)
-      );
+      await setDoc(doc(this.questionCollection, q.code), q).catch(x => {
+        console.error(x);
+        this.errorMessage.next(x);
+      });
     } else {
-      const docRef = await addDoc(this.questionCollection, q).catch((x) =>
-        console.error(x)
-      );
+      const docRef = await addDoc(this.questionCollection, q).catch(x => {
+        console.error(x);
+        this.errorMessage.next(x);
+      });
       q.code = docRef?.id || '';
     }
   }
 
   public async saveGroup(groupId: string, sections: PageDisplay[]) {
+    this.errorMessage.next('');
     try {
       if (groupId) {
         const docRef = doc(this.groupCollection, groupId);
         const group = (await getDoc(docRef)).data();
         if (group) {
-          group.pages = sections.map((x) => ({
+          group.pages = sections.map(x => ({
             heading: x.heading,
             level: x.level,
             description: x.description || '',
             requiresSignOff: x.requiresSignOff,
-            questions: x.questions.map((q) => q.code),
+            questions: x.questions.map(q => q.code),
           }));
 
           await setDoc(docRef, group);
@@ -194,15 +193,15 @@ export class QuestionsService {
         }
       }
 
-      const group: questionGroup = {
+      const group: QuestionGroup = {
         id: groupId,
         name: 'Unknown',
         books: {},
-        pages: sections.map((x) => ({
+        pages: sections.map(x => ({
           heading: x.heading,
           level: x.level,
           description: x.description || '',
-          questions: x.questions.map((q) => q.code),
+          questions: x.questions.map(q => q.code),
         })),
       };
       const ref = await addDoc(this.groupCollection, group);
@@ -210,11 +209,13 @@ export class QuestionsService {
       return group;
     } catch (error) {
       console.error(error);
+      this.errorMessage.next(error as string);
       return null;
     }
   }
 
-  async updateGroup(group: questionGroup) {
+  async updateGroup(group: QuestionGroup) {
+    this.errorMessage.next('');
     try {
       if (group.id) {
         const docRef = doc(this.groupCollection, group.id);
@@ -227,6 +228,7 @@ export class QuestionsService {
       return group;
     } catch (error) {
       console.error(error);
+      this.errorMessage.next(error as string);
       return null;
     }
   }

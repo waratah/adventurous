@@ -3,7 +3,7 @@
     <mat-icon matTooltip="Menu - select activity like abseil, canoe, kayak, etc" matTooltipPosition="below">menu</mat-icon>
   </button>
   <h1>
-    @if( selectedGroup$| async; as group ) {
+    @if( selectedGroup(); as group ) {
     <span class="hide-on-small">Rock School -</span> {{ group.name }}} @else { Rock School }
   </h1>
   <div class="buttons">
@@ -19,7 +19,7 @@
 </mat-toolbar>
 
 <mat-menu #menu="matMenu">
-  @for ( group of groups$ | async; track group.id ) {
+  @for ( group of groups(); track group.id ) {
   <button mat-menu-item (click)="gotoGroup(group)">
     <mat-icon>chevron_right</mat-icon>
     <span>{{ group.name }}</span>

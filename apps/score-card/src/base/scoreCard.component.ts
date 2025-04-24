@@ -9,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
-import { Answer, PageDisplay, Question, questionGroup, UploadParameters, UploadResult } from '../definitions';
+import { Answer, PageDisplay, Question, QuestionGroup, UploadParameters, UploadResult } from '../definitions';
 import { DialogUploadComponent, DialogViewComponent, DialogViewOptions } from '../dialog';
 import { AnswersService, QuestionsService, UsersService } from '../service';
 import { CollapseComponent } from '../utils';
@@ -45,7 +45,7 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   public id = input<string>();
 
   public questions$: Observable<PageDisplay[]>;
-  public groups$: Observable<questionGroup[]>;
+  public groups$: Observable<QuestionGroup[]>;
   public detail$: Observable<DetailPage[]>;
 
   private sub?: Subscription;
@@ -141,8 +141,6 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   }
 
   uploadProof(detail: Detail) {
-    console.log(detail);
-
     const param: UploadParameters = {
       directory: `upload/${this.answerService.userId}`,
     };

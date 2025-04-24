@@ -2,7 +2,7 @@ import { Component, effect, input, OnDestroy, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import jsPDF from 'jspdf';
 import { combineLatest, Subject, Subscription } from 'rxjs';
-import { Answer, page, Question, questionGroup, User } from '../definitions';
+import { Answer, page, Question, QuestionGroup, User } from '../definitions';
 import { AnswersService, QuestionsService } from '../service';
 import { UsersService } from '../service/users.service';
 import { PdfUserComponent } from './pdf-user.component';
@@ -31,7 +31,7 @@ export class PdfWorkbookComponent implements OnDestroy {
   title = signal('Rock school Workbook');
 
   user?: User;
-  group?: questionGroup;
+  group?: QuestionGroup;
   questions?: Question[];
   answers?: Answer[];
   page = 0;
@@ -210,7 +210,6 @@ export class PdfWorkbookComponent implements OnDestroy {
                 break;
 
               case 'url':
-                console.log(asked);
                 doc.text(asked.text, this.lineStart, y, {
                   maxWidth: this.lineWidth,
                 });

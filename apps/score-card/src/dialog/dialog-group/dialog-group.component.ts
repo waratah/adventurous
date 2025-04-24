@@ -17,7 +17,7 @@ import {
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbar } from '@angular/material/toolbar';
-import { questionGroup } from '../../definitions';
+import { QuestionGroup } from '../../definitions';
 import { QuestionsService } from '../../service/questions.service';
 import { MyErrorStateMatcher } from '../../utils';
 
@@ -38,7 +38,7 @@ import { MyErrorStateMatcher } from '../../utils';
   styleUrl: './dialog-group.component.css',
 })
 export class DialogGroupComponent {
-  group = model<questionGroup>();
+  group = model<QuestionGroup>();
   groupForm: FormGroup;
   private nameFormControl = new FormControl('', [Validators.required]);
 
@@ -60,7 +60,7 @@ export class DialogGroupComponent {
 
   constructor(
     private questionService: QuestionsService,
-    @Inject(MAT_DIALOG_DATA) private data: { group: questionGroup },
+    @Inject(MAT_DIALOG_DATA) private data: { group: QuestionGroup },
     private dialogRef: MatDialogRef<DialogGroupComponent>
   ) {
     const group = data.group;
@@ -129,7 +129,7 @@ export class DialogGroupComponent {
     }
     const g = this.group();
     if (g) {
-      const result: questionGroup = {
+      const result: QuestionGroup = {
         ...g,
         name: this.nameFormControl.getRawValue() || '',
       };

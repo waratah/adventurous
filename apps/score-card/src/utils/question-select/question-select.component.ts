@@ -47,7 +47,6 @@ export class QuestionSelectComponent {
   }
 
   change(event: MatAutocompleteSelectedEvent) {
-    console.log(event);
     const result = this.myControl.value;
     if (result && typeof result !== 'string') {
       this.optionChange.emit(result);
