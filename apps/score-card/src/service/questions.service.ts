@@ -12,7 +12,7 @@ import {
   setDoc,
 } from '@angular/fire/firestore';
 import { combineLatest, map, Observable, ReplaySubject, take } from 'rxjs';
-import { PageDisplay, Question, QuestionGroup } from '../definitions';
+import { PageDisplay, Question, QuestionGroup, Section } from '../definitions';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +52,7 @@ export class QuestionsService {
         if (!groupId) {
           list.push({
             heading: 'All questions',
-            level: 'None',
+            level: undefined,
             questions,
             show: true,
             requiresSignOff: false,
@@ -63,7 +63,7 @@ export class QuestionsService {
         if (!sections) {
           list.push({
             heading: 'newGroup',
-            level: 'None',
+            level: undefined,
             questions,
             show: true,
             requiresSignOff: false,
@@ -92,11 +92,7 @@ export class QuestionsService {
     toFirestore(modelObject) {
       const objToUpload = { ...modelObject } as DocumentData; // DocumentData is mutable
       delete objToUpload['id']; // make sure to remove ID so it's not uploaded to the document
-      Object.keys(objToUpload).forEach(key => {
-        if (!objToUpload[key]) {
-          delete objToUpload[key];
-        }
-      });
+      QuestionsService.clearUndefined(objToUpload);
       return objToUpload;
     },
     fromFirestore(snapshot, options) {
@@ -120,12 +116,7 @@ export class QuestionsService {
     toFirestore(modelObject) {
       const objToUpload = { ...modelObject } as DocumentData; // DocumentData is mutable
       delete objToUpload['code']; // make sure to remove ID so it's not uploaded to the document
-      Object.keys(objToUpload).forEach(key => {
-        if (!objToUpload[key]) {
-          delete objToUpload[key];
-        }
-      });
-
+      QuestionsService.clearUndefined(objToUpload);
       return objToUpload;
     },
     fromFirestore(snapshot, options) {
@@ -181,7 +172,7 @@ export class QuestionsService {
         if (group) {
           group.pages = sections.map(x => ({
             heading: x.heading,
-            level: x.level,
+            level: x.level || 'safe',
             description: x.description || '',
             requiresSignOff: x.requiresSignOff,
             questions: x.questions.map(q => q.code),
@@ -197,12 +188,15 @@ export class QuestionsService {
         id: groupId,
         name: 'Unknown',
         books: {},
-        pages: sections.map(x => ({
-          heading: x.heading,
-          level: x.level,
-          description: x.description || '',
-          questions: x.questions.map(q => q.code),
-        })),
+        pages: sections.map(x => {
+          const section: Section = {
+            heading: x.heading,
+            level: x.level || 'safe',
+            description: x.description || '',
+            questions: x.questions.map(q => q.code),
+          };
+          return section;
+        }),
       };
       const ref = await addDoc(this.groupCollection, group);
       group.id = ref?.id || '';
@@ -231,5 +225,18 @@ export class QuestionsService {
       this.errorMessage.next(error as string);
       return null;
     }
+  }
+
+  static clearUndefined(objToUpload: any) {
+    Object.keys(objToUpload).forEach(key => {
+      if (!objToUpload[key]) {
+        delete objToUpload[key];
+      }
+      if (Array.isArray(objToUpload[key])) {
+        objToUpload[key].forEach(x => {
+          this.clearUndefined(x);
+        });
+      }
+    });
   }
 }

@@ -1,7 +1,8 @@
-
 .table {
+  max-width: 100%;
   padding: 3rem;
   display: grid;
+  gap: 3rem;
   grid-template-columns: 1fr;
   justify-content: center;
 
@@ -10,9 +11,35 @@
     border-bottom: none;
   }
 
-  .titles {
+  .heading {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
     font-size: 1.5rem;
     font-weight: bold;
     justify-self: center;
+    text-align: center;
+
+    .title {
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+form {
+  display: grid;
+  gap: 2rem;
+  column-gap: 1em;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+}
+
+@media screen and (max-width: 599px) {
+  form {
+    grid-template-columns: 1fr;
+  }
+
+  .table {
+    padding: 0.5rem;
   }
 }

@@ -1,9 +1,10 @@
 export { Answer, AnswerStore } from './answer';
 export { AuthClaims } from './AuthClaims';
 export { FileUpload } from './FileUpload';
+export { LevelCode } from './LevelCode';
 export { PageDisplay } from './PageDisplay';
 export { Question, QuestionType } from './question';
-export { page, QuestionGroup } from './questionGroup';
+export { Section, QuestionGroup } from './questionGroup';
 export { Security } from './Security';
 export { UploadParameters } from './UploadParameters';
 export { UploadResult } from './UploadResult';

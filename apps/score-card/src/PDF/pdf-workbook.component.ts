@@ -1,21 +1,30 @@
-import { Component, effect, input, OnDestroy, signal } from '@angular/core';
+import { Component, effect, input, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import jsPDF from 'jspdf';
 import { combineLatest, Subject, Subscription } from 'rxjs';
-import { Answer, page, Question, QuestionGroup, User } from '../definitions';
-import { AnswersService, QuestionsService } from '../service';
-import { UsersService } from '../service/users.service';
+import { Answer, LevelCode, Question, QuestionGroup, Section, User } from '../definitions';
+import { AnswersService, QuestionsService, UsersService } from '../service';
+import { LevelSelectComponent } from '../utils/';
 import { PdfUserComponent } from './pdf-user.component';
 
 @Component({
   selector: 'app-pdf-workbook',
-  imports: [PdfUserComponent, MatButtonModule],
+  imports: [PdfUserComponent, MatButtonModule, LevelSelectComponent, ReactiveFormsModule],
   templateUrl: './pdf-workbook.component.html',
   styleUrl: './pdf-workbook.component.css',
 })
-export class PdfWorkbookComponent implements OnDestroy {
-  level = input.required<'safe' | 'trained' | 'guide'>();
+export class PdfWorkbookComponent implements OnDestroy, OnInit {
+  pdfForm = new FormGroup({
+    level: new FormControl('safe', [Validators.required]),
+  });
+
   id = input.required<string>();
+  title = signal('Rock school Workbook');
+  noData = signal(false);
+  incomplete = signal(false);
+
+  book = signal<LevelCode>('safe');
 
   readonly lineStart = 25;
   readonly lineWidth = 160;
@@ -28,50 +37,74 @@ export class PdfWorkbookComponent implements OnDestroy {
 
   private execute$ = new Subject();
 
-  title = signal('Rock school Workbook');
-
   user?: User;
   group?: QuestionGroup;
   questions?: Question[];
   answers?: Answer[];
   page = 0;
 
-  subs: Subscription[] = [];
+  private subs: Subscription[] = [];
+  private firstTime = true;
 
-  constructor(userService: UsersService, questionService: QuestionsService, answersService: AnswersService) {
+  constructor(userService: UsersService, private questionService: QuestionsService, answersService: AnswersService) {
     effect(() => {
-      questionService.group = this.id();
-
-      this.title.set(this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} Participant`);
+      this.title.set(this.group?.books[this.book()]?.name || `${this.group?.name} ${this.book()} Participant`);
+      this.setDataFlags();
     });
 
     answersService.userId = userService.userId;
 
+    this.subs.push(userService.currentUser$.subscribe(user => {
+      this.user = user;
+      answersService.userId = user?.scoutNumber || '';
+    }));
+
+
     this.subs.push(
-      combineLatest([
-        userService.currentUser$,
-        questionService.selectedGroup$,
-        questionService.allQuestions$,
-        answersService.answers$,
-      ]).subscribe(([user, group, questions, answers]) => {
-        this.user = user;
-        this.group = group;
-        this.questions = questions;
-        this.answers = answers || [];
+      combineLatest([questionService.selectedGroup$, questionService.allQuestions$, answersService.answers$]).subscribe(
+        ([group, questions, answers]) => {
+          this.group = group;
 
-        if (!group.books) {
-          group.books = {};
-        }
-        this.title.set(this.group?.books[this.level()]?.name || `${this.group?.name} ${this.level()} level`);
+          this.questions = questions;
+          this.answers = answers || [];
 
-        if (this.user && this.group && this.questions) {
-          this.execute$.next('');
+          if (!group.books) {
+            group.books = {};
+          }
+          this.title.set(this.group?.books[this.book()]?.name || `${this.group?.name} ${this.book()} level`);
+          this.setDataFlags();
+
+          if (this.user && this.group && this.questions) {
+            this.execute$.next('');
+          }
         }
-      })
+      )
     );
+  }
 
-    // pause the execution until all the data is loaded completely
-    // this.subs.push(this.execute$.pipe(debounce(() => interval(500))).subscribe(() => this.print()));
+  private setDataFlags() {
+    const filteredGroups = this.group?.pages.filter(x => x.level === this.book()) || [];
+    this.noData.set(!filteredGroups.length);
+
+    this.incomplete.set(
+      filteredGroups.some(g => {
+        const rv =
+        ! g.questions.some(q => {
+          const answer = this.answers?.find(a => a.code === q || a.mappedCode === q);
+          if (!answer) {
+            const question = this.questions?.find( c=> c.code === q);
+            console.log({ answer, q, question });
+          }
+          return !answer;
+        });
+        console.log({rv});
+      }
+      )
+    );
+  }
+
+  ngOnInit(): void {
+    this.questionService.group = this.id();
   }
 
   ngOnDestroy(): void {
@@ -79,6 +112,9 @@ export class PdfWorkbookComponent implements OnDestroy {
   }
 
   async print() {
+    if (this.pdfForm.controls.level.value) {
+      this.book.set(this.pdfForm.controls.level.value as LevelCode);
+    }
     this.page = 0;
 
     const doc = new jsPDF({
@@ -101,7 +137,7 @@ export class PdfWorkbookComponent implements OnDestroy {
 
     await this.printSections(doc);
 
-    doc.save(`${this.user?.scoutNumber}-${this.group?.name}-${this.level()}-workbook.pdf`);
+    doc.save(`${this.user?.scoutNumber}-${this.group?.name}-${this.book()}-workbook.pdf`);
   }
 
   async printSections(doc: jsPDF) {
@@ -116,8 +152,8 @@ export class PdfWorkbookComponent implements OnDestroy {
     let sectionIndex = 0;
     let questionIndex = 0;
 
-    const sections = this.group.pages.filter(x => x.level === this.level());
-    let current: page | undefined = sections[0];
+    const sections = this.group.pages.filter(x => x.level === this.book());
+    let current: Section | undefined = sections[0];
 
     do {
       doc.addPage('a4', 'portrait').setDrawColor(0);
@@ -404,8 +440,8 @@ export class PdfWorkbookComponent implements OnDestroy {
 
   headings(doc: jsPDF) {
     this.page++;
-    const header = this.group?.books[this.level()]?.heading || `${this.group?.name} ${this.level()} Participant Workbook`;
-    const footer = this.group?.books[this.level()]?.footing || `${this.group?.name} ${this.level()} Participant Workbook`;
+    const header = this.group?.books[this.book()]?.heading || `${this.group?.name} ${this.book()} Participant Workbook`;
+    const footer = this.group?.books[this.book()]?.footing || `${this.group?.name} ${this.book()} Participant Workbook`;
 
     doc
       .setTextColor(173, 216, 230)
@@ -462,7 +498,7 @@ export class PdfWorkbookComponent implements OnDestroy {
     doc
       .setTextColor(255, 3, 62)
       .text(' Youth Program - Outdoor Adventure Skills are to be recorded in Scouts Terrain', 105, y, { align: 'center' })
-      .text('Core Skills Trained Participant - Assessment of Proficiency', 105, y + 8, { align: 'center' })
+      .text(this.title(), 105, y + 8, { align: 'center' })
       .setTextColor(0, 0, 0)
       .setFont('helvetica');
 
@@ -482,7 +518,7 @@ export class PdfWorkbookComponent implements OnDestroy {
 
     doc
       .setFontSize(10)
-      .text('I certify that proficiency in Core Skills-Trained Participant has been attained by:', this.lineStart, y)
+      .text(`I certify that proficiency in ${this.title()} has been attained by:`, this.lineStart, y)
       .line(this.boxStart, y + 12, this.boxStart + this.boxWidth, y + 12, 'S');
 
     y += 12;

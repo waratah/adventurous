@@ -1,7 +1,8 @@
 .table {
   display: grid;
-  max-width: 600px;
-  grid-template-columns: 30ch 1fr;
+  max-width: min(600px, 100vw);
+  overflow: auto;
+  grid-template-columns: min(49vw, 30ch) min(49vw, 1fr);
   column-gap: 1em;
   row-gap: 1em;
   justify-content: center;

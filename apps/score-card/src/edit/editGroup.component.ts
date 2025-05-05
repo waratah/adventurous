@@ -1,5 +1,5 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, effect, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +21,7 @@ import {
 } from '../dialog';
 import { QuestionsService } from '../service';
 import { CollapseComponent, QuestionSelectComponent } from '../utils';
+import { MatCardActions } from '@angular/material/card';
 
 @Component({
   selector: 'app-edit-group',
@@ -34,6 +35,8 @@ import { CollapseComponent, QuestionSelectComponent } from '../utils';
     MatSelectModule,
     MatIconModule,
     CollapseComponent,
+    MatCardActions,
+    NgClass,
     AsyncPipe,
     FormsModule,
     QuestionSelectComponent,
@@ -226,6 +229,7 @@ export class EditGroupComponent {
       data: {
         group,
       },
+       minWidth: 600,
     });
 
     dialogRef.afterClosed().subscribe(result => {

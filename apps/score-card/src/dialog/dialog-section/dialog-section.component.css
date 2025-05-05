@@ -1,4 +1,3 @@
-
 form {
   padding: 1.5em;
   display: grid;
@@ -6,4 +5,7 @@ form {
   max-width: 60ch;
   grid-template-columns: 1fr;
 
+  mart-card:first {
+    padding-top: 0.5rem;
+  }
 }

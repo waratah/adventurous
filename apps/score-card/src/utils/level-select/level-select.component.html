@@ -1,0 +1,11 @@
+<mat-form-field>
+  <mat-label>{{ label() }}</mat-label>
+  <mat-select [formControl]="formControl()" (valueChange)="changed($event)" ngDefaultControl>
+    @for (s of levels; track s) {
+    <mat-option [value]="s.level">{{ s.description }}</mat-option>
+    }
+  </mat-select>
+  @if (isInvalid()) {
+  <mat-error>Level is <strong>required</strong></mat-error>
+  }
+</mat-form-field>

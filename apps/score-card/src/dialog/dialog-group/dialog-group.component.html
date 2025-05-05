@@ -5,122 +5,56 @@
 
   <mat-form-field>
     <mat-label>Group name</mat-label>
-    <input
-      type="text"
-      matInput
-      formControlName="name"
-      [errorStateMatcher]="matcher"
-      placeholder="Canoe,  Kayak,  White water Kayak"
-    />
-    <mat-hint
-      >Work book grouping</mat-hint
-    >
+    <input type="text" matInput formControlName="name" [errorStateMatcher]="matcher" placeholder="Canoe,  Kayak,  White water Kayak" />
+    <mat-hint>Work book grouping</mat-hint>
     @if (groupForm.controls['name'].hasError('required')) {
     <mat-error>Group name is <strong>required</strong></mat-error>
     }
   </mat-form-field>
 
+  <h2>Change to set headers and footers:</h2>
   <div class="card">
-    <mat-checkbox [checked]="hasSafe" (change)="setSafe($event.checked)"
-      >Safe Workbook</mat-checkbox
-    >
+    <app-level-select formControlName="level" [(level)]="level"></app-level-select>
   </div>
 
-  @if( hasSafe){
+
+  <h2>{{level()}} workbook</h2>
 
   <mat-form-field>
-    <mat-label>Safe Workbook Name</mat-label>
+    <mat-label>Workbook Name</mat-label>
     <input
       type="text"
       matInput
-      formControlName="safeName"
+      formControlName="levelName"
       [errorStateMatcher]="matcher"
       placeholder="Ex. Core Skills – Trained Participant"
     />
-    @if (groupForm.controls['safeName'].hasError('required')) {
+    @if (groupForm.controls['levelName'].hasError('required')) {
     <mat-error>Workbook name is <strong>required</strong></mat-error>
     }
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Safe workbook heading</mat-label>
+    <mat-label>Workbook heading</mat-label>
     <input
       type="text"
       matInput
-      formControlName="safeHeading"
+      formControlName="heading"
       [errorStateMatcher]="matcher"
-      placeholder="Ex. /public/canoe.png"
+      placeholder="Ex. Safe Participant Abseil workbook"
     />
-    @if (groupForm.controls['safeHeading'].hasError('required')) {
+    @if (groupForm.controls['heading'].hasError('required')) {
     <mat-error>Workbook heading is <strong>required</strong></mat-error>
     }
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label>Safe workbook footing</mat-label>
-    <input
-      type="text"
-      matInput
-      formControlName="safeFooting"
-      [errorStateMatcher]="matcher"
-      placeholder="Ex. /public/canoe.png"
-    />
-    @if (groupForm.controls['safeFooting'].hasError('required')) {
+    <mat-label>Workbook footing</mat-label>
+    <input type="text" matInput formControlName="footing" [errorStateMatcher]="matcher" placeholder="Ex. Provides for magic SIS code..." />
+    @if (groupForm.controls['footing'].hasError('required')) {
     <mat-error>Workbook footer is <strong>required</strong></mat-error>
     }
   </mat-form-field>
-
-}
-
-  <div class="card">
-    <mat-checkbox [checked]="hasTrained" (change)="setTrained($event.checked)"
-      >Trained Workbook</mat-checkbox
-    >
-  </div>
-
-  @if( hasTrained ){
-  <mat-form-field>
-    <mat-label>Trained Workbook name</mat-label>
-    <input
-      type="text"
-      matInput
-      formControlName="trainedName"
-      [errorStateMatcher]="matcher"
-      placeholder="Sample of what the text should be"
-    />
-    @if (groupForm.controls['trainedName'].hasError('required')) {
-    <mat-error>Workbook heading is <strong>required</strong></mat-error>
-    }
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Trained Workbook heading</mat-label>
-    <input
-      type="text"
-      matInput
-      formControlName="trainedHeading"
-      [errorStateMatcher]="matcher"
-      placeholder="Sample of what the text should be"
-    />
-    @if (groupForm.controls['trainedHeading'].hasError('required')) {
-    <mat-error>Workbook heading is <strong>required</strong></mat-error>
-    }
-  </mat-form-field>
-
-  <mat-form-field>
-    <mat-label>Trained Workbook footing</mat-label>
-    <input
-      type="text"
-      matInput
-      formControlName="trainedFooting"
-      [errorStateMatcher]="matcher"
-      placeholder="Sample of what the text should be"
-    />
-    @if (groupForm.controls['trainedHeading'].hasError('required')) {
-    <mat-error>Workbook footing is <strong>required</strong></mat-error>
-    }
-  </mat-form-field>
-  }
 
   <mat-dialog-actions align="end">
     <button mat-stroked-button mat-dialog-close>Cancel</button>

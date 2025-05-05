@@ -36,10 +36,8 @@
       <mat-button-toggle value="guide">Guide</mat-button-toggle>
       <mat-button-toggle value="">No PDF yet</mat-button-toggle>
     </mat-button-toggle-group>
-  </mat-card>
 
-  <mat-card>
-    <mat-checkbox [checked]="requiresSignOff" (change)="requiresSignOff = $event.checked">A signature is required ont the PDF</mat-checkbox>
+    <mat-checkbox [checked]="requiresSignOff" (change)="requiresSignOff = $event.checked">A signature is required on the PDF</mat-checkbox>
   </mat-card>
 
   <mat-dialog-actions align="end">

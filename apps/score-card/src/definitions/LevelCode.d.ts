@@ -1,1 +1,1 @@
-type  LevelCode = "safe" | "trained" | "guide" | "guide Assessor";
+export type LevelCode = 'safe' | 'trained' | 'assist' | 'guide' | 'assessor';

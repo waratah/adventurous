@@ -15,14 +15,22 @@ h4 {
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
+  --mdc-icon-button-state-layer-size: 24px;
   div {
-    display: grid;
-    grid-template-columns: auto 1fr auto auto;
+    display: flex;
+    gap: 0.5rem;
     align-items: center;
-    align-items: center;
+    line-height: 1;
     .mat-icon {
       color: var(--mat-sys-primary);
     }
+    button {
+      padding: 0;
+    }
+  }
+
+  div:nth-child(1) {
+    margin: 0.5rem;
   }
 }
 
@@ -47,7 +55,7 @@ h4 {
   sub {
     grid-area: counter;
     width: 22ch;
-    text-align: right
+    text-align: right;
   }
 }
 

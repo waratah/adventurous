@@ -1,4 +1,7 @@
 <mat-toolbar>
+  <button mat-icon-button aria-label="home" routerLink="/">
+    <mat-icon>home</mat-icon>
+  </button>
   <button mat-icon-button aria-label="menu" [matMenuTriggerFor]="menu">
     <mat-icon matTooltip="Menu - select activity like abseil, canoe, kayak, etc" matTooltipPosition="below">menu</mat-icon>
   </button>
@@ -25,40 +28,29 @@
     <span>{{ group.name }}</span>
   </button>
 
-  }
-
-  <button mat-menu-item routerLink="/">
-    <mat-icon>chevron_right</mat-icon>
-    <span>Home</span>
+  } @if(claims().isAdmin || claims().isVerify) {
+  <button mat-menu-item routerLink="/users">
+    <mat-icon>list</mat-icon>
+    <span>Users</span>
   </button>
-
+  } @if(claims().isAdmin || claims().isVerify) {
   <mat-button-toggle-group [value]="action" (change)="changeAction($event.value)" aria-label="Action">
     <mat-button-toggle value="view">View</mat-button-toggle>
     <mat-button-toggle value="verify">Verify</mat-button-toggle>
+    @if(claims().isAdmin ) {
     <mat-button-toggle value="edit">Edit</mat-button-toggle>
+    }
   </mat-button-toggle-group>
-
-  @if( id() && login()) {
+  } @if( id() && login()) {
   <button mat-menu-item>
     <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
     <mat-icon>done all</mat-icon>
     <span>Dump Completed</span>
   </button>
-  <button mat-menu-item [routerLink]="['pdf', 'safe', id()]">
+  <button mat-menu-item [routerLink]="['pdf', id()]">
     <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
     <mat-icon>voicemail</mat-icon>
-    <span>Safe Workbook</span>
-  </button>
-
-  <button mat-menu-item [routerLink]="['pdf', 'trained', id()]">
-    <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
-    <mat-icon>notifications</mat-icon>
-    <span>Trained Workbook</span>
-  </button>
-  <button mat-menu-item [routerLink]="['pdf', 'guide', id()]">
-    <mat-icon matTooltip="Print selected activity PDF" matTooltipPosition="below">print</mat-icon>
-    <mat-icon>open_in_full</mat-icon>
-    <span>Guide Workbook</span>
+    <span>PDF Workbooks</span>
   </button>
   }
 </mat-menu>

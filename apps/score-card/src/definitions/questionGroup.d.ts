@@ -1,6 +1,6 @@
 import { LevelCode } from './LevelCode';
 
-export interface page {
+export interface Section {
   heading: string;
   level: LevelCode;
   requiresSignOff?: boolean
@@ -17,7 +17,7 @@ export interface BookDetail {
 export interface Books {
   safe?: BookDetail;
   trained?: BookDetail;
-  assistantGuide?: BookDetail;
+  assist?: BookDetail;
   guide?: BookDetail;
   assessor?: BookDetail;
 }
@@ -27,5 +27,5 @@ export interface QuestionGroup {
   name: string;
   books: Books;
 
-  pages: page[];
+  pages: Section[];
 }

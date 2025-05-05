@@ -30,11 +30,11 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('../user/user-detail/user-detail.component').then(m => m.UserDetailComponent),
   },
   {
-    path: 'pdf/user',
-    loadComponent: () => import('../PDF/pdf-user.component').then(m => m.PdfUserComponent),
-  },
-  {
     path: 'pdf/:level/:id',
+    loadComponent: () => import('../PDF/pdf-workbook.component').then(m => m.PdfWorkbookComponent),
+  },
+ {
+    path: 'pdf/:id',
     loadComponent: () => import('../PDF/pdf-workbook.component').then(m => m.PdfWorkbookComponent),
   },
   {

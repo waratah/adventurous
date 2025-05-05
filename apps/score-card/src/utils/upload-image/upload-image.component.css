@@ -7,13 +7,6 @@
 
   border: 5px solid var(--mat-sys-primary);
 
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    white-space: nowrap;
-    color: var(--mat-sys-primary);
-  }
-
   * {
     color: var(--mat-sys-primary);
     font-size: 2rem;

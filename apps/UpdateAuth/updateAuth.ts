@@ -43,7 +43,7 @@ function updateUsers() {
                   claims.isVerify = true;
                 }
 
-                console.log(`${user.scoutNumber}: ${uid} has claims`, claims);
+                console.info(`${user.scoutNumber}: ${uid} has claims`, claims);
                 admin.auth().setCustomUserClaims(uid, claims);
               }
             });

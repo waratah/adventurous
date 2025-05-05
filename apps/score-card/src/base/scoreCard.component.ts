@@ -1,4 +1,4 @@
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { Component, effect, ElementRef, input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -27,12 +27,13 @@ interface DetailPage {
   totalCount: number;
   doneCount: number;
   verifiedCount: number;
+  level: string;
 }
 
 @Component({
   selector: 'app-score-card',
   standalone: true,
-  imports: [AsyncPipe, MatIconModule, MatToolbarModule, CollapseComponent, MatButtonModule, MatCardModule],
+  imports: [AsyncPipe, NgClass, MatIconModule, MatToolbarModule, CollapseComponent, MatButtonModule, MatCardModule],
   templateUrl: './scoreCard.component.html',
   styleUrl: './scoreCard.component.css',
 })
@@ -70,6 +71,7 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
             heading: p.heading,
             description: p.description,
             show: true,
+            level: p.level,
             details: p.questions
               .filter(x => x)
               .map(q => {
@@ -158,7 +160,6 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   }
 
   viewProof(detail: Detail) {
-
     const param: DialogViewOptions = {
       // filename: `upload/${this.answerService.userId}/${detail.answer.proof}`,
       filename: detail.answer.proof || '',
@@ -167,7 +168,5 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
     this.dialog.open(DialogViewComponent, {
       data: param,
     });
-
-
   }
 }

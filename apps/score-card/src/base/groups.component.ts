@@ -43,16 +43,16 @@ export class GroupsComponent {
     this.selectedGroup$ = questionsService.selectedGroup$;
   }
 
-  public click(group: QuestionGroup) {
+  public async click(group: QuestionGroup) {
     this.questionsService.group = group.id;
     this.groupId = group.id;
 
     if (this.isEdit) {
-      this.router.navigate(['edit', group.id]);
+      await this.router.navigate(['edit', group.id]);
     } else if (this.isVerify) {
-      this.router.navigate(['verify', group.id]);
+      await this.router.navigate(['verify', group.id]);
     } else {
-      this.router.navigate(['check', group.id]);
+      await this.router.navigate(['check', group.id]);
     }
   }
 

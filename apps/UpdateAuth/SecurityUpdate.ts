@@ -1,19 +1,26 @@
-import  { onDocumentCreatedWithAuthContext } from "firebase-functions/v2/firestore";
-import { initializeApp } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
-import { Auth } from '@angular/fire/auth';
+import { onDocumentCreatedWithAuthContext } from 'firebase-functions/v2/firestore';
+import { getAuth } from 'firebase-admin/auth';
+import { initializeApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import { Security } from '../score-card/src/definitions/Security';
 
-initializeApp();
+const app = initializeApp();
 
-exports.onDocumentCreatedWithAuthContext = onDocumentCreatedWithAuthContext(
-  "your_collection/{documentId}",
-  async (event) => {
-    const firestore = getFirestore();
-    const document = event.data?.data();
-    const authContext = event.Auth;
+exports.onDocumentCreatedWithAuthContext = onDocumentCreatedWithAuthContext('security/{documentId}', async event => {
+  const firestore = getFirestore();
+  if (event.data) {
+    const document = event.data.data() as Security;
+
+    const uid = event.data.id;
+
+    const auth = getAuth(app);
+
+    const userRecord = await auth.getUser(uid);
+
+    const authContext = event;
 
     if (!authContext) {
-      console.log("No authentication context found for this operation.");
+      console.log('No authentication context found for this operation.');
       return;
     }
 
@@ -21,10 +28,10 @@ exports.onDocumentCreatedWithAuthContext = onDocumentCreatedWithAuthContext(
     const userEmail = authContext.token.email;
 
     console.log(`Document created by user: ${userId} (${userEmail})`);
-    console.log("Document data:", document);
+    console.log('Document data:', document);
 
     try {
-      await firestore.collection("logs").add({
+      await firestore.collection('logs').add({
         userId: userId,
         email: userEmail,
         timestamp: new Date(),
@@ -32,7 +39,7 @@ exports.onDocumentCreatedWithAuthContext = onDocumentCreatedWithAuthContext(
         documentData: document,
       });
     } catch (error) {
-      console.error("Error writing to logs:", error);
+      console.error('Error writing to logs:', error);
     }
   }
-);
+});

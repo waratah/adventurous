@@ -11,14 +11,38 @@
 </mat-card>
 
 @if( (login$ | async ) === null ) {
-<mat-card>
-  <div class="login">
-    <button mat-stroked-button [routerLink]="['/user/new']">Create a new user</button>
-    <button mat-stroked-button [routerLink]="['/login']">Login</button>
-  </div>
+<mat-card class="login">
+  <button mat-stroked-button [routerLink]="['/user/new']">Create a new user</button>
+  <button mat-stroked-button [routerLink]="['/login']">Login</button>
 </mat-card>
 } @if( login$ | async ) {
 <mat-card>
   <button mat-stroked-button (click)="addNewGroup()">Add New Group</button>
 </mat-card>
 }
+
+<mat-card>
+  <h2>Colours on the detail pages</h2>
+
+  <div class="bar safe">Safe Participant</div>
+  <div class="bar trained">Trained Participant</div>
+  <div class="bar assist">Assistant Guide</div>
+  <div class="bar guide">Guide</div>
+
+  <h2>Overview of the system</h2>
+  <p>
+    This system allows you to produce the PDF required by Scouts NSW. If possible it allows questions to be answered once, like your first
+    aid certificate. Just because you have completed and been verified by this system does not mean you have completed the qualification.
+    You must submit the application to
+    <a href="https://nswscouts.atlassian.net/servicedesk/customer/portal/3/group/11/create/36">Scouts NSW Activities Training</a>
+  </p>
+  <p>
+    It is not meant as a pixel perfect example of the PDF. Some questions are changed to allow it to be entered into the simple data system
+    this application uses
+  </p>
+  <p>
+    The bars on the sections are coloured depending on the level. These colours echo Cubs (Safe Participant), Scouts (Trained Participant),
+    Venturers (Assistant Guide) and Rovers (Guide).
+  </p>
+  <p>There are also region specific training which is in draft. Stay tuned on advances in the scouting approval system.</p>
+</mat-card>

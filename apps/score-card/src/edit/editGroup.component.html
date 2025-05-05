@@ -2,7 +2,7 @@
 <div cdkDropListGroup cdkDropList [cdkDropListData]="sections" (cdkDropListDropped)="dropHeading($event)">
   @for (d of sections; track d.heading; let idx = $index) {
   <div class="group" cdkDrag [cdkDragData]="d">
-    <app-collapse [heading]="d.heading" [show]="!d.questions.length">
+    <app-collapse [heading]="d.heading" [show]="!d.questions.length" [ngClass]="d.level">
       <header>
         <div class="edit-title">
           <span class="hint">({{ d.level }})</span>
@@ -44,7 +44,10 @@
               <mat-icon>tab_duplicate</mat-icon>
             </button>
           </div>
-          <sub class="hint">{{ d.questions.length }} <div class="hide-on-small">questions in group</div></sub>
+          <sub class="hint"
+            >{{ d.questions.length }}
+            <div class="hide-on-small">questions in group</div></sub
+          >
         </div>
       </header>
 
@@ -101,11 +104,14 @@
   }
 </div>
 
+<mat-card-actions align="end">
+  <button mat-stroked-button (click)="addSection(sections)">Add a new section</button>
+</mat-card-actions>
+
+<h2>Edit this menu item or Add a new menu item</h2>
 <mat-toolbar>
-  <button mat-raised-button (click)="addSection(sections)">Add a new section</button>
-
-  <button mat-raised-button (click)="addGroup()">Create new group</button>
-
   <button mat-raised-button (click)="editGroup()">Edit group</button>
+  <button mat-raised-button (click)="addGroup()">Create new group</button>
 </mat-toolbar>
+<div class="hint">If you want to change PDF details 'Edit group'</div>
 }

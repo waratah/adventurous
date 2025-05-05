@@ -1,29 +1,21 @@
-import { Component, Inject, model } from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, effect, Inject, model, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbar } from '@angular/material/toolbar';
-import { QuestionGroup } from '../../definitions';
-import { QuestionsService } from '../../service/questions.service';
-import { MyErrorStateMatcher } from '../../utils';
+import { LevelCode, QuestionGroup } from '../../definitions';
+import { QuestionsService } from '../../service';
+import { LevelSelectComponent, MyErrorStateMatcher } from '../../utils';
 
 @Component({
   selector: 'app-dialog-group',
   imports: [
+    LevelSelectComponent,
     MatButtonModule,
     MatCheckboxModule,
     MatDialogModule,
@@ -39,22 +31,17 @@ import { MyErrorStateMatcher } from '../../utils';
 })
 export class DialogGroupComponent {
   group = model<QuestionGroup>();
-  groupForm: FormGroup;
-  private nameFormControl = new FormControl('', [Validators.required]);
+  level = signal<LevelCode>('safe');
 
-  hasSafe = false;
-  private safeNameFormControl = new FormControl('', [Validators.required]);
-  private safeHeadingFormControl = new FormControl('', [Validators.required]);
-  private safeFootingFormControl = new FormControl('', [Validators.required]);
+  oldLevel: LevelCode = 'safe';
 
-  hasTrained = false;
-  private trainedNameFormControl = new FormControl('', [Validators.required]);
-  private trainedHeadingFormControl = new FormControl('', [
-    Validators.required,
-  ]);
-  private trainedFootingFormControl = new FormControl('', [
-    Validators.required,
-  ]);
+  groupForm: FormGroup = new FormGroup({
+    name: new FormControl('', [Validators.required]),
+    level: new FormControl('safe', [Validators.required]),
+    levelName: new FormControl('', [Validators.required]),
+    heading: new FormControl('', [Validators.required]),
+    footing: new FormControl('', [Validators.required]),
+  });
 
   matcher = new MyErrorStateMatcher();
 
@@ -68,59 +55,11 @@ export class DialogGroupComponent {
       group.books = {};
     }
     this.group.set(group);
+    this.groupForm.controls['name'].setValue(group.name);
 
-    this.nameFormControl.setValue(group.name);
-    if (group.books.safe) {
-      this.hasSafe = true;
-      this.safeNameFormControl.setValue(group.books.safe.name);
-      this.safeHeadingFormControl.setValue(group.books.safe.heading);
-      this.safeFootingFormControl.setValue(group.books.safe.footing);
-    }
-    if (group.books.trained) {
-      this.hasTrained = true;
-      this.trainedNameFormControl.setValue(group.books.trained.name);
-      this.trainedHeadingFormControl.setValue(group.books.trained.heading);
-      this.trainedFootingFormControl.setValue(group.books.trained.footing);
-    }
-
-    this.groupForm = new FormGroup({
-      name: this.nameFormControl,
+    effect(() => {
+      this.changeLevel(this.level());
     });
-
-    this.setSafe(this.hasSafe);
-    this.setTrained(this.hasTrained);
-  }
-
-  setSafe(value: boolean) {
-    this.hasSafe = value;
-    if (value) {
-      this.groupForm.addControl('safeName', this.safeNameFormControl);
-      this.groupForm.addControl('safeHeading', this.safeHeadingFormControl);
-      this.groupForm.addControl('safeFooting', this.safeFootingFormControl);
-    } else {
-      this.groupForm.removeControl('safeName');
-      this.groupForm.removeControl('safeHeading');
-      this.groupForm.removeControl('safeFooting');
-    }
-  }
-
-  setTrained(value: boolean) {
-    this.hasTrained = value;
-    if (value) {
-      this.groupForm.addControl('trainedName', this.trainedNameFormControl);
-      this.groupForm.addControl(
-        'trainedHeading',
-        this.trainedHeadingFormControl
-      );
-      this.groupForm.addControl(
-        'trainedFooting',
-        this.trainedFootingFormControl
-      );
-    } else {
-      this.groupForm.removeControl('trainedName');
-      this.groupForm.removeControl('trainedHeading');
-      this.groupForm.removeControl('trainedFooting');
-    }
   }
 
   async save() {
@@ -131,34 +70,50 @@ export class DialogGroupComponent {
     if (g) {
       const result: QuestionGroup = {
         ...g,
-        name: this.nameFormControl.getRawValue() || '',
+        name: this.groupForm.controls['name'].getRawValue() || '',
       };
 
-      if (this.hasSafe) {
-        const sb = result.books.safe || { name: '', heading: '', footing: '' };
-        sb.name = this.safeNameFormControl.getRawValue() || '';
-        sb.heading = this.safeHeadingFormControl.getRawValue() || '';
-        sb.footing = this.safeFootingFormControl.getRawValue() || '';
-        result.books.safe = sb;
-      }
+      this.changeLevel(this.level());
 
-      if (this.hasTrained) {
-        const tb = result.books.trained || {
-          name: '',
-          heading: '',
-          footing: '',
-        };
-        tb.name = this.trainedNameFormControl.getRawValue() || '';
-        tb.heading = this.trainedHeadingFormControl.getRawValue() || '';
-        tb.footing = this.trainedFootingFormControl.getRawValue() || '';
-        result.books.trained = tb;
-      }
-
-      await this.questionService
-        .updateGroup(result)
-        .catch((error) => console.error(error));
+      await this.questionService.updateGroup(result).catch(error => console.error(error));
 
       this.dialogRef.close(result);
     }
+  }
+
+  changeLevel(text: string) {
+    const l = text as LevelCode;
+    let book = this.data.group.books[this.oldLevel];
+    const name = this.groupForm.controls['levelName'].value;
+    const heading = this.groupForm.controls['heading'].value;
+    const footing = this.groupForm.controls['footing'].value;
+    if (name || heading || footing) {
+      if (!book) {
+        book = {
+          name,
+          heading,
+          footing,
+        };
+        this.data.group.books[this.oldLevel] = book;
+        this.group.set(this.data.group);
+      } else {
+        // Hack to remove old heading...
+        const temp: any = book;
+        delete temp.header;
+
+        book.name = name || book.name;
+        book.heading = heading || book.heading;
+        book.footing = footing || book.footing;
+      }
+    }
+
+    this.oldLevel = l;
+
+
+    book = this.data.group.books[l];
+
+    this.groupForm.controls['levelName'].setValue(book?.name || '');
+    this.groupForm.controls['heading'].setValue(book?.heading || '');
+    this.groupForm.controls['footing'].setValue(book?.footing || '');
   }
 }
