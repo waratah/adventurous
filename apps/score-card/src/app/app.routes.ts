@@ -38,16 +38,15 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('../PDF/pdf-workbook.component').then(m => m.PdfWorkbookComponent),
   },
   {
+    path: 'help',
+    loadComponent: () => import('../base/help-page/help-page.component').then(m => m.HelpPageComponent),
+  },
+  {
     path: ':action/:id',
     loadComponent: () => import('../base/scoreCard.component').then(m => m.ScoreCardComponent),
   },
   {
     path: '',
     loadComponent: () => import('../base/groups.component').then(m => m.GroupsComponent),
-  },
-
-  {
-    path: '**',
-    loadComponent: () => import('../base/scoreCard.component').then(m => m.ScoreCardComponent),
   },
 ];

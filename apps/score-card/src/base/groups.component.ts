@@ -1,5 +1,7 @@
 import { AsyncPipe, NgClass } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { User } from '@angular/fire/auth';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
@@ -7,12 +9,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink } from '@angular/router';
+import { saveAs } from 'file-saver';
 import { Observable } from 'rxjs';
 import { QuestionGroup, UploadParameters } from '../definitions';
-import { User } from '@angular/fire/auth';
 import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
 import { AuthService, QuestionsService } from '../service';
-
 @Component({
   selector: 'app-groups',
   standalone: true,
@@ -33,10 +34,11 @@ export class GroupsComponent {
   public newGroup = '';
 
   constructor(
-    public questionsService: QuestionsService,
+    private questionsService: QuestionsService,
     private dialog: MatDialog,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {
     this.login$ = this.authService.user$;
     this.groups$ = questionsService.allQuestionGroups$;
@@ -107,6 +109,12 @@ export class GroupsComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       console.info({ result });
+    });
+  }
+
+  getLog() {
+    this.http.get('/Adventurous activities Log Book Template Scouts.xlsx', { responseType: 'blob' }).subscribe(blob => {
+      saveAs(blob, 'Adventurous activities Log Book Template Scouts.xlsx');
     });
   }
 }

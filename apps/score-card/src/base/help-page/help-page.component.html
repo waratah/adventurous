@@ -1,0 +1,32 @@
+<h1>Help Page</h1>
+
+<app-collapse heading="Scout Information links" [show]="false">
+  <p>
+    Get qualified information from NSW scouts.
+    <a href="https://nsw.scouts.com.au/adventurous-activities/qualified/" target="_blank">Information sheet</a>
+  </p>
+
+  <p>
+    <a href="https://scouts.com.au/wp-content/uploads/2021/12/Adventurous-Activities-Program.pdf" target="_blank"
+      >Safe participant workbooks</a
+    >
+    originals are available.
+  </p>
+
+  <p>
+    <a href="https://scoutsaus-my.sharepoint.com/personal/dougal_mayor_scouts_com_au/_layouts/15/onedrive.aspx" target="_blank"
+      >Direct link to workbooks</a
+    >
+    This link may be unreliable.
+  </p>
+</app-collapse>
+
+<app-collapse heading="Adventurous Logs" [show]="false">
+  <p>
+    Log book information sheet from scouts.
+    <a href="https://www.nsw.scouts.com.au/wp-content/uploads/2022/02/Logbook-Guide.pdf">Information sheet</a>
+  </p>
+
+   <button mat-stroked-button (click)="getLog()">Template log (Excel)</button>
+
+</app-collapse>
