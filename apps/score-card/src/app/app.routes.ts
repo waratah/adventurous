@@ -7,7 +7,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'groups',
-    loadComponent: () => import('../base/groups.component').then(m => m.GroupsComponent),
+    loadComponent: () => import('../base/home/home.component').then(m => m.HomeComponent),
   },
   {
     path: 'edit/:id',
@@ -43,10 +43,10 @@ export const appRoutes: Route[] = [
   },
   {
     path: ':action/:id',
-    loadComponent: () => import('../base/scoreCard.component').then(m => m.ScoreCardComponent),
+    loadComponent: () => import('../base/scoreCard/scoreCard.component').then(m => m.ScoreCardComponent),
   },
   {
     path: '',
-    loadComponent: () => import('../base/groups.component').then(m => m.GroupsComponent),
+    loadComponent: () => import('../base/home/home.component').then(m => m.HomeComponent),
   },
 ];

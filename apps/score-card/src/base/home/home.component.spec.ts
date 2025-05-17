@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { GroupsComponent } from './groups.component';
-import { QuestionsService } from '../service';
+import { homeComponent } from '../home.component';
+import { QuestionsService } from '../../service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
-import { AuthService } from '../service';
-import { QuestionGroup } from '../definitions';
-import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
+import { AuthService } from '../../service';
+import { QuestionGroup } from '../../definitions';
+import { DialogGroupComponent, DialogUploadComponent } from '../../dialog';
 
 
-describe('GroupsComponent', () => {
-  let component: GroupsComponent;
-  let fixture: ComponentFixture<GroupsComponent>;
+describe('HomeComponent', () => {
+  let component: HomeComponent;
+  let fixture: ComponentFixture<homeComponent>;
 
   let questionsServiceMock: Partial<QuestionsService>;
   let authServiceMock: Partial<AuthService>;
@@ -49,7 +49,7 @@ describe('GroupsComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [GroupsComponent],
+      imports: [homeComponent],
       providers: [
         { provide: QuestionsService, useValue: questionsServiceMock },
         { provide: AuthService, useValue: authServiceMock },
@@ -61,7 +61,7 @@ describe('GroupsComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(GroupsComponent);
+    fixture = TestBed.createComponent(homeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

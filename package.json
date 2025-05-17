@@ -1,6 +1,6 @@
 {
   "name": "@scorecard/source",
-  "version": "0.0.1",
+  "version": "0.9.0",
   "license": "(c) Ken Foskey",
   "scripts": {},
   "private": true,
@@ -20,7 +20,7 @@
     "firebase-admin": "^13.2.0",
     "firebase-functions": "^6.3.2",
     "jspdf": "^3.0.0",
-    "jspdf-autotable": "^5.0.2",
+    "ngx-editor": "^19.0.0-beta.1",
     "rxjs": "~7.8.0",
     "zone.js": "~0.15.0"
   },

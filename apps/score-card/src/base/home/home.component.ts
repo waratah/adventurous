@@ -11,17 +11,17 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterLink } from '@angular/router';
 import { saveAs } from 'file-saver';
 import { Observable } from 'rxjs';
-import { QuestionGroup, UploadParameters } from '../definitions';
-import { DialogGroupComponent, DialogUploadComponent } from '../dialog';
-import { AuthService, QuestionsService } from '../service';
+import { QuestionGroup, UploadParameters } from '../../definitions';
+import { DialogGroupComponent, DialogUploadComponent } from '../../dialog';
+import { AuthService, QuestionsService } from '../../service';
 @Component({
-  selector: 'app-groups',
+  selector: 'app-home',
   standalone: true,
   imports: [MatSlideToggleModule, MatButtonToggleModule, MatButtonModule, MatCardModule, MatToolbarModule, NgClass, AsyncPipe, RouterLink],
-  templateUrl: './groups.component.html',
-  styleUrl: './groups.component.css',
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.css',
 })
-export class GroupsComponent {
+export class HomeComponent {
   public groups$: Observable<QuestionGroup[]>;
   public selectedGroup$: Observable<QuestionGroup>;
   public login$: Observable<User | null>;

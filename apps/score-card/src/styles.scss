@@ -132,6 +132,12 @@ table {
 
 /*.  end reset */
 
+*,
+*::after,
+*::after {
+  box-sizing: border-box;
+}
+
 html {
   scroll-behavior: smooth;
   color-scheme: light;

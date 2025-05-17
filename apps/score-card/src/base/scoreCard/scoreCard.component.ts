@@ -9,10 +9,10 @@ import { ActivatedRoute } from '@angular/router';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import { combineLatest, map, Observable, Subscription } from 'rxjs';
-import { Answer, PageDisplay, Question, QuestionGroup, UploadParameters, UploadResult } from '../definitions';
-import { DialogUploadComponent, DialogViewComponent, DialogViewOptions } from '../dialog';
-import { AnswersService, QuestionsService, UsersService } from '../service';
-import { CollapseComponent } from '../utils';
+import { Answer, PageDisplay, Question, QuestionGroup, UploadParameters, UploadResult } from '../../definitions';
+import { DialogUploadComponent, DialogViewComponent, DialogViewOptions } from '../../dialog';
+import { AnswersService, QuestionsService, UsersService } from '../../service';
+import { CollapseComponent } from '../../utils';
 
 interface Detail {
   answer: Answer;

@@ -16,8 +16,7 @@
         }
       </header>
       @if(page.description){
-      <div caption class="padding hint">
-        {{ page.description }}
+      <div caption class="padding hint" [innerHTML]="page.description">
       </div>
       }
       <div class="list">

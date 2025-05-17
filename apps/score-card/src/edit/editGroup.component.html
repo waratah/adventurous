@@ -51,8 +51,7 @@
         </div>
       </header>
 
-      <div caption class="padding hint">
-        {{ d.description }}
+      <div caption class="padding hint" [innerHTML]="d.description">
       </div>
 
       <div cdkDropList [cdkDropListData]="d.questions" (cdkDropListDropped)="dropSection($event, sections)">

@@ -171,7 +171,7 @@ export class EditGroupComponent {
       data: {
         section,
       },
-      minWidth: 630,
+      minWidth: 670,
     });
 
     dialogRef.afterClosed().subscribe(result => {
