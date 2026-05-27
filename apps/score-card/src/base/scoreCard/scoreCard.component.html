@@ -1,4 +1,8 @@
 <div #result>
+  @if(isVerify && answerService.userId !== usersService.userId) {
+  <div class="verification-target">Verifying participant {{ answerService.userId }}</div>
+  }
+
   <mat-toolbar class="list titles secondary">
     <span>Can statement</span>
     <span>Done</span>
@@ -21,19 +25,58 @@
       }
       <div class="list">
         @for (d of page.details; track d.question.code) { @switch( d.question.type) { @default {
-        <span>{{ d.question.text }}</span>
-        <input type="checkbox" [checked]="d.answer.done" (change)="updateDone(d, !d.answer.done)" />
+        <div class="question">
+          <span>{{ d.question.text }}</span>
+          @if(d.answer.doneBy || d.answer.verifiedBy) {
+          <div class="audit">
+            @if(d.answer.doneBy) {
+            <span>Done by {{ d.answer.doneBy }} @if(d.answer.doneDate) { on {{ d.answer.doneDate | date:'d MMM y' }} }</span>
+            } @if(d.answer.verifiedBy) {
+            <span>Verified by {{ d.answer.verifiedBy }} @if(d.answer.verifiedDate) { on {{ d.answer.verifiedDate | date:'d MMM y' }} }</span>
+            }
+          </div>
+          }
+        </div>
+        <input
+          type="checkbox"
+          [checked]="d.answer.done"
+          [disabled]="isVerify || d.answer.verified"
+          [title]="d.answer.verified ? 'Verified records cannot be changed by the trainee' : 'Mark activity done'"
+          (change)="updateDone(d, !d.answer.done)"
+        />
         } @case("img") {
         <img [src]="d.question.img" [alt]="d.question.text" />
         <span></span>
         } @case("textbox") {
         <div class="text-input">
           <span>{{ d.question.text }}</span>
-          <input type="text" [value]="d.answer.text || ''" [placeholder]="d.question.placeholder" matInput (blur)="updateText(d, $event)" />
+          @if(d.answer.doneBy || d.answer.verifiedBy) {
+          <div class="audit">
+            @if(d.answer.doneBy) {
+            <span>Done by {{ d.answer.doneBy }} @if(d.answer.doneDate) { on {{ d.answer.doneDate | date:'d MMM y' }} }</span>
+            } @if(d.answer.verifiedBy) {
+            <span>Verified by {{ d.answer.verifiedBy }} @if(d.answer.verifiedDate) { on {{ d.answer.verifiedDate | date:'d MMM y' }} }</span>
+            }
+          </div>
+          }
+          <input
+            type="text"
+            [value]="d.answer.text || ''"
+            [placeholder]="d.question.placeholder"
+            [disabled]="isVerify || d.answer.verified"
+            matInput
+            (blur)="updateText(d, $event)"
+          />
         </div>
         <span></span>
         } } @if(isVerify && d.question.type !== 'img') {
-        <input type="checkbox" [checked]="d.answer.verified" (change)="updateVerify(d.question.code, !d.answer.verified)" />
+        <input
+          type="checkbox"
+          [checked]="d.answer.verified"
+          [disabled]="!d.answer.done"
+          [title]="d.answer.done ? 'Verify completed activity' : 'Trainee must mark this done before it can be verified'"
+          (change)="updateVerify(d.question.code, !d.answer.verified)"
+        />
         } @else { @if( d.question.attachmentRequired) {
         <div>
           <button mat-icon-button (click)="uploadProof(d)"><mat-icon>attach_file_add</mat-icon></button>

@@ -10,6 +10,13 @@
     <span class="hide-on-small">Rock School -</span> {{ group.name }}} @else { Rock School }
   </h1>
   <div class="buttons">
+    @let syncStatus = syncStatusService.status();
+    <div class="sync-status" [class.offline]="syncStatus.state === 'offline'" [class.syncing]="syncStatus.state === 'syncing'">
+      <mat-icon [matTooltip]="syncStatus.online ? 'Changes upload automatically' : 'Offline - changes are saved on this device'" matTooltipPosition="below">
+        {{ syncStatus.icon }}
+      </mat-icon>
+      <span>{{ syncStatus.label }}</span>
+    </div>
     @if( login()) {
     <button mat-icon-button aria-label="User settings screen" (click)="logout()">
       <mat-icon matTooltip="Log out" matTooltipPosition="below">logout</mat-icon>

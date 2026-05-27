@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { Answer, Question } from '../definitions';
-import { DialogViewComponent } from '../dialog';
-import { AnswersService, QuestionsService, UsersService } from '../service';
+import { Answer, Question } from '../../definitions';
+import { DialogViewComponent } from '../../dialog';
+import { AnswersService, QuestionsService, UsersService } from '../../service';
 import { ScoreCardComponent } from './scoreCard.component';
 
 jest.mock('html2canvas');
@@ -53,7 +53,8 @@ describe('ScoreCardComponent', () => {
 
     mockActivatedRoute = {
       paramMap: of({
-        get: jest.fn().mockReturnValue('test-id'),
+        get: jest.fn((key: string) => (key === 'id' ? 'test-id' : null)),
+        has: jest.fn().mockReturnValue(false),
       }),
     } as unknown as ActivatedRoute;
 
@@ -97,7 +98,32 @@ describe('ScoreCardComponent', () => {
 
     expect(detail.answer.done).toBe(true);
     expect(detail.answer.doneDate).toBeInstanceOf(Date);
-    expect(mockAnswersService.updateAnswer).toHaveBeenCalledWith(detail.answer);
+    expect(mockAnswersService.updateAnswer).toHaveBeenCalledWith(detail.answer, mockUsersService.userId);
+  });
+
+  it('should not update done status while verifying', () => {
+    const detail = {
+      answer: { done: false, doneDate: new Date(), code: 'q1' },
+      question: <Question>{ code: 'q1' },
+    };
+    component.isVerify = true;
+
+    component.updateDone(detail, true);
+
+    expect(detail.answer.done).toBe(false);
+    expect(mockAnswersService.updateAnswer).not.toHaveBeenCalled();
+  });
+
+  it('should not update a verified trainee answer', () => {
+    const detail = {
+      answer: { done: true, verified: true, doneDate: new Date(), code: 'q1' },
+      question: <Question>{ code: 'q1' },
+    };
+
+    component.updateDone(detail, false);
+
+    expect(detail.answer.done).toBe(true);
+    expect(mockAnswersService.updateAnswer).not.toHaveBeenCalled();
   });
 
   it('should update answer text and done status', () => {
@@ -111,7 +137,7 @@ describe('ScoreCardComponent', () => {
 
     expect(detail.answer.text).toBe('Some text');
     expect(detail.answer.done).toBe(true);
-    expect(mockAnswersService.updateAnswer).toHaveBeenCalledWith(detail.answer);
+    expect(mockAnswersService.updateAnswer).toHaveBeenCalledWith(detail.answer, mockUsersService.userId);
   });
 
 
@@ -126,7 +152,7 @@ describe('ScoreCardComponent', () => {
     expect(mockDialog.open).toHaveBeenCalled();
     expect(detail.answer.proof).toBe('file1.png');
     expect(detail.answer.done).toBe(true);
-    expect(mockAnswersService.updateAnswer).toHaveBeenCalledWith(detail.answer);
+    expect(mockAnswersService.updateAnswer).toHaveBeenCalledWith(detail.answer, mockUsersService.userId);
   });
 
   it('should open view proof dialog', () => {

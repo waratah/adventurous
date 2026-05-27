@@ -58,16 +58,29 @@ export class LoginComponent {
     }
   }
 
-  private actualLogin(email: string, password: string) {
-    return this.authService.login(email, password).then(async data => {
-      const scoutNumber = await this.userService.getScoutNumber(data.user.uid);
+  private async actualLogin(email: string, password: string) {
+    try {
+      const data = await this.authService.login(email, password);
+      let scoutNumber = await this.userService.getScoutNumber(data.user.uid);
+
+      if (!scoutNumber) {
+        const claims = await this.authService.authClaims();
+        scoutNumber = claims.scoutNumber;
+      }
+
       if (scoutNumber) {
         this.userService.userId = scoutNumber;
-        this.router.navigateByUrl('/groups');
+        await this.router.navigateByUrl('/groups');
         return;
       }
 
-      console.error('This should never happen, user should be set up once and for all')
+      const existingUser = await this.userService.loadEmail(email, data.user.uid);
+      if (existingUser) {
+        await this.router.navigateByUrl('/groups');
+        return;
+      }
+
+      console.error('This should never happen, user should be set up once and for all');
 
       const user: User = {
         email,
@@ -81,11 +94,14 @@ export class LoginComponent {
         verifyGroups: [],
       };
       this.userService.primeUser(user);
-      this.router.navigateByUrl('/user');
-    });
+      await this.router.navigateByUrl('/user');
+    } catch (error) {
+      this.error.set(true);
+      console.error('Email/Password Sign-In error:', error);
+    }
   }
 
   async guestLogin() {
-    this.actualLogin('guest@nsw.scouts.com.au', 'fake_password');
+    await this.actualLogin('guest@nsw.scouts.com.au', 'fake_password');
   }
 }

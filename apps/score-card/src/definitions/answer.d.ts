@@ -10,7 +10,11 @@ export interface Answer {
   done?: boolean;
   text?: string;
   doneDate: Date;
+  doneBy?: string;
   verified?: boolean;
+  verifiedBy?: string;
+  verifiedDate?: Date;
+  updatedAt?: Date;
   mappedCode?: string;
   proof?: string;
 }

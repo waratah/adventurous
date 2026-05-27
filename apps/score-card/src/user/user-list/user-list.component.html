@@ -8,6 +8,7 @@
     <h3>Name</h3>
     <h3>Scout Number</h3>
     <h3>Select</h3>
+    <h3>Action</h3>
     @for ( user of users(); track user.scoutNumber ) {
     <div>{{ user.name }}</div>
     <div>{{ user.scoutNumber }}</div>
@@ -19,6 +20,15 @@
         [ngClass]="{ mine: user.scoutNumber === currentUserId() }"
       >
       </mat-checkbox>
+    </div>
+    <div>
+      <button
+        mat-stroked-button
+        [disabled]="!currentGroupId() || currentUserId() === user.scoutNumber"
+        [routerLink]="currentGroupId() ? ['/verify', currentGroupId(), user.scoutNumber] : null"
+      >
+        Verify
+      </button>
     </div>
     }
   </div>

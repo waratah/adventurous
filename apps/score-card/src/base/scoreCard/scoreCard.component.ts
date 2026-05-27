@@ -1,4 +1,4 @@
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
 import { Component, effect, ElementRef, input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -33,7 +33,7 @@ interface DetailPage {
 @Component({
   selector: 'app-score-card',
   standalone: true,
-  imports: [AsyncPipe, NgClass, MatIconModule, MatToolbarModule, CollapseComponent, MatButtonModule, MatCardModule],
+  imports: [AsyncPipe, DatePipe, NgClass, MatIconModule, MatToolbarModule, CollapseComponent, MatButtonModule, MatCardModule],
   templateUrl: './scoreCard.component.html',
   styleUrl: './scoreCard.component.css',
 })
@@ -44,6 +44,7 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
 
   public action = input<string>();
   public id = input<string>();
+  public participantId = input<string>();
 
   public questions$: Observable<PageDisplay[]>;
   public groups$: Observable<QuestionGroup[]>;
@@ -52,15 +53,15 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   private sub?: Subscription;
 
   constructor(
-    private answerService: AnswersService,
-    private usersService: UsersService,
+    public answerService: AnswersService,
+    public usersService: UsersService,
     private route: ActivatedRoute,
     private questionsService: QuestionsService,
     private dialog: MatDialog
   ) {
     effect(() => (this.isVerify = this.action() == 'verify'));
     effect(() => (this.questionsService.group = this.id()));
-    this.answerService.userId = this.usersService.userId;
+    this.answerService.userId = this.participantId() || this.usersService.userId;
 
     this.questions$ = questionsService.sections$;
     this.groups$ = questionsService.allQuestionGroups$;
@@ -101,28 +102,41 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.sub = this.route.paramMap.subscribe(params => (this.questionsService.group = params.get('id')));
+    this.sub = this.route.paramMap.subscribe(params => {
+      this.isVerify = params.get('action') === 'verify';
+      this.questionsService.group = params.get('id');
+      this.answerService.userId = params.get('participantId') || this.usersService.userId;
+    });
   }
 
   ngOnDestroy() {
     this.sub?.unsubscribe();
   }
   public updateDone(detail: Detail, value: boolean) {
+    if (this.isVerify || detail.answer.verified) {
+      return;
+    }
+
     const answer = detail.answer;
     answer.done = value;
     answer.doneDate = new Date();
-    this.answerService.updateAnswer(answer);
+    this.answerService.updateAnswer(answer, this.usersService.userId);
   }
   public updateText(detail: Detail, event: FocusEvent) {
+    if (this.isVerify || detail.answer.verified) {
+      return;
+    }
+
     const target = event.target as HTMLInputElement;
     const answer = detail.answer;
     answer.text = target.value;
     answer.done = Boolean(target.value);
-    this.answerService.updateAnswer(answer);
+    answer.doneDate = new Date();
+    this.answerService.updateAnswer(answer, this.usersService.userId);
   }
 
   public updateVerify(id: string, value: boolean) {
-    this.answerService.updateVerify(id, value);
+    this.answerService.updateVerify(id, value, this.usersService.userId);
   }
 
   public print() {
@@ -143,6 +157,10 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
   }
 
   uploadProof(detail: Detail) {
+    if (this.isVerify || detail.answer.verified) {
+      return;
+    }
+
     const param: UploadParameters = {
       directory: `upload/${this.answerService.userId}`,
     };
@@ -155,7 +173,7 @@ export class ScoreCardComponent implements OnInit, OnDestroy {
       detail.answer.proof = result.filenames[0];
       detail.answer.done = true;
       detail.answer.doneDate = new Date();
-      this.answerService.updateAnswer(detail.answer);
+      this.answerService.updateAnswer(detail.answer, this.usersService.userId);
     });
   }
 

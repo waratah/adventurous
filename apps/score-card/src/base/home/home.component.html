@@ -1,14 +1,42 @@
-<mat-card>
-  <mat-toolbar class="secondary">
-    @for ( group of groups$ | async; track group.id ) {
-    <mat-toolbar-row>
-      <button class="group-button" mat-raised-button (click)="click(group)" [ngClass]="{ selected: group.id === groupId }">
-        {{ group.name }}
-      </button>
-    </mat-toolbar-row>
+<section class="group-grid" aria-label="Activity groups">
+  @for (card of groupCards$ | async; track card.group.id) {
+  <mat-card
+    class="group-card"
+    [ngClass]="{ selected: card.group.id === groupId }"
+    tabindex="0"
+    role="button"
+    (click)="click(card.group)"
+    (keydown.enter)="click(card.group)"
+  >
+    <div class="group-card-header">
+      <h2>{{ card.group.name }}</h2>
+      @if(card.percentage !== null) {
+      <strong>{{ card.percentage }}%</strong>
+      }
+    </div>
+    @if(card.percentage !== null) {
+    <div class="progress" aria-hidden="true">
+      <span [style.width.%]="card.percentage"></span>
+    </div>
+    } @else {
+    <div class="group-card-empty">No answerable tasks</div>
     }
-  </mat-toolbar>
-</mat-card>
+    <div class="level-progress-list">
+      @for(level of card.levels; track level.level) {
+      <div class="level-progress" [ngClass]="level.level">
+        <div>
+          <span>{{ level.label }}</span>
+          <strong>{{ level.percentage }}%</strong>
+        </div>
+        <div class="progress small" aria-hidden="true">
+          <span [style.width.%]="level.percentage"></span>
+        </div>
+      </div>
+      }
+    </div>
+  </mat-card>
+  }
+</section>
 
 @if( (login$ | async ) === null ) {
 <mat-card class="login">

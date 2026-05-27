@@ -18,10 +18,13 @@ describe('LoginComponent', () => {
   beforeEach(async () => {
     mockAuthService = {
       login: jest.fn(),
+      authClaims: jest.fn(),
     } as unknown as jest.Mocked<AuthService>;
 
     mockUsersService = {
+      getScoutNumber: jest.fn(),
       loadEmail: jest.fn(),
+      primeUser: jest.fn(),
     } as unknown as jest.Mocked<UsersService>;
 
     mockRouter = {
@@ -46,6 +49,10 @@ describe('LoginComponent', () => {
   });
 
   beforeEach(() => {
+    mockAuthService.authClaims.mockResolvedValue({ scoutNumber: '', isAdmin: false, isVerify: false });
+    mockUsersService.getScoutNumber.mockResolvedValue(undefined);
+    mockRouter.navigateByUrl.mockResolvedValue(true);
+
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -73,31 +80,51 @@ describe('LoginComponent', () => {
   it('should log in successfully and navigate to groups if user exists', async () => {
     const email = 'test@example.com';
     const password = 'password123';
+    const uid = 'uid-123';
 
     component.loginForm.patchValue({ name: email, password: password });
-    mockAuthService.login.mockResolvedValue(<UserCredential>{ user: { email } });
-    mockUsersService.loadEmail.mockResolvedValue(true); // Simulate existing user
+    mockAuthService.login.mockResolvedValue(<UserCredential>{ user: { email, uid } });
+    mockUsersService.getScoutNumber.mockResolvedValue('123456');
 
     await component.login();
 
     expect(mockAuthService.login).toHaveBeenCalledWith(email, password);
-    expect(mockUsersService.loadEmail).toHaveBeenCalledWith(email);
+    expect(mockUsersService.getScoutNumber).toHaveBeenCalledWith(uid);
+    expect(mockUsersService.loadEmail).not.toHaveBeenCalled();
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/groups');
+  });
+
+  it('should navigate to groups if security is missing but the email matches an existing user', async () => {
+    const email = 'test@example.com';
+    const password = 'password123';
+    const uid = 'uid-123';
+
+    component.loginForm.patchValue({ name: email, password: password });
+    mockAuthService.login.mockResolvedValue(<UserCredential>{ user: { email, uid } });
+    mockUsersService.loadEmail.mockResolvedValue(true);
+
+    await component.login();
+
+    expect(mockAuthService.login).toHaveBeenCalledWith(email, password);
+    expect(mockUsersService.getScoutNumber).toHaveBeenCalledWith(uid);
+    expect(mockUsersService.loadEmail).toHaveBeenCalledWith(email, uid);
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/groups');
   });
 
   it('should log in successfully and navigate to user if user does not exist', async () => {
     const email = 'test@example.com';
     const password = 'password123';
+    const uid = 'uid-123';
 
     component.loginForm.patchValue({ name: email, password: password });
 
-    mockAuthService.login.mockResolvedValue(<UserCredential>{ user: { email } });
+    mockAuthService.login.mockResolvedValue(<UserCredential>{ user: { email, uid } });
     mockUsersService.loadEmail.mockResolvedValue(false); // Simulate non-existing user
 
     await component.login();
 
     expect(mockAuthService.login).toHaveBeenCalledWith(email, password);
-    expect(mockUsersService.loadEmail).toHaveBeenCalledWith(email);
+    expect(mockUsersService.loadEmail).toHaveBeenCalledWith(email, uid);
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/user');
   });
 
@@ -123,14 +150,15 @@ describe('LoginComponent', () => {
 
   it('should perform guest login successfully', async () => {
     const email = 'guest@nsw.scouts.com.au';
+    const uid = 'guest-uid';
 
-    mockAuthService.login.mockResolvedValue(<UserCredential>{ user: { email } });
+    mockAuthService.login.mockResolvedValue(<UserCredential>{ user: { email, uid } });
     mockUsersService.loadEmail.mockResolvedValue(true); // Simulate existing user
 
     await component.guestLogin();
 
     expect(mockAuthService.login).toHaveBeenCalledWith(email, 'fake_password');
-    expect(mockUsersService.loadEmail).toHaveBeenCalledWith(email);
+    expect(mockUsersService.loadEmail).toHaveBeenCalledWith(email, uid);
     expect(mockRouter.navigateByUrl).toHaveBeenCalledWith('/groups');
   });
 

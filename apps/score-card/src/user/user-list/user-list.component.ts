@@ -8,7 +8,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterLink } from '@angular/router';
 import { map } from 'rxjs';
 import { User } from '../../definitions';
-import { UsersService } from '../../service';
+import { QuestionsService, UsersService } from '../../service';
 
 @Component({
   selector: 'app-user-list',
@@ -21,9 +21,11 @@ export class UserListComponent {
 
   users: Signal<User[] | undefined>;
   currentUserId: Signal<string | undefined>;
-  constructor(userService: UsersService) {
+  currentGroupId: Signal<string | undefined>;
+  constructor(userService: UsersService, questionsService: QuestionsService) {
     this.users = toSignal(userService.allUsers$);
     this.currentUserId = toSignal(userService.currentUser$.pipe(map(u => u?.scoutNumber)));
+    this.currentGroupId = toSignal(questionsService.groupId$);
 
     effect(() => {
       this.users()?.forEach( u => {

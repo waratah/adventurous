@@ -10,9 +10,102 @@
   --card-padding: 1rem;
 }
 
-.mat-toolbar-row {
+.group-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+}
+
+.group-card {
+  display: grid;
+  gap: 0.8rem;
+  padding: 1rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition:
+    border-color 120ms ease,
+    transform 120ms ease;
+}
+
+.group-card:hover,
+.group-card:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.group-card.selected {
+  border-color: var(--accent);
+}
+
+.group-card-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.group-card-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.25;
+}
+
+.group-card-header strong {
+  font-size: 1.4rem;
+  color: var(--accent);
+}
+
+.progress {
+  height: 0.55rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  min-width: 0.2rem;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.group-card-empty {
+  color: color-mix(in srgb, currentColor 72%, transparent);
+  font-size: 0.88rem;
+}
+
+.level-progress-list {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.level-progress {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.level-progress > div:first-child {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.65rem;
+  align-items: center;
+  color: var(--collapse-toolbar-text-colour);
+}
+
+.level-progress > div:first-child span {
+  overflow-wrap: anywhere;
+}
+
+.level-progress > div:first-child strong {
+  color: var(--accent);
+}
+
+.progress.small {
+  height: 0.38rem;
 }
 
 .login {

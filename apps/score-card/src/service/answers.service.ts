@@ -11,25 +11,31 @@ import {
 } from '@angular/fire/firestore';
 import { ReplaySubject } from 'rxjs';
 import { Answer, AnswerStore } from '../definitions';
+import { SyncStatusService } from './sync-status.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AnswersService {
   private myId = '';
+  private currentAnswers: Answer[] = [];
 
   private answers = new ReplaySubject<Answer[]>(1);
   answers$ = this.answers.asObservable();
 
   private answerCollection: CollectionReference<AnswerStore, DocumentData>;
 
-  constructor(private store: Firestore) {
+  constructor(private store: Firestore, private syncStatus: SyncStatusService) {
     this.answerCollection = collection(this.store, 'answers').withConverter(this.createAnswerConverter);
   }
 
   private createAnswerConverter: FirestoreDataConverter<AnswerStore> = {
     toFirestore(modelObject) {
-      const objToUpload = { ...modelObject } as DocumentData; // DocumentData is mutable
+      const answers = Array.isArray(modelObject.answers) ? (modelObject.answers as Answer[]) : [];
+      const objToUpload = {
+        ...modelObject,
+        answers: answers.map(answer => AnswersService.serializeAnswer(answer)),
+      } as DocumentData; // DocumentData is mutable
       delete objToUpload['scoutNumber']; // make sure to remove ID so it's not uploaded to the document
       Object.keys(objToUpload).forEach(key => {
         if (!objToUpload[key]) {
@@ -43,23 +49,53 @@ export class AnswersService {
       // spread data first, so an incorrectly stored id gets overridden
       return <AnswerStore>{
         ...data,
+        answers: (data['answers'] || []).map((answer: Answer) => AnswersService.hydrateAnswer(answer)),
         scoutNumber: snapshot.id,
       };
     },
   };
 
+  private static serializeAnswer(answer: Answer): DocumentData {
+    return Object.entries(answer).reduce<DocumentData>((result, [key, value]) => {
+      if (value !== undefined && value !== '') {
+        result[key] = value;
+      }
+      return result;
+    }, {});
+  }
+
+  private static hydrateAnswer(answer: Answer): Answer {
+    return {
+      ...answer,
+      doneDate: AnswersService.toDate(answer.doneDate) || new Date(),
+      verifiedDate: answer.verifiedDate ? AnswersService.toDate(answer.verifiedDate) : undefined,
+      updatedAt: answer.updatedAt ? AnswersService.toDate(answer.updatedAt) : undefined,
+    };
+  }
+
+  private static toDate(value?: Date | { toDate: () => Date }): Date | undefined {
+    if (!value) {
+      return undefined;
+    }
+    return value instanceof Date ? value : value.toDate();
+  }
+
   private loadAnswers(id: string) {
     if (id) {
-      getDoc(doc(this.answerCollection, id)).then(d => {
-        const result = d.data() as AnswerStore | undefined;
-        if (result?.answers) {
-          this.answers.next(result.answers);
-        } else {
-          this.answers.next([]);
-        }
-      });
+      getDoc(doc(this.answerCollection, id))
+        .then(d => {
+          const result = d.data() as AnswerStore | undefined;
+          this.currentAnswers = result?.answers || [];
+          this.answers.next(this.currentAnswers);
+        })
+        .catch(error => {
+          console.error(error);
+          this.currentAnswers = [];
+          this.answers.next(this.currentAnswers);
+        });
     } else {
-      this.answers.next([]);
+      this.currentAnswers = [];
+      this.answers.next(this.currentAnswers);
     }
   }
 
@@ -73,66 +109,68 @@ export class AnswersService {
     return this.myId;
   }
 
-  updateAnswer(answer: Answer) {
+  updateAnswer(answer: Answer, actorId = this.myId) {
     if (!this.myId) return;
 
     const docRef = doc(this.answerCollection, this.myId);
-    getDoc(docRef).then(answerStore => {
-      const store = answerStore.data() || {
-        scoutNumber: this.myId,
-        answers: [],
-      };
-      const currentAnswers = store.answers;
-      const previous = currentAnswers.find(x => x.code === answer.code);
+    const previous = this.currentAnswers.find(x => x.code === answer.code);
+    const done = previous?.verified ? true : answer.done;
+    const verified = previous?.verified || answer.verified;
+    const nextAnswer: Answer = {
+      ...previous,
+      ...answer,
+      done,
+      doneBy: done ? previous?.doneBy || answer.doneBy || actorId : undefined,
+      doneDate: done ? answer.doneDate || previous?.doneDate || new Date() : answer.doneDate,
+      verified,
+      verifiedBy: verified ? previous?.verifiedBy || answer.verifiedBy : undefined,
+      verifiedDate: verified ? previous?.verifiedDate || answer.verifiedDate : undefined,
+      updatedAt: new Date(),
+    };
 
-      if (previous) {
-        store.answers = [...currentAnswers.filter(x => x.code != answer.code), { ...previous, ...answer }];
-      } else {
-        store.answers.push(answer);
-      }
-      this.answers.next(store.answers);
-      setDoc(docRef, store).catch(error => console.error(error));
-    });
+    if (previous) {
+      this.currentAnswers = [...this.currentAnswers.filter(x => x.code != answer.code), nextAnswer];
+    } else {
+      this.currentAnswers = [...this.currentAnswers, nextAnswer];
+    }
+
+    const store: AnswerStore = {
+      scoutNumber: this.myId,
+      answers: this.currentAnswers,
+    };
+
+    this.answers.next(this.currentAnswers);
+    this.syncStatus.trackWrite(setDoc(docRef, store)).catch(error => console.error(error));
   }
 
-  public updateVerify(questionId: string, value: boolean) {
+  public updateVerify(questionId: string, value: boolean, verifierId = this.myId) {
     if (!this.myId) {
       console.error('Verify when not signed in');
       return;
     }
     const docRef = doc(this.answerCollection, this.myId);
-    getDoc(docRef).then(answerStore => {
-      const store = answerStore.data() || {
-        scoutNumber: this.myId,
-        answers: [],
-      };
+    const previous = this.currentAnswers.find(x => x.code === questionId);
 
-      // The following removes duplicate keys.
-      // const result = store.answers.reduce( (unique: answer[], item) =>
-      //   unique.some( x=> x.code === item.code)? unique : [...unique, item], []);
-      // store.answers = result;
+    if (!previous?.done) {
+      console.warn('Cannot verify an activity before the trainee has marked it done', { questionId, userId: this.myId });
+      return;
+    }
 
-      const previous = store.answers.find(x => x.code === questionId);
-      if (!previous) {
-        if (value) {
-          store.answers.push({
-            code: questionId,
-            done: true,
-            doneDate: new Date(),
-            verified: true,
-          });
-        } // don't add value if it is not done anyway
-      } else {
-        previous.verified = value;
-        if (!previous.done) {
-          previous.done = true;
-          previous.doneDate = new Date();
-        } else {
-          previous.done = true;
-        }
-      }
-      this.answers.next(store.answers);
-      setDoc(docRef, store);
-    });
+    const nextAnswer: Answer = {
+      ...previous,
+      verified: value,
+      verifiedBy: value ? verifierId : undefined,
+      verifiedDate: value ? new Date() : undefined,
+      updatedAt: new Date(),
+    };
+    this.currentAnswers = [...this.currentAnswers.filter(x => x.code !== questionId), nextAnswer];
+
+    const store: AnswerStore = {
+      scoutNumber: this.myId,
+      answers: this.currentAnswers,
+    };
+
+    this.answers.next(this.currentAnswers);
+    this.syncStatus.trackWrite(setDoc(docRef, store)).catch(error => console.error(error));
   }
 }

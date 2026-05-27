@@ -4,6 +4,10 @@ Adventurous score card is a tool too allow users to check off tasks in order to 
 
 THere are two basic users of this application.    A person doing tasks and an administrator who will verify the tasks are actually completed correctly.
 
+[Specification](docs/application-outline.md)
+
+[USer Guide] (docs/user-guide.md)
+
 ## General process
 
 The first screen will allow the user to sign onto the system.  Once signed on the user is able to select an activity that they are signing off.   Within each sign off there are groups of questions that can be checked off.  Once you have checked them off you can dump the questions onto a PDF to share with a verifier.

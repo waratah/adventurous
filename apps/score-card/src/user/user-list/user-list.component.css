@@ -1,5 +1,16 @@
 .grid {
   display: grid;
   gap: 1em;
-  grid-template-columns: 1fr 1fr 10ch;
+  grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.7fr) 5rem auto;
+  align-items: center;
+}
+
+@media screen and (max-width: 599px) {
+  .grid {
+    grid-template-columns: 1fr auto;
+  }
+
+  .grid h3 {
+    display: none;
+  }
 }

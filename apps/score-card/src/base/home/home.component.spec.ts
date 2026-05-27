@@ -1,29 +1,44 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { homeComponent } from '../home.component';
-import { QuestionsService } from '../../service';
+import { HomeComponent } from './home.component';
+import { AnswersService, QuestionsService, UsersService } from '../../service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { AuthService } from '../../service';
 import { QuestionGroup } from '../../definitions';
 import { DialogGroupComponent, DialogUploadComponent } from '../../dialog';
+import { HttpClient } from '@angular/common/http';
 
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
-  let fixture: ComponentFixture<homeComponent>;
+  let fixture: ComponentFixture<HomeComponent>;
 
   let questionsServiceMock: Partial<QuestionsService>;
+  let answersServiceMock: Partial<AnswersService>;
+  let usersServiceMock: Partial<UsersService>;
   let authServiceMock: Partial<AuthService>;
   let dialogMock: Partial<MatDialog>;
   let routerMock: Partial<Router>;
+  let httpClientMock: Partial<HttpClient>;
 
   beforeEach(async () => {
     questionsServiceMock = {
       allQuestionGroups$: of([]), // Empty observable for testing
+      allQuestions$: of([]),
       selectedGroup$: of(<QuestionGroup>{}), // Mock for selected group
       group: '1',
     };
+
+    answersServiceMock = {
+      answers$: of([]),
+      userId: 'user-id-test',
+    } as unknown as Partial<AnswersService>;
+
+    usersServiceMock = {
+      userId: 'user-id-test',
+      currentUser$: of(undefined),
+    } as unknown as Partial<UsersService>;
 
     authServiceMock = {
       user$: of(null), // Mock for user observable
@@ -39,6 +54,10 @@ describe('HomeComponent', () => {
       navigate: jest.fn(), // Mock navigate function
     };
 
+    httpClientMock = {
+      get: jest.fn().mockReturnValue(of(new Blob())),
+    };
+
     const activatedRouteMock = {
       paramMap: of({
         get: jest.fn().mockImplementation((key: string) => {
@@ -49,19 +68,22 @@ describe('HomeComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [homeComponent],
+      imports: [HomeComponent],
       providers: [
         { provide: QuestionsService, useValue: questionsServiceMock },
+        { provide: AnswersService, useValue: answersServiceMock },
+        { provide: UsersService, useValue: usersServiceMock },
         { provide: AuthService, useValue: authServiceMock },
         { provide: MatDialog, useValue: dialogMock },
         { provide: Router, useValue: routerMock },
-        { provide: ActivatedRoute, useValue: activatedRouteMock }
+        { provide: ActivatedRoute, useValue: activatedRouteMock },
+        { provide: HttpClient, useValue: httpClientMock }
       ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(homeComponent);
+    fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

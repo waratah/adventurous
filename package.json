@@ -2,7 +2,11 @@
   "name": "@scorecard/source",
   "version": "0.9.0",
   "license": "(c) Ken Foskey",
-  "scripts": {},
+  "scripts": {
+    "firebase:backup": "ts-node --project tools/firebase/tsconfig.json tools/firebase/firestore-json.ts backup",
+    "firebase:export": "ts-node --project tools/firebase/tsconfig.json tools/firebase/firestore-json.ts export",
+    "firebase:import": "ts-node --project tools/firebase/tsconfig.json tools/firebase/firestore-json.ts import"
+  },
   "private": true,
   "dependencies": {
     "@angular/animations": "19.2.1",

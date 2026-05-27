@@ -42,6 +42,10 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('../base/help-page/help-page.component').then(m => m.HelpPageComponent),
   },
   {
+    path: ':action/:id/:participantId',
+    loadComponent: () => import('../base/scoreCard/scoreCard.component').then(m => m.ScoreCardComponent),
+  },
+  {
     path: ':action/:id',
     loadComponent: () => import('../base/scoreCard/scoreCard.component').then(m => m.ScoreCardComponent),
   },

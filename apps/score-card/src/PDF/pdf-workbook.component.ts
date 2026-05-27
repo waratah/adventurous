@@ -33,6 +33,7 @@ export class PdfWorkbookComponent implements OnDestroy, OnInit {
   readonly boxWidth = this.lineWidth + 6;
   readonly pageTop = 26;
   readonly pageBottom = 265;
+  readonly pageHeight = 150;
   readonly cssPixelSize = 0.2645833333;
 
   private execute$ = new Subject();
@@ -54,11 +55,12 @@ export class PdfWorkbookComponent implements OnDestroy, OnInit {
 
     answersService.userId = userService.userId;
 
-    this.subs.push(userService.currentUser$.subscribe(user => {
-      this.user = user;
-      answersService.userId = user?.scoutNumber || '';
-    }));
-
+    this.subs.push(
+      userService.currentUser$.subscribe(user => {
+        this.user = user;
+        answersService.userId = user?.scoutNumber || '';
+      })
+    );
 
     this.subs.push(
       combineLatest([questionService.selectedGroup$, questionService.allQuestions$, answersService.answers$]).subscribe(
@@ -88,18 +90,16 @@ export class PdfWorkbookComponent implements OnDestroy, OnInit {
 
     this.incomplete.set(
       filteredGroups.some(g => {
-        const rv =
-        ! g.questions.some(q => {
+        const rv = !g.questions.some(q => {
           const answer = this.answers?.find(a => a.code === q || a.mappedCode === q);
           if (!answer) {
-            const question = this.questions?.find( c=> c.code === q);
+            const question = this.questions?.find(c => c.code === q);
             console.log({ answer, q, question });
           }
           return !answer;
         });
-        console.log({rv});
-      }
-      )
+        console.log({ filteredGroup: rv });
+      })
     );
   }
 
@@ -177,17 +177,34 @@ export class PdfWorkbookComponent implements OnDestroy, OnInit {
         if (current.description && questionIndex == 0) {
           const fontSize = 9;
           doc.setFontSize(fontSize);
+          const width = this.lineWidth - 5;
+          const start = this.lineStart;
+          const text = `<div style='font-weight:normal;font-size:9pt;width:${width}mm'>${current.description}</div>`;
+
+          const adjustY = (this.page - 1) * this.pageHeight + y;
+
+          console.log({ text, page: this.page, adjustY });
+
+          doc.html(text, {
+            callback(pdf) {
+              pdf.save('document.pdf');
+            },
+            jsPDF: doc,
+            x: start,
+            y: adjustY,
+            width,
+          });
 
           // break description on lines,  print each and estimate the height.
           current.description.split(/\r\n|\r|\n/).forEach(line => {
             if (line) {
-              const width = this.lineWidth - 5;
-              doc.text(line, this.lineStart, y, { maxWidth: width });
+              // doc.text(line, this.lineStart, y, { maxWidth: width });
               const totalWidth = doc.getTextWidth(line);
               const lines = Math.floor(totalWidth / width) + 1;
               y += lines * 3.2 + 4.5; // 9 point is about 3.175
             }
           });
+
           doc.setFontSize(10);
         }
         let myQuestion = current.questions[questionIndex];

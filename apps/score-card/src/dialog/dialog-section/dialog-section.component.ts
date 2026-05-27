@@ -1,5 +1,5 @@
 import { CdkTextareaAutosize, TextFieldModule } from '@angular/cdk/text-field';
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -11,28 +11,30 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { PageDisplay } from '../../definitions';
 import { MyErrorStateMatcher } from '../../utils';
+import { NgxEditorModule, Editor } from 'ngx-editor';
 
-@Component({
-  selector: 'app-dialog-section',
-  imports: [
-    CdkTextareaAutosize,
-    TextFieldModule,
-    MatButtonToggleModule,
-    MatButtonModule,
-    MatCardModule,
-    MatCheckboxModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatToolbarModule,
-    ReactiveFormsModule,
-  ],
-  templateUrl: './dialog-section.component.html',
-  styleUrl: './dialog-section.component.css',
-})
-export class DialogSectionComponent {
+  @Component({
+    selector: 'app-dialog-section',
+    imports: [
+      TextFieldModule,
+      MatButtonToggleModule,
+      MatButtonModule,
+      MatCardModule,
+      MatCheckboxModule,
+      MatDialogModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatToolbarModule,
+      ReactiveFormsModule,
+      NgxEditorModule
+    ],
+    templateUrl: './dialog-section.component.html',
+    styleUrl: './dialog-section.component.css',
+  })
+export class DialogSectionComponent implements OnInit, OnDestroy {
   /** Section to be edited or a new section to be populated */
   section?: PageDisplay;
+  editor = signal<Editor|undefined>(undefined);
 
   level = '';
   requiresSignOff = false;
@@ -68,6 +70,14 @@ export class DialogSectionComponent {
       heading: this.headingFormControl,
       description: this.descriptionFormControl,
     });
+  }
+
+  ngOnInit(): void {
+    this.editor.set( new Editor());
+  }
+
+  ngOnDestroy(): void {
+    this.editor()?.destroy();
   }
 
   save() {
