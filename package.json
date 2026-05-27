@@ -5,7 +5,8 @@
   "scripts": {
     "firebase:backup": "ts-node --project tools/firebase/tsconfig.json tools/firebase/firestore-json.ts backup",
     "firebase:export": "ts-node --project tools/firebase/tsconfig.json tools/firebase/firestore-json.ts export",
-    "firebase:import": "ts-node --project tools/firebase/tsconfig.json tools/firebase/firestore-json.ts import"
+    "firebase:import": "ts-node --project tools/firebase/tsconfig.json tools/firebase/firestore-json.ts import",
+    "firebase:security": "ts-node --project tools/firebase/tsconfig.json tools/firebase/manage-security.ts"
   },
   "private": true,
   "dependencies": {
@@ -20,6 +21,7 @@
     "@angular/platform-browser": "19.2.1",
     "@angular/platform-browser-dynamic": "19.2.1",
     "@angular/router": "19.2.1",
+    "@angular/service-worker": "^19.2.1",
     "file-saver": "^2.0.5",
     "firebase-admin": "^13.2.0",
     "firebase-functions": "^6.3.2",

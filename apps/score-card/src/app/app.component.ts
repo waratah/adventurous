@@ -9,7 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router, RouterModule } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthClaims, QuestionGroup } from '../definitions';
-import { AuthService, QuestionsService, SyncStatusService, UsersService } from '../service';
+import { AuthService, PwaUpdateService, QuestionsService, SyncStatusService, UsersService } from '../service';
 
 @Component({
   imports: [RouterModule, MatButtonToggleModule, MatToolbarModule, MatTooltipModule, MatIconModule, MatMenuModule],
@@ -33,6 +33,7 @@ export class AppComponent implements OnDestroy {
   constructor(
     private questionsService: QuestionsService,
     private authService: AuthService,
+    private pwaUpdateService: PwaUpdateService,
     private userService: UsersService,
     public syncStatusService: SyncStatusService,
     private router: Router

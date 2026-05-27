@@ -9,6 +9,7 @@ interface ExtendedParsedToken extends ParsedToken {
   scoutNumber?: string;
   isAdmin?: boolean;
   isVerify?: boolean;
+  verificationStatus?: AuthClaims['verificationStatus'];
 }
 
 @Injectable({
@@ -48,6 +49,7 @@ export class AuthService {
         isAdmin: claims.isAdmin ?? false,
         isVerify: claims.isVerify ?? false,
         scoutNumber: claims.scoutNumber ?? '',
+        verificationStatus: claims.verificationStatus,
       };
       return claim;
     } else {

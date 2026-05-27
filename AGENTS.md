@@ -1,4 +1,18 @@
-# Scouts Adventurous Activities Application Outline
+# AGENTS.md instructions for Scouts Adventurous Activities Application
+
+Project uses angular version 21 and prefers to use signals for most work.
+
+It uses css with variables and prefer bleeding edge type layouts.
+
+The applications should be PWA so they load up with any network available. They automatically upgrade.
+
+## Unit testing
+
+When running Nx commands in this workspace, set `NX_DAEMON=false`. The Nx daemon can fail in the Codex sandbox when it tries to create its local socket, so commands such as tests should be run like:
+
+```sh
+NX_DAEMON=false npx nx test score-card
+```
 
 ## Purpose
 

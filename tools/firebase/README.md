@@ -2,6 +2,8 @@
 
 These scripts use the Firebase Admin SDK to export Firestore into portable JSON and import that JSON into another Firebase project.
 
+The same tool area also includes security role management. See [User Verification And Access Management](../../docs/user-guide.md#user-verification-and-access-management) for the account status and administrator process.
+
 ## Credentials
 
 Create a Firebase service account key for the source project and store it outside the repo, for example:

@@ -149,6 +149,48 @@ Use editing carefully. Activity structure changes can affect what trainees and g
 
 For normal field use, trainees and guides should not need admin editing.
 
+## User Verification And Access Management
+
+User access is managed through the Firebase `security` collection and Firebase Authentication custom claims.
+
+Each account can have a verification status:
+
+- `verified-safe`: verified safe participant.
+- `trained-participant`: trained participant.
+- `assistant-guide`: assistant guide.
+- `guide`: guide.
+- `assessor`: assessor.
+
+The current application uses the `isVerify` claim to allow access to guide verification screens. Accounts at `trained-participant`, `assistant-guide`, `guide`, or `assessor` are treated as verifier-capable by the management script. `verified-safe` confirms participant status but does not grant verifier access.
+
+Administrator access is separate from verification status. An administrator is still subject to the same verification process as every other participant or guide, but can see all users, use administrative screens, and change another user from one status to another. Treat administrator as a root-level operational role, not as proof that the person is a guide or assessor.
+
+The initial administrator account is Scouts membership number `174424`. From the repository root, set that account as administrator with:
+
+```sh
+npm run firebase:security -- --credential /Users/ken/source/firebase/adventurousscorecard.json --scout-number 174424 --admin
+```
+
+When changing another account, first confirm the person has a user record and that their email address in `users/<scout-number>` matches their Firebase Authentication account. Then run one of these commands:
+
+```sh
+npm run firebase:security -- --credential /Users/ken/source/firebase/adventurousscorecard.json --scout-number 123456 --status verified-safe
+npm run firebase:security -- --credential /Users/ken/source/firebase/adventurousscorecard.json --scout-number 123456 --status trained-participant
+npm run firebase:security -- --credential /Users/ken/source/firebase/adventurousscorecard.json --scout-number 123456 --status assistant-guide
+npm run firebase:security -- --credential /Users/ken/source/firebase/adventurousscorecard.json --scout-number 123456 --status guide
+npm run firebase:security -- --credential /Users/ken/source/firebase/adventurousscorecard.json --scout-number 123456 --status assessor
+```
+
+To make another administrator, use:
+
+```sh
+npm run firebase:security -- --credential /Users/ken/source/firebase/adventurousscorecard.json --scout-number 123456 --admin
+```
+
+Administrator promotion should use a two-person process: one existing administrator requests the change, another administrator or assessor confirms the need, and a Firestore backup is taken before the change. Keep at least two administrator accounts active so the system can be recovered if one administrator loses access. Remove administrator access when the operational need ends.
+
+After role changes, the affected user should log out and back in so their refreshed Firebase custom claims are used by the app.
+
 ## Good Practice
 
 - Record completions as close as possible to when the task is done.

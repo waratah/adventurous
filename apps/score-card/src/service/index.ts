@@ -2,6 +2,7 @@ export { AnswersService } from './answers.service';
 export { AuthService } from './auth.service';
 export { FileServiceService } from './file-service.service';
 export { LocalStorageService } from './localStorageService';
+export { PwaUpdateService } from './pwa-update.service';
 export { QuestionsService } from './questions.service';
 export { SyncStatusService } from './sync-status.service';
 export { UsersService } from './users.service';

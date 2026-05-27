@@ -16,6 +16,7 @@
         "polyfills": [],
         "tsConfig": "apps/score-card/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
+        "serviceWorker": "apps/score-card/ngsw-config.json",
         "assets": [
           {
             "glob": "**/*",

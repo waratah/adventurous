@@ -1,22 +1,54 @@
 # Adventurous Scorecard
 
-Adventurous score card is a tool too allow users to check off tasks in order to show they have completed the task towards adventurous activities certification.
+Adventurous score card is a tool to allow users to check off tasks in order to show they have completed the task towards adventurous activities certification.
 
-THere are two basic users of this application.    A person doing tasks and an administrator who will verify the tasks are actually completed correctly.
+There are two basic users of this application. A person doing tasks and a guide or verifier who will verify the tasks are actually completed correctly.
 
-[Specification](docs/application-outline.md)
+[Specification](AGENTS.md)
 
-[USer Guide] (docs/user-guide.md)
+[User Guide](docs/user-guide.md)
 
 ## General process
 
-The first screen will allow the user to sign onto the system.  Once signed on the user is able to select an activity that they are signing off.   Within each sign off there are groups of questions that can be checked off.  Once you have checked them off you can dump the questions onto a PDF to share with a verifier.
+The first screen will allow the user to sign onto the system. Once signed on the user is able to select an activity that they are signing off. Within each sign off there are groups of questions that can be checked off. Once you have checked them off you can dump the questions onto a PDF to share with a verifier.
 
-When the verifier looks at the selected done activities they can approve things that they have seen the person doing.  THey can leave others unverified.
+When the verifier looks at the selected done activities they can approve things that they have seen the person doing. They can leave others unverified.
 
 ## Deploy
 
   nx build score-card && firebase deploy
+
+## Backup And Restore
+
+Back up Firestore before deployments, security role changes, and any bulk edit. The backup tool exports the app collections to JSON under `backups/firestore/<project-id>/<timestamp>.json`. The `backups/` directory is ignored by git because it can contain private participant data.
+
+Create a Firebase service account key for the project and keep it outside this repository, for example:
+
+```sh
+/Users/ken/source/firebase/adventurousscorecard.json
+```
+
+Run a normal backup from the repository root:
+
+```sh
+npm run firebase:backup -- --credential /Users/ken/source/firebase/adventurousscorecard.json
+```
+
+Create a named export when you want to archive a specific point or restore it into a test project:
+
+```sh
+npm run firebase:export -- --credential /Users/ken/source/firebase/adventurousscorecard.json --output backups/manual/adventurousscorecard.json
+```
+
+Restore into a test Firebase project first:
+
+```sh
+npm run firebase:import -- --credential /Users/ken/source/firebase/adventurousscorecard-test.json --input backups/manual/adventurousscorecard.json --target-project adventurousscorecard-test
+```
+
+The import overwrites documents in the export. It does not delete documents that only exist in the target unless `--delete-missing` is added. Use `--delete-missing` only on test projects unless a production restore has been planned and approved.
+
+More options, including scheduled daily backups, are documented in [Firestore JSON Backups](tools/firebase/README.md).
 
 ## NX Documentation
 
