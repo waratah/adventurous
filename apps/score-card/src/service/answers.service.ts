@@ -11,6 +11,7 @@ import {
 } from '@angular/fire/firestore';
 import { ReplaySubject } from 'rxjs';
 import { Answer, AnswerStore } from '../definitions';
+import { AuditLogService } from './audit-log.service';
 import { SyncStatusService } from './sync-status.service';
 
 @Injectable({
@@ -25,7 +26,7 @@ export class AnswersService {
 
   private answerCollection: CollectionReference<AnswerStore, DocumentData>;
 
-  constructor(private store: Firestore, private syncStatus: SyncStatusService) {
+  constructor(private store: Firestore, private syncStatus: SyncStatusService, private auditLog: AuditLogService) {
     this.answerCollection = collection(this.store, 'answers').withConverter(this.createAnswerConverter);
   }
 
@@ -140,6 +141,23 @@ export class AnswersService {
     };
 
     this.answers.next(this.currentAnswers);
+    this.auditLog.record({
+      action: 'answer.update',
+      actorId,
+      before: {
+        answer: previous,
+        answerCount: this.currentAnswers.length - (previous ? 0 : 1),
+      },
+      after: {
+        answer: nextAnswer,
+        answerCount: this.currentAnswers.length,
+        answerCodes: this.currentAnswers.map(item => item.code),
+      },
+      collectionName: 'answers',
+      documentId: this.myId,
+      itemId: answer.code,
+      targetUserId: this.myId,
+    });
     this.syncStatus.trackWrite(setDoc(docRef, store)).catch(error => console.error(error));
   }
 
@@ -171,6 +189,22 @@ export class AnswersService {
     };
 
     this.answers.next(this.currentAnswers);
+    this.auditLog.record({
+      action: 'answer.verify',
+      actorId: verifierId,
+      before: {
+        answer: previous,
+      },
+      after: {
+        answer: nextAnswer,
+        answerCount: this.currentAnswers.length,
+        answerCodes: this.currentAnswers.map(item => item.code),
+      },
+      collectionName: 'answers',
+      documentId: this.myId,
+      itemId: questionId,
+      targetUserId: this.myId,
+    });
     this.syncStatus.trackWrite(setDoc(docRef, store)).catch(error => console.error(error));
   }
 }

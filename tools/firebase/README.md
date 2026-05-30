@@ -49,13 +49,13 @@ By default the export reads root collections only, which matches the current app
 By default the export reads these root collections:
 
 ```text
-answers, groups, questions, security, users
+answers, auditLogs, groups, questions, security, users
 ```
 
 To export a different set:
 
 ```sh
---collections answers,groups,questions,security,users,logs
+--collections answers,auditLogs,groups,questions,security,users,logs
 ```
 
 To discover every root collection in the project:

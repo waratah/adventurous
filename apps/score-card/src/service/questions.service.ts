@@ -6,6 +6,7 @@ import {
   CollectionReference,
   doc,
   DocumentData,
+  DocumentReference,
   Firestore,
   FirestoreDataConverter,
   getDoc,
@@ -13,6 +14,7 @@ import {
 } from '@angular/fire/firestore';
 import { combineLatest, map, Observable, ReplaySubject, take } from 'rxjs';
 import { PageDisplay, Question, QuestionGroup, Section } from '../definitions';
+import { AuditLogService } from './audit-log.service';
 
 @Injectable({
   providedIn: 'root',
@@ -39,7 +41,7 @@ export class QuestionsService {
   private questionCollection: CollectionReference<Question, DocumentData>;
   private groupCollection: CollectionReference<QuestionGroup, DocumentData>;
 
-  constructor(private store: Firestore) {
+  constructor(private store: Firestore, private auditLog: AuditLogService) {
     this.questionCollection = collection(this.store, 'questions').withConverter(this.createQuestionConverter);
     this.groupCollection = collection(this.store, 'groups').withConverter(this.idConverter);
 
@@ -150,7 +152,18 @@ export class QuestionsService {
     this.errorMessage.next('');
 
     if (q.code) {
-      await setDoc(doc(this.questionCollection, q.code), q).catch(x => {
+      const docRef = doc(this.questionCollection, q.code);
+      const before = await this.readExistingDoc(docRef);
+      await setDoc(docRef, q).then(() => {
+        this.auditLog.record({
+          action: 'question.update',
+          after: q,
+          before,
+          collectionName: 'questions',
+          documentId: q.code,
+          itemId: q.code,
+        });
+      }).catch(x => {
         console.error(x);
         this.errorMessage.next(x);
       });
@@ -160,6 +173,15 @@ export class QuestionsService {
         this.errorMessage.next(x);
       });
       q.code = docRef?.id || '';
+      if (q.code) {
+        this.auditLog.record({
+          action: 'question.create',
+          after: q,
+          collectionName: 'questions',
+          documentId: q.code,
+          itemId: q.code,
+        });
+      }
     }
   }
 
@@ -170,6 +192,7 @@ export class QuestionsService {
         const docRef = doc(this.groupCollection, groupId);
         const group = (await getDoc(docRef)).data();
         if (group) {
+          const before = { ...group, pages: group.pages };
           group.pages = sections.map(x => ({
             heading: x.heading,
             level: x.level || 'safe',
@@ -179,6 +202,14 @@ export class QuestionsService {
           }));
 
           await setDoc(docRef, group);
+          this.auditLog.record({
+            action: 'group.sections.update',
+            after: group,
+            before,
+            collectionName: 'groups',
+            documentId: groupId,
+            itemId: groupId,
+          });
 
           return group;
         }
@@ -200,6 +231,13 @@ export class QuestionsService {
       };
       const ref = await addDoc(this.groupCollection, group);
       group.id = ref?.id || '';
+      this.auditLog.record({
+        action: 'group.create',
+        after: group,
+        collectionName: 'groups',
+        documentId: group.id,
+        itemId: group.id,
+      });
       return group;
     } catch (error) {
       console.error(error);
@@ -213,12 +251,28 @@ export class QuestionsService {
     try {
       if (group.id) {
         const docRef = doc(this.groupCollection, group.id);
+        const before = await this.readExistingDoc(docRef);
         await setDoc(docRef, group);
+        this.auditLog.record({
+          action: 'group.update',
+          after: group,
+          before,
+          collectionName: 'groups',
+          documentId: group.id,
+          itemId: group.id,
+        });
         return group;
       }
 
       const ref = await addDoc(this.groupCollection, group);
       group.id = ref?.id || '';
+      this.auditLog.record({
+        action: 'group.create',
+        after: group,
+        collectionName: 'groups',
+        documentId: group.id,
+        itemId: group.id,
+      });
       return group;
     } catch (error) {
       console.error(error);
@@ -238,5 +292,14 @@ export class QuestionsService {
         });
       }
     });
+  }
+
+  private async readExistingDoc<T>(docRef: DocumentReference<T>): Promise<T | undefined> {
+    try {
+      return (await getDoc(docRef)).data();
+    } catch (error) {
+      console.warn('Unable to read existing document before audit log', error);
+      return undefined;
+    }
   }
 }

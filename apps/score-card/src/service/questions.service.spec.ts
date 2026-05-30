@@ -22,7 +22,7 @@ jest.mock('@angular/fire/firestore', () => ({
   Firestore: jest.fn(),
   collection: jest.fn(() => mockCollectionReference),
   addDoc: jest.fn(),
-  doc: jest.fn(),
+  doc: jest.fn((...path) => ({ path })),
   setDoc: jest.fn(),
   getDoc: jest.fn(),
   collectionData: jest.fn(() => of([])),
@@ -32,6 +32,7 @@ jest.mock('@angular/fire/firestore', () => ({
 describe('QuestionsService', () => {
   let service: QuestionsService;
   let mockFirestore: any;
+  let mockAuditLog: any;
 
   beforeEach(() => {
     mockFirestore = {
@@ -43,7 +44,10 @@ describe('QuestionsService', () => {
       getDoc: jest.fn(() => Promise.resolve(docResult)),
       collectionData: jest.fn(),
     };
-    service = new QuestionsService(mockFirestore);
+    mockAuditLog = {
+      record: jest.fn(),
+    };
+    service = new QuestionsService(mockFirestore, mockAuditLog);
   });
 
   afterEach(() => {
@@ -67,21 +71,23 @@ describe('QuestionsService', () => {
     });
   });
 
-  it('should call addDoc and setDoc to update a question', async () => {
+  it('should call setDoc and audit log to update a question', async () => {
     const question = { code: 'question1', text: 'Sample Question' };
 
-    (addDoc as jest.Mock).mockResolvedValue({ id: 'question1' }); // Mock response from addDoc
+    (getDoc as jest.Mock).mockResolvedValue({ data: jest.fn(() => docData) });
+    (setDoc as jest.Mock).mockResolvedValue(undefined);
     await service.updateQuestion(question);
 
     expect(setDoc).toHaveBeenCalledWith(doc(service['questionCollection'], question.code), question);
-    expect(addDoc).toHaveBeenCalledWith(service['questionCollection'], question);
+    expect(addDoc).not.toHaveBeenCalled();
+    expect(mockAuditLog.record).toHaveBeenCalledWith(expect.objectContaining({ action: 'question.update' }));
     expect(question.code).toBe('question1'); // Ensure that the question code was set correctly
   });
 
   it('should save a group and call Firestore methods', async () => {
     const section: PageDisplay = {
       heading: 'Section 1',
-      level: 'Beginner',
+      level: 'safe',
       questions: [<Question>{ code: 'question1' }],
       requiresSignOff: true,
     };
@@ -100,7 +106,7 @@ describe('QuestionsService', () => {
       pages: expect.arrayContaining([
         expect.objectContaining({
           heading: 'Section 1',
-          level: 'Beginner',
+          level: 'safe',
           questions: ['question1'],
         }),
       ]),

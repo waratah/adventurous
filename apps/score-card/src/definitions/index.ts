@@ -1,4 +1,5 @@
 export { Answer, AnswerStore } from './answer';
+export { AuditLog } from './AuditLog';
 export { AuthClaims } from './AuthClaims';
 export { FileUpload } from './FileUpload';
 export { LevelCode } from './LevelCode';

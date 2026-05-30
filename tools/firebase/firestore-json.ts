@@ -37,7 +37,7 @@ interface CliOptions {
   collections?: string[];
 }
 
-const defaultCollections = ['answers', 'groups', 'questions', 'security', 'users'];
+const defaultCollections = ['answers', 'auditLogs', 'groups', 'questions', 'security', 'users'];
 
 function parseArgs(argv: string[]): CliOptions {
   const [command = 'help', ...rest] = argv;
