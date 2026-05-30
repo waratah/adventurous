@@ -14,12 +14,12 @@ export class AuditLogService {
   }
 
   record(log: Omit<AuditLog, 'createdAt'>): void {
-    const write = addDoc(this.logCollection, this.removeUndefined({
+    const auditLog = this.removeUndefined({
       ...log,
       createdAt: new Date(),
-    }) as AuditLog);
+    }) as AuditLog;
 
-    this.syncStatus.trackWrite(write).catch(error => console.error('Unable to write audit log', error));
+    this.syncStatus.trackWrite(() => addDoc(this.logCollection, auditLog)).catch(error => console.error('Unable to write audit log', error));
   }
 
   private removeUndefined(value: unknown): unknown {

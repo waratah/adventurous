@@ -158,7 +158,7 @@ export class AnswersService {
       itemId: answer.code,
       targetUserId: this.myId,
     });
-    this.syncStatus.trackWrite(setDoc(docRef, store)).catch(error => console.error(error));
+    this.syncStatus.trackWrite(() => setDoc(docRef, store)).catch(error => console.error(error));
   }
 
   public updateVerify(questionId: string, value: boolean, verifierId = this.myId) {
@@ -205,6 +205,6 @@ export class AnswersService {
       itemId: questionId,
       targetUserId: this.myId,
     });
-    this.syncStatus.trackWrite(setDoc(docRef, store)).catch(error => console.error(error));
+    this.syncStatus.trackWrite(() => setDoc(docRef, store)).catch(error => console.error(error));
   }
 }
